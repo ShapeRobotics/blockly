@@ -496,6 +496,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
     // Compute minimum input size.
     input.renderHeight = Blockly.BlockSvg.MIN_BLOCK_Y;
     input.alignmentHeight = Blockly.BlockSvg.MIN_BLOCK_Y;
+    
     // The width is currently only needed for inline value inputs.
     if (isInline && input.type == Blockly.INPUT_VALUE) {
       input.renderWidth = Blockly.BlockSvg.TAB_WIDTH +
@@ -513,6 +514,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       //SHAPE: If the block has an inner block (AND it is connected), mark this. Required because blocks with blocks in them MUST NOT have margins added to top/bottom.
       row.hasInput = true;
     }
+    
     // Blocks have a one pixel shadow that should sometimes overhang.
     if (!isInline && i == inputList.length - 1) {
       // Last value input should overhang.
@@ -569,7 +571,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
   // Make inline rows a bit thicker in order to enclose the values.
   for (var y = 0, row; row = inputRows[y]; y++) {
     row.thicker = false;
-    // //SHAPE: Removed this as it makes blocks 10 pixels taller if there is another block inside them.
+    //SHAPE: Removed this as it makes blocks 10 pixels taller if there is another block inside them.
     // if (row.type == Blockly.BlockSvg.INLINE) {
     //   for (var z = 0, input; input = row[z]; z++) {
     //     if (input.type == Blockly.INPUT_VALUE) {
@@ -988,7 +990,7 @@ Blockly.BlockSvg.prototype.renderJaggedEdge_ = function(pathObject, row,
   var steps = pathObject.steps;
   var highlightSteps = pathObject.highlightSteps;
   var input = row[0];
-  this.renderFields_(input.fieldRow, cursor.x, cursor.y, input.alignmentHeight);
+  this.renderFields_(input.fieldRow, cursor.x, cursor.y, row.alignmentHeight);
   steps.push(Blockly.BlockSvg.JAGGED_TEETH);
   highlightSteps.push('h 8');
   var remainder = row.height - Blockly.BlockSvg.JAGGED_TEETH_HEIGHT;
@@ -1029,7 +1031,7 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
       fieldY += Blockly.BlockSvg.INLINE_PADDING_Y;
     }
     // TODO: Align inline field rows (left/right/centre).
-    cursor.x = this.renderFields_(input.fieldRow, fieldX, fieldY, input.alignmentHeight);
+    cursor.x = this.renderFields_(input.fieldRow, fieldX, fieldY, row.alignmentHeight);
     if (input.type != Blockly.DUMMY_INPUT) {
       cursor.x += input.renderWidth + Blockly.BlockSvg.SEP_SPACE_X;
     }
@@ -1085,7 +1087,7 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
             (cursor.y + yStart + 0.5));
         highlightInlineSteps.push('v', input.renderHeight + 1);
         highlightInlineSteps.push('h', Blockly.BlockSvg.TAB_WIDTH - 2 -
-                                       input.renderWidth);
+                                        input.renderWidth);
         // Short highlight glint at bottom of tab.
         //SHAPE: Hardcoded values because of the hardcoded SVG paths
         highlightInlineSteps.push('M',
@@ -1152,7 +1154,7 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
       fieldX += fieldRightX / 2;
     }
   }
-  this.renderFields_(input.fieldRow, fieldX, fieldY, input.alignmentHeight);
+  this.renderFields_(input.fieldRow, fieldX, fieldY, row.alignmentHeight);
 
   //SHAPE: Figure out where the "puzzle" piece of the inner block is vertically positioned.
   //Done because the "parent" block needs a hole in it that has a "puzzle" piece to the left
@@ -1168,8 +1170,10 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
   steps.push(Blockly.BlockSvg.TAB_PATH_DOWN);
   var v = row.height - Blockly.BlockSvg.TAB_HEIGHT - topVerticalLine;
   steps.push('v', v);
+
   if (this.RTL) {
     // Highlight around back of tab.
+      highlightSteps.push('v', topVerticalLine);
     highlightSteps.push(Blockly.BlockSvg.TAB_PATH_DOWN_HIGHLIGHT_RTL);
     highlightSteps.push('v', v + 0.5);
   } else {
@@ -1222,7 +1226,7 @@ Blockly.BlockSvg.prototype.renderDummyInput_ = function(pathObject, row,
       fieldX += fieldRightX / 2;
     }
   }
-  this.renderFields_(input.fieldRow, fieldX, fieldY, input.alignmentHeight);
+  this.renderFields_(input.fieldRow, fieldX, fieldY, row.alignmentHeight);
   steps.push('v', row.height);
   if (this.RTL) {
     highlightSteps.push('v', row.height - 1);
@@ -1269,7 +1273,7 @@ Blockly.BlockSvg.prototype.renderStatementInput_ = function(pathObject, row,
       fieldX += fieldRightX / 2;
     }
   }
-  this.renderFields_(input.fieldRow, fieldX, fieldY, input.alignmentHeight);
+  this.renderFields_(input.fieldRow, fieldX, fieldY, row.alignmentHeight);
   cursor.x = inputRows.statementEdge + Blockly.BlockSvg.NOTCH_WIDTH;
   steps.push('H', cursor.x);
   steps.push(Blockly.BlockSvg.INNER_TOP_LEFT_CORNER);

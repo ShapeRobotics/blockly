@@ -554,7 +554,7 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
       return;
   }
 
-   //Get the dropdown's child, which contains a list with all the options
+  //Get the dropdown's child, which contains a list with all the options
   var mainChild = widgetDiv.children;
   if (mainChild.length > 0) {
       mainChild = mainChild[0];
@@ -563,25 +563,25 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
       return;
   }
 
-   //The following 30 or lines generate two lists for the active and recent modules.
+  //The following 30 or lines generate two lists for the active and recent modules.
   //Those lists contain ALL active/recent modules as strings. Makes for easier search later.
   var listOfActiveModules = [];
   var listOfRecentModules = [];
 
-   //TODO: As new module types show up, add them in this list
+  //TODO: As new module types show up, add them in this list
   var listOfModuleTypes = ["Dongle", "Joint", "Spin", "Face"];
 
-   for (key in listOfModuleTypes) {
+  for (key in listOfModuleTypes) {
     moduleType = listOfModuleTypes[key];
 
-     //Go through all the active modules of type "moduleType" and add them to the "global" list above
+    //Go through all the active modules of type "moduleType" and add them to the "global" list above
     if (moduleType in activeIDsDict) {
       for (activeModule in activeIDsDict[moduleType]) {
         listOfActiveModules.push(activeIDsDict[moduleType][activeModule][0]);
       }
     }
 
-     //Do the same for the recent modules
+    //Do the same for the recent modules
     if (moduleType in recentIDsDict) {
       for (recentModule in recentIDsDict[moduleType]) {
         listOfRecentModules.push(recentIDsDict[moduleType][recentModule][0]);
@@ -589,7 +589,7 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
     }
   }
 
-   //Go through all options in the dropdown
+  //Go through all options in the dropdown
   for (child in mainChild.children) {
     child = mainChild.children[child];
     var innerText = child.innerText;
@@ -597,7 +597,7 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
         //Remove the last character (a new line) and do an uppercase for the Face module
         innerText = innerText.substring(0, innerText.length - 1).toUpperCase();
 
-         //Search in the active and recent lists. If the option is inside the recent list, but not in the active list, grey it out.
+        //Search in the active and recent lists. If the option is inside the recent list, but not in the active list, grey it out.
         //Otherwise, un-grey it out.
         if (!(listOfActiveModules.includes(innerText)) &&
             (listOfRecentModules.includes(innerText))) {
@@ -631,16 +631,15 @@ Blockly.FieldDropdown.validateOptions_ = function(options) {
   var foundError = false;
   for (var i = 0; i < options.length; ++i) {
     var tuple = options[i];
-    if (!Array.isArray(options)) {
+    if (typeof tuple == 'string') {
+      tuple = [tuple, tuple];
+      options[i] = tuple;
+    }
+    if (!Array.isArray(tuple)) {
       foundError = true;
       console.error(
           'Invalid option[' + i + ']: Each FieldDropdown option must be an ' +
           'array. Found: ', tuple);
-    } else if (typeof tuple[1] != 'string') {
-      foundError = true;
-      console.error(
-          'Invalid option[' + i + ']: Each FieldDropdown option id must be ' +
-          'a string. Found ' + tuple[1] + ' in: ', tuple);
     } else if ((typeof tuple[0] != 'string') &&
                (typeof tuple[0].src != 'string')) {
       foundError = true;
@@ -648,7 +647,16 @@ Blockly.FieldDropdown.validateOptions_ = function(options) {
           'Invalid option[' + i + ']: Each FieldDropdown option must have a ' +
           'string label or image description. Found' + tuple[0] + ' in: ',
           tuple);
-    }
+    } else if (tuple.length == 1) {
+      tuple.push(tuple[0]);
+      options[i] = tuple;
+    }    
+    if (typeof tuple[1] != 'string') {
+      foundError = true;
+      console.error(
+          'Invalid option[' + i + ']: Each FieldDropdown option id must be ' +
+          'a string. Found ' + tuple[1] + ' in: ', tuple);
+    } 
   }
   if (foundError) {
     throw TypeError('Found invalid FieldDropdown options.');

@@ -158,6 +158,11 @@ Blockly.RenderedConnection.prototype.setOffsetInBlock = function(x, y) {
   this.offsetInBlock_.y = y;
 };
 
+Blockly.RenderedConnection.prototype.addHighlightMargin = function(top, bottom) {
+  this.topMargin = top;
+  this.bottomMargin = bottom;
+};
+
 /**
  * Registers the margins of a block, so the highlight 
  * (yellow line around block when clickedo on) can also be aligned vertically.
