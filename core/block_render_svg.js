@@ -727,7 +727,8 @@ Blockly.BlockSvg.prototype.setPaths_ = function(pathObject) {
 
   pathString = pathObject.highlightSteps.join(' ') + '\n' +
       pathObject.highlightInlineSteps.join(' ');
-  this.svgPathLight_.setAttribute('d', pathString);
+  //SHAPE: We removed the highlight line around blocks.
+  // this.svgPathLight_.setAttribute('d', pathString);
   if (this.RTL) {
     // Mirror the block's path.
     this.svgPath_.setAttribute('transform', 'scale(-1 1)');
@@ -1039,6 +1040,11 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(pathObject, row, cursor,
     if (input.type == Blockly.INPUT_VALUE) {
       //SHAPE: Calculate the y-axis start of this inner block. This will align the inner block so it's centered.
       var yStart = (row.height - input.renderHeight) / 2;
+
+      //Empty connections should be pushed up by 2 pixels.
+      if (!input.connection.isConnected()) {
+        yStart = yStart - 2;
+      }
 
       inlineSteps.push('M', (cursor.x - Blockly.BlockSvg.SEP_SPACE_X) +
                        ',' + (cursor.y + yStart));

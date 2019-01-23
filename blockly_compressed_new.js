@@ -189,6 +189,7 @@ goog.SEAL_MODULE_EXPORTS = goog.DEBUG;
 goog.loadedModules_ = {};
 goog.DEPENDENCIES_ENABLED = !COMPILED && goog.ENABLE_DEBUG_LOADER;
 goog.TRANSPILE = "detect";
+goog.ASSUME_ES_MODULES_TRANSPILED = !1;
 goog.TRANSPILE_TO_LANGUAGE = "";
 goog.TRANSPILER = "transpile.js";
 goog.hasBadLetScoping = null;
@@ -928,14 +929,17 @@ goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_ = "goog_defineClass_legacy_unsealable";
     }, goog.inherits(goog.TranspiledDependency, goog.TransformedDependency),
     goog.TranspiledDependency.prototype.transform = function(a) {
         return this.transpiler.transpile(a, this.getPathName())
+    }, goog.PreTranspiledEs6ModuleDependency = function(a, b, c, d, e) {
+        goog.TransformedDependency.call(this, a, b, c, d, e)
+    }, goog.inherits(goog.PreTranspiledEs6ModuleDependency, goog.TransformedDependency), goog.PreTranspiledEs6ModuleDependency.prototype.transform = function(a) {
+        return a
     }, goog.GoogModuleDependency = function(a, b, c, d, e, f, g) {
         goog.TransformedDependency.call(this, a, b, c, d, e);
         this.needsTranspile_ = f;
         this.transpiler_ = g
     }, goog.inherits(goog.GoogModuleDependency, goog.TransformedDependency), goog.GoogModuleDependency.prototype.transform = function(a) {
         this.needsTranspile_ && (a = this.transpiler_.transpile(a, this.getPathName()));
-        return goog.LOAD_MODULE_USING_EVAL && goog.isDef(goog.global.JSON) ?
-            "goog.loadModule(" + goog.global.JSON.stringify(a + "\n//# sourceURL=" + this.path + "\n") + ");" : 'goog.loadModule(function(exports) {"use strict";' + a + "\n;return exports});\n//# sourceURL=" + this.path + "\n"
+        return goog.LOAD_MODULE_USING_EVAL && goog.isDef(goog.global.JSON) ? "goog.loadModule(" + goog.global.JSON.stringify(a + "\n//# sourceURL=" + this.path + "\n") + ");" : 'goog.loadModule(function(exports) {"use strict";' + a + "\n;return exports});\n//# sourceURL=" + this.path + "\n"
     }, goog.DebugLoader_.IS_OLD_IE_ = !(goog.global.atob || !goog.global.document || !goog.global.document.all), goog.DebugLoader_.prototype.addDependency = function(a, b, c, d) {
         b = b || [];
         a = a.replace(/\\/g, "/");
@@ -943,17 +947,17 @@ goog.UNSEALABLE_CONSTRUCTOR_PROPERTY_ = "goog_defineClass_legacy_unsealable";
         d && "boolean" !== typeof d || (d = d ? {
             module: goog.ModuleType.GOOG
         } : {});
-        c = this.factory_.createDependency(e,
-            a, b, c, d, goog.transpiler_.needsTranspile(d.lang || "es3", d.module));
+        c = this.factory_.createDependency(e, a, b, c, d, goog.transpiler_.needsTranspile(d.lang || "es3", d.module));
         this.dependencies_[e] = c;
         for (c = 0; c < b.length; c++) this.idToPath_[b[c]] = e;
         this.idToPath_[a] = e
     }, goog.DependencyFactory = function(a) {
-        this.transpiler = a
+        this.transpiler =
+            a
     }, goog.DependencyFactory.prototype.createDependency = function(a, b, c, d, e, f) {
-        return e.module == goog.ModuleType.GOOG ? new goog.GoogModuleDependency(a, b, c, d, e, f, this.transpiler) : f ? new goog.TranspiledDependency(a, b, c, d, e, this.transpiler) : e.module == goog.ModuleType.ES6 ? new goog.Es6ModuleDependency(a, b,
-            c, d, e) : new goog.Dependency(a, b, c, d, e)
-    }, goog.debugLoader_ = new goog.DebugLoader_, goog.loadClosureDeps = function() {
+        return e.module == goog.ModuleType.GOOG ? new goog.GoogModuleDependency(a, b, c, d, e, f, this.transpiler) : f ? new goog.TranspiledDependency(a, b, c, d, e, this.transpiler) : e.module == goog.ModuleType.ES6 ? "never" == goog.TRANSPILE && goog.ASSUME_ES_MODULES_TRANSPILED ? new goog.PreTranspiledEs6ModuleDependency(a, b, c, d, e) : new goog.Es6ModuleDependency(a, b, c, d, e) : new goog.Dependency(a, b, c, d, e)
+    }, goog.debugLoader_ = new goog.DebugLoader_, goog.loadClosureDeps =
+    function() {
         goog.debugLoader_.loadClosureDeps()
     }, goog.setDependencyFactory = function(a) {
         goog.debugLoader_.setDependencyFactory(a)
@@ -1808,20 +1812,16 @@ goog.color.normalizeHex = function(a) {
 };
 goog.color.hexToRgb = function(a) {
     a = goog.color.normalizeHex(a);
-    var b = parseInt(a.substr(1, 2), 16),
-        c = parseInt(a.substr(3, 2), 16);
-    a = parseInt(a.substr(5, 2), 16);
-    return [b, c, a]
+    a = parseInt(a.substr(1), 16);
+    return [a >> 16, a >> 8 & 255, a & 255]
 };
 goog.color.rgbToHex = function(a, b, c) {
     a = Number(a);
     b = Number(b);
     c = Number(c);
     if (a != (a & 255) || b != (b & 255) || c != (c & 255)) throw Error('"(' + a + "," + b + "," + c + '") is not a valid RGB color');
-    a = goog.color.prependZeroIfNecessaryHelper(a.toString(16));
-    b = goog.color.prependZeroIfNecessaryHelper(b.toString(16));
-    c = goog.color.prependZeroIfNecessaryHelper(c.toString(16));
-    return "#" + a + b + c
+    b = a << 16 | b << 8 | c;
+    return 16 > a ? "#" + (16777216 | b).toString(16).substr(1) : "#" + b.toString(16)
 };
 goog.color.rgbArrayToHex = function(a) {
     return goog.color.rgbToHex(a[0], a[1], a[2])
@@ -1863,10 +1863,6 @@ goog.color.hslArrayToRgb = function(a) {
 goog.color.validHexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 goog.color.isValidHexColor_ = function(a) {
     return goog.color.validHexColorRe_.test(a)
-};
-goog.color.normalizedHexColorRe_ = /^#[0-9a-f]{6}$/;
-goog.color.isNormalizedHexColor_ = function(a) {
-    return goog.color.normalizedHexColorRe_.test(a)
 };
 goog.color.rgbColorRe_ = /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
 goog.color.isValidRgbColor_ = function(a) {
@@ -2608,16 +2604,16 @@ goog.labs.userAgent.browser.matchEdge_ = function() {
     return goog.labs.userAgent.util.matchUserAgent("Edge")
 };
 goog.labs.userAgent.browser.matchFirefox_ = function() {
-    return goog.labs.userAgent.util.matchUserAgent("Firefox")
+    return goog.labs.userAgent.util.matchUserAgent("Firefox") || goog.labs.userAgent.util.matchUserAgent("FxiOS")
 };
 goog.labs.userAgent.browser.matchSafari_ = function() {
-    return goog.labs.userAgent.util.matchUserAgent("Safari") && !(goog.labs.userAgent.browser.matchChrome_() || goog.labs.userAgent.browser.matchCoast_() || goog.labs.userAgent.browser.matchOpera_() || goog.labs.userAgent.browser.matchEdge_() || goog.labs.userAgent.browser.isSilk() || goog.labs.userAgent.util.matchUserAgent("Android"))
+    return goog.labs.userAgent.util.matchUserAgent("Safari") && !(goog.labs.userAgent.browser.matchChrome_() || goog.labs.userAgent.browser.matchCoast_() || goog.labs.userAgent.browser.matchOpera_() || goog.labs.userAgent.browser.matchEdge_() || goog.labs.userAgent.browser.matchFirefox_() || goog.labs.userAgent.browser.isSilk() || goog.labs.userAgent.util.matchUserAgent("Android"))
 };
 goog.labs.userAgent.browser.matchCoast_ = function() {
     return goog.labs.userAgent.util.matchUserAgent("Coast")
 };
 goog.labs.userAgent.browser.matchIosWebview_ = function() {
-    return (goog.labs.userAgent.util.matchUserAgent("iPad") || goog.labs.userAgent.util.matchUserAgent("iPhone")) && !goog.labs.userAgent.browser.matchSafari_() && !goog.labs.userAgent.browser.matchChrome_() && !goog.labs.userAgent.browser.matchCoast_() && goog.labs.userAgent.util.matchUserAgent("AppleWebKit")
+    return (goog.labs.userAgent.util.matchUserAgent("iPad") || goog.labs.userAgent.util.matchUserAgent("iPhone")) && !goog.labs.userAgent.browser.matchSafari_() && !goog.labs.userAgent.browser.matchChrome_() && !goog.labs.userAgent.browser.matchCoast_() && !goog.labs.userAgent.browser.matchFirefox_() && goog.labs.userAgent.util.matchUserAgent("AppleWebKit")
 };
 goog.labs.userAgent.browser.matchChrome_ = function() {
     return (goog.labs.userAgent.util.matchUserAgent("Chrome") || goog.labs.userAgent.util.matchUserAgent("CriOS")) && !goog.labs.userAgent.browser.matchEdge_()
@@ -2995,6 +2991,7 @@ goog.debug.exposeArray = function(a) {
 };
 goog.debug.normalizeErrorObject = function(a) {
     var b = goog.getObjectByName("window.location.href");
+    null == a && (a = 'Unknown Error of type "null/undefined"');
     if (goog.isString(a)) return {
         message: a,
         name: "Unknown error",
@@ -3013,13 +3010,14 @@ goog.debug.normalizeErrorObject = function(a) {
     } catch (f) {
         e = "Not available", c = !0
     }
-    return !c && a.lineNumber && a.fileName && a.stack && a.message && a.name ? a : {
-        message: a.message || "Not available",
-        name: a.name || "UnknownError",
-        lineNumber: d,
-        fileName: e,
-        stack: a.stack || "Not available"
-    }
+    return !c && a.lineNumber && a.fileName &&
+        a.stack && a.message && a.name ? a : (b = a.message, null == b && (b = a.constructor && a.constructor instanceof Function ? 'Unknown Error of type "' + (a.constructor.name ? a.constructor.name : goog.debug.getFunctionName(a.constructor)) + '"' : "Unknown Error of unknown type"), {
+            message: b,
+            name: a.name || "UnknownError",
+            lineNumber: d,
+            fileName: e,
+            stack: a.stack || "Not available"
+        })
 };
 goog.debug.enhanceError = function(a, b) {
     if (a instanceof Error) var c = a;
@@ -3118,17 +3116,13 @@ goog.debug.getStacktraceHelper_ = function(a, b) {
     } else a ? c.push("[...long stack...]") : c.push("[end]");
     return c.join("")
 };
-goog.debug.setFunctionResolver = function(a) {
-    goog.debug.fnNameResolver_ = a
-};
 goog.debug.getFunctionName = function(a) {
     if (goog.debug.fnNameCache_[a]) return goog.debug.fnNameCache_[a];
-    if (goog.debug.fnNameResolver_) {
-        var b = goog.debug.fnNameResolver_(a);
-        if (b) return goog.debug.fnNameCache_[a] = b
-    }
     a = String(a);
-    goog.debug.fnNameCache_[a] || (b = /function\s+([^\(]+)/m.exec(a), goog.debug.fnNameCache_[a] = b ? b[1] : "[Anonymous]");
+    if (!goog.debug.fnNameCache_[a]) {
+        var b = /function\s+([^\(]+)/m.exec(a);
+        goog.debug.fnNameCache_[a] = b ? b[1] : "[Anonymous]"
+    }
     return goog.debug.fnNameCache_[a]
 };
 goog.debug.makeWhitespaceVisible = function(a) {
@@ -3457,6 +3451,16 @@ goog.events.PointerAsMouseEventType = {
     MOUSEOUT: goog.events.PointerFallbackEventType.POINTEROUT,
     MOUSEENTER: goog.events.PointerFallbackEventType.POINTERENTER,
     MOUSELEAVE: goog.events.PointerFallbackEventType.POINTERLEAVE
+};
+goog.events.MouseAsMouseEventType = {
+    MOUSEDOWN: goog.events.EventType.MOUSEDOWN,
+    MOUSEUP: goog.events.EventType.MOUSEUP,
+    MOUSECANCEL: goog.events.EventType.MOUSECANCEL,
+    MOUSEMOVE: goog.events.EventType.MOUSEMOVE,
+    MOUSEOVER: goog.events.EventType.MOUSEOVER,
+    MOUSEOUT: goog.events.EventType.MOUSEOUT,
+    MOUSEENTER: goog.events.EventType.MOUSEENTER,
+    MOUSELEAVE: goog.events.EventType.MOUSELEAVE
 };
 goog.events.PointerAsTouchEventType = {
     TOUCHCANCEL: goog.events.PointerTouchFallbackEventType.POINTERCANCEL,
@@ -4050,6 +4054,12 @@ goog.dom.asserts.assertIsHTMLVideoElement = function(a) {
 goog.dom.asserts.assertIsHTMLInputElement = function(a) {
     return goog.dom.asserts.assertIsElementType_(a, "HTMLInputElement")
 };
+goog.dom.asserts.assertIsHTMLTextAreaElement = function(a) {
+    return goog.dom.asserts.assertIsElementType_(a, "HTMLTextAreaElement")
+};
+goog.dom.asserts.assertIsHTMLCanvasElement = function(a) {
+    return goog.dom.asserts.assertIsElementType_(a, "HTMLCanvasElement")
+};
 goog.dom.asserts.assertIsHTMLEmbedElement = function(a) {
     return goog.dom.asserts.assertIsElementType_(a, "HTMLEmbedElement")
 };
@@ -4513,7 +4523,7 @@ goog.html.TrustedResourceUrl.format = function(a, b) {
     return goog.html.TrustedResourceUrl.createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(d)
 };
 goog.html.TrustedResourceUrl.FORMAT_MARKER_ = /%{(\w+)}/g;
-goog.html.TrustedResourceUrl.BASE_URL_ = /^((https:)?\/\/[0-9a-z.:[\]-]+\/|\/[^/\\]|[^:/\\]+\/|[^:/\\]*[?#]|about:blank#)/i;
+goog.html.TrustedResourceUrl.BASE_URL_ = /^((https:)?\/\/[0-9a-z.:[\]-]+\/|\/[^/\\]|[^:/\\%]+\/|[^:/\\%]*[?#]|about:blank#)/i;
 goog.html.TrustedResourceUrl.URL_PARAM_PARSER_ = /^([^?#]*)(\?[^#]*)?(#[\s\S]*)?/;
 goog.html.TrustedResourceUrl.formatWithParams = function(a, b, c, d) {
     return goog.html.TrustedResourceUrl.format(a, b).cloneWithParams(c, d)
@@ -4545,23 +4555,23 @@ goog.html.TrustedResourceUrl.stringifyParams_ = function(a, b, c) {
     return b
 };
 goog.html.SafeUrl = function() {
-    this.privateDoNotAccessOrElseSafeHtmlWrappedValue_ = "";
+    this.privateDoNotAccessOrElseSafeUrlWrappedValue_ = "";
     this.SAFE_URL_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = goog.html.SafeUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_
 };
 goog.html.SafeUrl.INNOCUOUS_STRING = "about:invalid#zClosurez";
 goog.html.SafeUrl.prototype.implementsGoogStringTypedString = !0;
 goog.html.SafeUrl.prototype.getTypedStringValue = function() {
-    return this.privateDoNotAccessOrElseSafeHtmlWrappedValue_
+    return this.privateDoNotAccessOrElseSafeUrlWrappedValue_
 };
 goog.html.SafeUrl.prototype.implementsGoogI18nBidiDirectionalString = !0;
 goog.html.SafeUrl.prototype.getDirection = function() {
     return goog.i18n.bidi.Dir.LTR
 };
 goog.DEBUG && (goog.html.SafeUrl.prototype.toString = function() {
-    return "SafeUrl{" + this.privateDoNotAccessOrElseSafeHtmlWrappedValue_ + "}"
+    return "SafeUrl{" + this.privateDoNotAccessOrElseSafeUrlWrappedValue_ + "}"
 });
 goog.html.SafeUrl.unwrap = function(a) {
-    if (a instanceof goog.html.SafeUrl && a.constructor === goog.html.SafeUrl && a.SAFE_URL_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ === goog.html.SafeUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) return a.privateDoNotAccessOrElseSafeHtmlWrappedValue_;
+    if (a instanceof goog.html.SafeUrl && a.constructor === goog.html.SafeUrl && a.SAFE_URL_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ === goog.html.SafeUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) return a.privateDoNotAccessOrElseSafeUrlWrappedValue_;
     goog.asserts.fail("expected object of type SafeUrl, got '" + a + "' of type " + goog.typeOf(a));
     return "type_error:SafeUrl"
 };
@@ -4647,7 +4657,7 @@ goog.html.SafeUrl.sanitizeAssertUnchanged = function(a) {
 goog.html.SafeUrl.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
 goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse = function(a) {
     var b = new goog.html.SafeUrl;
-    b.privateDoNotAccessOrElseSafeHtmlWrappedValue_ = a;
+    b.privateDoNotAccessOrElseSafeUrlWrappedValue_ = a;
     return b
 };
 goog.html.SafeUrl.ABOUT_BLANK = goog.html.SafeUrl.createSafeUrlSecurityPrivateDoNotAccessOrElse("about:blank");
@@ -5167,6 +5177,16 @@ goog.dom.safe.replaceLocation = function(a, b) {
 goog.dom.safe.openInWindow = function(a, b, c, d, e) {
     a = a instanceof goog.html.SafeUrl ? a : goog.html.SafeUrl.sanitizeAssertUnchanged(a);
     return (b || window).open(goog.html.SafeUrl.unwrap(a), c ? goog.string.Const.unwrap(c) : "", d, e)
+};
+goog.dom.safe.createImageFromBlob = function(a) {
+    if (!/^image\/.*/g.test(a.type)) throw Error("goog.dom.safe.createImageFromBlob only accepts MIME type image/.*.");
+    var b = window.URL.createObjectURL(a);
+    a = new Image;
+    a.onload = function() {
+        window.URL.revokeObjectURL(b)
+    };
+    a.src = b;
+    return a
 };
 goog.html.uncheckedconversions = {};
 goog.html.uncheckedconversions.safeHtmlFromStringKnownToSatisfyTypeContract = function(a, b, c) {
@@ -7884,7 +7904,7 @@ goog.events.KeyEvent = function(a, b, c, d) {
 goog.inherits(goog.events.KeyEvent, goog.events.BrowserEvent);
 goog.ui.ComponentUtil = {};
 goog.ui.ComponentUtil.getMouseEventType = function(a) {
-    return a.pointerEventsEnabled() ? goog.events.PointerAsMouseEventType : goog.events.EventType
+    return a.pointerEventsEnabled() ? goog.events.PointerAsMouseEventType : goog.events.MouseAsMouseEventType
 };
 goog.dom.classlist = {};
 goog.dom.classlist.ALWAYS_USE_DOM_TOKEN_LIST = !1;
@@ -13841,6 +13861,14 @@ Blockly.RenderedConnection.prototype.setOffsetInBlock = function(a, b) {
     this.offsetInBlock_.x = a;
     this.offsetInBlock_.y = b
 };
+Blockly.RenderedConnection.prototype.addHighlightMargin = function(a, b) {
+    this.topMargin = a;
+    this.bottomMargin = b
+};
+Blockly.RenderedConnection.prototype.addHighlightMargin = function(a, b) {
+    this.topMargin = a;
+    this.bottomMargin = b
+};
 Blockly.RenderedConnection.prototype.tighten_ = function() {
     var a = this.targetConnection.x_ - this.x_,
         b = this.targetConnection.y_ - this.y_;
@@ -13857,14 +13885,13 @@ Blockly.RenderedConnection.prototype.closest = function(a, b) {
     return this.dbOpposite_.searchForClosest(this, a, b)
 };
 Blockly.RenderedConnection.prototype.highlight = function() {
-    var a = this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE ? "m 0,0 " + Blockly.BlockSvg.TAB_PATH_DOWN + " v 5" : "m -20,0 h 5 " + Blockly.BlockSvg.NOTCH_PATH_LEFT + " h 5";
+    var a = this.type == Blockly.INPUT_VALUE || this.type == Blockly.OUTPUT_VALUE ? this.topMargin && this.bottomMargin ? "m 0,0 v " + this.topMargin + " " + Blockly.BlockSvg.TAB_PATH_DOWN + " v " + this.bottomMargin : "m 0,0 " + Blockly.BlockSvg.TAB_PATH_DOWN + " v 7.5" : "m -20,0 h 5 " + Blockly.BlockSvg.NOTCH_PATH_LEFT + " h 5";
     var b = this.sourceBlock_.getRelativeToSurfaceXY();
     Blockly.Connection.highlightedPath_ = Blockly.utils.createSvgElement("path", {
-            "class": "blocklyHighlightedConnectionPath",
-            d: a,
-            transform: "translate(" + (this.x_ - b.x) + "," + (this.y_ - b.y) + ")" + (this.sourceBlock_.RTL ? " scale(-1 1)" : "")
-        },
-        this.sourceBlock_.getSvgRoot())
+        "class": "blocklyHighlightedConnectionPath",
+        d: a,
+        transform: "translate(" + (this.x_ - b.x) + "," + (this.y_ - b.y) + ")" + (this.sourceBlock_.RTL ? " scale(-1 1)" : "")
+    }, this.sourceBlock_.getSvgRoot())
 };
 Blockly.RenderedConnection.prototype.unhideAll = function() {
     this.setHidden(!1);
@@ -16817,7 +16844,7 @@ Blockly.Extensions.extensionParentTooltip_ = function() {
 };
 Blockly.Extensions.register("parent_tooltip_when_inline", Blockly.Extensions.extensionParentTooltip_);
 Blockly.Field = function(a, b) {
-    this.size_ = new goog.math.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
+    this.size_ = new goog.math.Size(0, 25);
     this.setValue(a);
     this.setValidator(b)
 };
@@ -16851,10 +16878,10 @@ Blockly.Field.prototype.init = function() {
             ry: 4,
             x: -Blockly.BlockSvg.SEP_SPACE_X / 2,
             y: 0,
-            height: 16
+            height: 25
         }, this.fieldGroup_, this.sourceBlock_.workspace), this.textElement_ = Blockly.utils.createSvgElement("text", {
             "class": "blocklyText",
-            y: this.size_.height - 11
+            y: this.size_.height - 7.5
         }, this.fieldGroup_), this.updateEditable(), this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_),
         this.mouseDownWrapper_ = Blockly.bindEventWithChecks_(this.fieldGroup_, "mousedown", this, this.onMouseDown_), this.render_())
 };
@@ -16909,7 +16936,10 @@ Blockly.Field.prototype.render_ = function() {
     this.visible_ ? (this.textElement_.textContent = this.getDisplayText_(), this.updateWidth()) : this.size_.width = 0
 };
 Blockly.Field.prototype.updateWidth = function() {
-    var a = Blockly.Field.getCachedWidth(this.textElement_);
+    var a = Blockly.Field.getCachedWidth(this.textElement_),
+        b = -1;
+    16 > a && (b = (16 - a) / 2, a = 16);
+    this.textElement_.setAttribute("x", b);
     this.borderRect_ && this.borderRect_.setAttribute("width", a + Blockly.BlockSvg.SEP_SPACE_X);
     this.size_.width = a
 };
@@ -16987,7 +17017,7 @@ Blockly.Field.prototype.referencesVariables = function() {
     return !1
 };
 Blockly.FieldLabel = function(a, b) {
-    this.size_ = new goog.math.Size(0, 17.5);
+    this.size_ = new goog.math.Size(0, 18);
     this.class_ = b;
     this.setValue(a);
     this.tooltip_ = ""
@@ -17001,7 +17031,7 @@ Blockly.FieldLabel.prototype.EDITABLE = !1;
 Blockly.FieldLabel.prototype.init = function() {
     this.textElement_ || (this.textElement_ = Blockly.utils.createSvgElement("text", {
         "class": "blocklyText",
-        y: this.size_.height - 5
+        y: this.size_.height - 2
     }, null), this.class_ && Blockly.utils.addClass(this.textElement_, this.class_), this.visible_ || (this.textElement_.style.display = "none"), this.sourceBlock_.getSvgRoot().appendChild(this.textElement_), this.textElement_.tooltip = this.tooltip_ ? this.tooltip_ : this.sourceBlock_, Blockly.Tooltip.bindMouseEvents(this.textElement_), this.render_())
 };
 Blockly.FieldLabel.prototype.dispose = function() {
@@ -18391,8 +18421,11 @@ Blockly.BlockSvg.PathObject = function() {
 };
 Blockly.BlockSvg.SEP_SPACE_X = 10;
 Blockly.BlockSvg.SEP_SPACE_Y = 10;
-Blockly.BlockSvg.INLINE_PADDING_Y = 7.5;
-Blockly.BlockSvg.MIN_BLOCK_Y = 30;
+Blockly.BlockSvg.INLINE_PADDING_Y = 5;
+Blockly.BlockSvg.MIN_BLOCK_Y = 25;
+Blockly.BlockSvg.Y_MARGIN_TOP_WITH_IMAGE = 15;
+Blockly.BlockSvg.Y_MARGIN_TOP = 5;
+Blockly.BlockSvg.ROW_SPACING = 5;
 Blockly.BlockSvg.TAB_HEIGHT = 22.5;
 Blockly.BlockSvg.TAB_WIDTH = 8;
 Blockly.BlockSvg.NOTCH_WIDTH = 30;
@@ -18440,19 +18473,24 @@ Blockly.BlockSvg.prototype.render = function(a) {
     for (var c = this.getIcons(), d = 0; d < c.length; d++) b = c[d].renderIcon(b);
     b += this.RTL ? Blockly.BlockSvg.SEP_SPACE_X : -Blockly.BlockSvg.SEP_SPACE_X;
     c = this.renderCompute_(b);
+    c = this.renderComputeSpacing_(c);
     this.renderDraw_(b, c);
     this.renderMoveConnections_();
     !1 !== a && ((a = this.getParent()) ? a.render(!0) : this.workspace.resizeContents());
     Blockly.Field.stopCache()
 };
-Blockly.BlockSvg.prototype.renderFields_ = function(a, b, c) {
-    c += Blockly.BlockSvg.INLINE_PADDING_Y;
+Blockly.BlockSvg.prototype.renderFields_ = function(a, b, c, d) {
     this.RTL && (b = -b);
-    for (var d = 0, e; e = a[d]; d++) {
-        var f = e.getSvgRoot();
-        f && (this.RTL ? (b -= e.renderSep + e.renderWidth, f.setAttribute("transform", "translate(" + b + "," + c + ")"), e.renderWidth && (b -= Blockly.BlockSvg.SEP_SPACE_X)) : (f.setAttribute("transform", "translate(" + (b + e.renderSep) + "," + c + ")"), e.renderWidth && (b += e.renderSep + e.renderWidth + Blockly.BlockSvg.SEP_SPACE_X)))
+    for (var e = 0, f; f = a[e]; e++) {
+        var g = f.getSvgRoot();
+        if (g) {
+            var h = c;
+            f.height_ ? f.height_ < d && (h += (d - f.height_) / 2) : f.size_.height && f.size_.height < d && (h += (d - f.size_.height) / 2);
+            this.RTL ? (b -= f.renderSep + f.renderWidth, g.setAttribute("transform", "translate(" + b + "," + h + ")"), f.renderWidth && (b -= Blockly.BlockSvg.SEP_SPACE_X)) : (g.setAttribute("transform", "translate(" + (b + f.renderSep) + "," + h + ")"), f.renderWidth && (b += f.renderSep + f.renderWidth + Blockly.BlockSvg.SEP_SPACE_X))
+        }
     }
-    return this.RTL ? -b : b
+    return this.RTL ?
+        -b : b
 };
 Blockly.BlockSvg.prototype.renderCompute_ = function(a) {
     var b = this.inputList,
@@ -18463,47 +18501,54 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(a) {
         if (m.isVisible()) {
             if (l && k && k != Blockly.NEXT_STATEMENT && m.type != Blockly.NEXT_STATEMENT) var p = c[c.length - 1];
             else k = m.type, p = [], p.type = l &&
-                m.type != Blockly.NEXT_STATEMENT ? Blockly.BlockSvg.INLINE : m.type, p.height = 0, c.push(p);
+                m.type != Blockly.NEXT_STATEMENT ? Blockly.BlockSvg.INLINE : m.type, p.height = 0, p.alignmentHeight = 0, c.push(p);
             p.push(m);
             m.renderHeight = Blockly.BlockSvg.MIN_BLOCK_Y;
+            m.alignmentHeight = Blockly.BlockSvg.MIN_BLOCK_Y;
             m.renderWidth = l && m.type == Blockly.INPUT_VALUE ? Blockly.BlockSvg.TAB_WIDTH + 1.25 * Blockly.BlockSvg.SEP_SPACE_X : 0;
             if (m.connection && m.connection.isConnected()) {
-                var q = m.connection.targetBlock().getHeightWidth();
-                m.renderHeight = Math.max(m.renderHeight, q.height);
-                m.renderWidth = Math.max(m.renderWidth, q.width)
+                var q = m.connection.targetBlock(),
+                    t = q.getHeightWidth();
+                m.renderHeight = Math.max(m.renderHeight, t.height);
+                m.alignmentHeight = Math.max(m.alignmentHeight,
+                    q.firstRowHeight);
+                m.renderWidth = Math.max(m.renderWidth, t.width);
+                p.hasInput = !0
             }
-            l || n != b.length - 1 ? !l && m.type == Blockly.INPUT_VALUE && b[n + 1] && b[n + 1].type ==
-                Blockly.NEXT_STATEMENT && m.renderHeight-- : m.renderHeight--;
+            l || n != b.length - 1 ? !l && m.type == Blockly.INPUT_VALUE && b[n + 1] && b[n + 1].type == Blockly.NEXT_STATEMENT && m.renderHeight-- : m.renderHeight--;
             p.height = Math.max(p.height, m.renderHeight);
+            p.alignmentHeight = Math.max(p.alignmentHeight, m.alignmentHeight);
             m.fieldWidth = 0;
             1 == c.length && (m.fieldWidth += this.RTL ? -a : a);
             q = !1;
-            for (var t = 0, r; r = m.fieldRow[t]; t++) {
+            t = 0;
+            for (var r; r = m.fieldRow[t]; t++) {
                 0 != t && (m.fieldWidth += Blockly.BlockSvg.SEP_SPACE_X);
                 var u = r.getSize();
                 r.renderWidth = u.width;
                 r.renderSep = q && r.EDITABLE ? Blockly.BlockSvg.SEP_SPACE_X : 0;
                 m.fieldWidth += r.renderWidth + r.renderSep;
                 p.height = Math.max(p.height, u.height);
-                q = r.EDITABLE
+                p.alignmentHeight = Math.max(p.alignmentHeight, u.height);
+                q = r.EDITABLE;
+                r.imageElement_ && (p.hasImage = !0)
             }
-            p.type != Blockly.BlockSvg.INLINE && (p.type == Blockly.NEXT_STATEMENT ?
-                (g = !0, e = Math.max(e, m.fieldWidth)) : (p.type == Blockly.INPUT_VALUE ? f = !0 : p.type == Blockly.DUMMY_INPUT && (h = !0), d = Math.max(d, m.fieldWidth)))
-        } for (a = 0; p = c[a]; a++)
-        if (p.thicker = !1, p.type == Blockly.BlockSvg.INLINE)
-            for (b = 0; m = p[b]; b++)
-                if (m.type == Blockly.INPUT_VALUE) {
-                    p.height += 2 * Blockly.BlockSvg.INLINE_PADDING_Y;
-                    p.thicker = !0;
-                    break
-                } c.statementEdge = 2 * Blockly.BlockSvg.SEP_SPACE_X + e;
+            p.type != Blockly.BlockSvg.INLINE && (p.type == Blockly.NEXT_STATEMENT ? (g = !0, e = Math.max(e, m.fieldWidth)) : (p.type == Blockly.INPUT_VALUE ? f = !0 : p.type == Blockly.DUMMY_INPUT && (h = !0), d = Math.max(d, m.fieldWidth)))
+        } for (a = 0; p = c[a]; a++) p.thicker = !1;
+    c.statementEdge = 2 * Blockly.BlockSvg.SEP_SPACE_X +
+        e;
     g && (c.rightEdge = Math.max(c.rightEdge, c.statementEdge + Blockly.BlockSvg.NOTCH_WIDTH));
-    f ? c.rightEdge = Math.max(c.rightEdge, d + 2 * Blockly.BlockSvg.SEP_SPACE_X +
-        Blockly.BlockSvg.TAB_WIDTH) : h && (c.rightEdge = Math.max(c.rightEdge, d + 2 * Blockly.BlockSvg.SEP_SPACE_X));
+    f ? c.rightEdge = Math.max(c.rightEdge, d + 2 * Blockly.BlockSvg.SEP_SPACE_X + Blockly.BlockSvg.TAB_WIDTH) : h && (c.rightEdge = Math.max(c.rightEdge, d + 2 * Blockly.BlockSvg.SEP_SPACE_X));
     c.hasValue = f;
     c.hasStatement = g;
     c.hasDummy = h;
     return c
+};
+Blockly.BlockSvg.prototype.renderComputeSpacing_ = function(a) {
+    for (var b = 0, c; c = a[b]; b++)
+        if (c.type != Blockly.INPUT_VALUE && c.type != Blockly.NEXT_STATEMENT || !c.hasInput) 0 == b && (c.hasImage ? (c.height += Blockly.BlockSvg.Y_MARGIN_TOP_WITH_IMAGE, c.alignmentHeight += Blockly.BlockSvg.Y_MARGIN_TOP_WITH_IMAGE) : (c.height += Blockly.BlockSvg.Y_MARGIN_TOP, c.alignmentHeight += Blockly.BlockSvg.Y_MARGIN_TOP)), b + 1 == a.length ? c.hasImage ? (c.height += Blockly.BlockSvg.Y_MARGIN_TOP_WITH_IMAGE, c.alignmentHeight += Blockly.BlockSvg.Y_MARGIN_TOP_WITH_IMAGE) :
+            (c.height += Blockly.BlockSvg.Y_MARGIN_TOP, c.alignmentHeight += Blockly.BlockSvg.Y_MARGIN_TOP) : (c.height += Blockly.BlockSvg.ROW_SPACING, c.alignmentHeight += Blockly.BlockSvg.ROW_SPACING);
+    return a
 };
 Blockly.BlockSvg.prototype.renderDraw_ = function(a, b) {
     this.startHat_ = !1;
@@ -18522,15 +18567,15 @@ Blockly.BlockSvg.prototype.renderDraw_ = function(a, b) {
     this.renderDrawTop_(c, b.rightEdge);
     var d = this.renderDrawRight_(c, b, a);
     this.renderDrawBottom_(c, d);
-    this.renderDrawLeft_(c);
+    this.renderDrawLeft_(c, b);
     this.setPaths_(c)
 };
 Blockly.BlockSvg.prototype.setPaths_ = function(a) {
     var b = a.steps.join(" ") + "\n" + a.inlineSteps.join(" ");
     this.svgPath_.setAttribute("d", b);
     this.svgPathDark_.setAttribute("d", b);
-    b = a.highlightSteps.join(" ") + "\n" + a.highlightInlineSteps.join(" ");
-    this.svgPathLight_.setAttribute("d", b);
+    a.highlightSteps.join(" ");
+    a.highlightInlineSteps.join(" ");
     this.RTL && (this.svgPath_.setAttribute("transform", "scale(-1 1)"), this.svgPathLight_.setAttribute("transform", "scale(-1 1)"), this.svgPathDark_.setAttribute("transform", "translate(1,1) scale(-1 1)"))
 };
 Blockly.BlockSvg.prototype.renderMoveConnections_ = function() {
@@ -18570,20 +18615,28 @@ Blockly.BlockSvg.prototype.renderDrawBottom_ = function(a, b) {
         d = a.highlightSteps;
     this.height += b + 1;
     this.nextConnection && (c.push("H", Blockly.BlockSvg.NOTCH_WIDTH + (this.RTL ? .5 : -.5) + " " + Blockly.BlockSvg.NOTCH_PATH_RIGHT), this.nextConnection.setOffsetInBlock(this.RTL ? -Blockly.BlockSvg.NOTCH_WIDTH : Blockly.BlockSvg.NOTCH_WIDTH, b + 1), this.height += 4);
-    this.squareBottomLeftCorner_ ? (c.push("H 0"), this.RTL || d.push("M", "0.5," + (b - .5))) : (c.push("H", Blockly.BlockSvg.CORNER_RADIUS), c.push("a", Blockly.BlockSvg.CORNER_RADIUS +
+    this.squareBottomLeftCorner_ ? (c.push("H 0"), this.RTL || d.push("M", "0.5," + (b + .5))) : (c.push("H", Blockly.BlockSvg.CORNER_RADIUS), c.push("a", Blockly.BlockSvg.CORNER_RADIUS +
         "," + Blockly.BlockSvg.CORNER_RADIUS + " 0 0,1 -" + Blockly.BlockSvg.CORNER_RADIUS + ",-" + Blockly.BlockSvg.CORNER_RADIUS), this.RTL || (d.push("M", Blockly.BlockSvg.DISTANCE_45_INSIDE + "," + (b - Blockly.BlockSvg.DISTANCE_45_INSIDE)), d.push("A", Blockly.BlockSvg.CORNER_RADIUS - .5 + "," + (Blockly.BlockSvg.CORNER_RADIUS - .5) + " 0 0,1 0.5," + (b - Blockly.BlockSvg.CORNER_RADIUS))))
 };
-Blockly.BlockSvg.prototype.renderDrawLeft_ = function(a) {
-    var b = a.steps;
-    a = a.highlightSteps;
-    this.outputConnection ? (this.outputConnection.setOffsetInBlock(0, 0), b.push("V", Blockly.BlockSvg.TAB_HEIGHT), b.push("c 0,-10 -" + Blockly.BlockSvg.TAB_WIDTH + ",8 -" + Blockly.BlockSvg.TAB_WIDTH + ",-7.5 s " + Blockly.BlockSvg.TAB_WIDTH + ",2.5 " + Blockly.BlockSvg.TAB_WIDTH + ",-7.5"), this.RTL ? (a.push("M", -.25 * Blockly.BlockSvg.TAB_WIDTH + ",8.4"), a.push("l", -.45 * Blockly.BlockSvg.TAB_WIDTH + ",-2.1")) : (a.push("V", Blockly.BlockSvg.TAB_HEIGHT -
-        1.5), a.push("m", -.92 * Blockly.BlockSvg.TAB_WIDTH + ",-0.5 q " + -.19 * Blockly.BlockSvg.TAB_WIDTH + ",-5.5 0,-11"), a.push("m", .92 * Blockly.BlockSvg.TAB_WIDTH + ",1 V 0.5 H 1")), this.width += Blockly.BlockSvg.TAB_WIDTH) : this.RTL || (this.squareTopLeftCorner_ ? a.push("V", .5) : a.push("V", Blockly.BlockSvg.CORNER_RADIUS));
-    b.push("z")
+Blockly.BlockSvg.prototype.renderDrawLeft_ = function(a, b) {
+    var c = a.steps,
+        d = a.highlightSteps;
+    this.firstRowHeight = b[0].height;
+    if (this.outputConnection) {
+        var e = (this.firstRowHeight - 15) / 2 + 15;
+        this.outputConnection.setOffsetInBlock(0, 0);
+        c.push("V", e);
+        c.push("c 0,-10 -" + Blockly.BlockSvg.TAB_WIDTH + ",8 -" + Blockly.BlockSvg.TAB_WIDTH + ",-7.5 s " + Blockly.BlockSvg.TAB_WIDTH + ",2.5 " + Blockly.BlockSvg.TAB_WIDTH + ",-7.5");
+        this.RTL ? (d.push("M", -.25 * Blockly.BlockSvg.TAB_WIDTH + ",8.4"), d.push("l", -.45 * Blockly.BlockSvg.TAB_WIDTH +
+            ",-2.1")) : (d.push("V", e - 1.5), d.push("m", -.92 * Blockly.BlockSvg.TAB_WIDTH + ",-0.5 q " + -.19 * Blockly.BlockSvg.TAB_WIDTH + ",-5.5 0,-11"), d.push("m", .92 * Blockly.BlockSvg.TAB_WIDTH + ",1 V 0.5 H 1"));
+        this.width += Blockly.BlockSvg.TAB_WIDTH
+    } else this.RTL || (this.squareTopLeftCorner_ ? d.push("V", .5) : d.push("V", Blockly.BlockSvg.CORNER_RADIUS));
+    c.push("z")
 };
 Blockly.BlockSvg.prototype.renderJaggedEdge_ = function(a, b, c) {
     var d = a.steps;
     a = a.highlightSteps;
-    this.renderFields_(b[0].fieldRow, c.x, c.y);
+    this.renderFields_(b[0].fieldRow, c.x, c.y, b.alignmentHeight);
     d.push(Blockly.BlockSvg.JAGGED_TEETH);
     a.push("h 8");
     b = b.height - Blockly.BlockSvg.JAGGED_TEETH_HEIGHT;
@@ -18600,17 +18653,34 @@ Blockly.BlockSvg.prototype.renderInlineRow_ = function(a, b, c, d, e) {
         var n = c.x,
             m = c.y;
         b.thicker && (m += Blockly.BlockSvg.INLINE_PADDING_Y);
-        c.x = this.renderFields_(l.fieldRow, n, m);
+        c.x = this.renderFields_(l.fieldRow, n, m, b.alignmentHeight);
         l.type != Blockly.DUMMY_INPUT && (c.x += l.renderWidth + Blockly.BlockSvg.SEP_SPACE_X);
-        l.type == Blockly.INPUT_VALUE && (f.push("M", c.x - Blockly.BlockSvg.SEP_SPACE_X + "," + (c.y + Blockly.BlockSvg.INLINE_PADDING_Y)), f.push("h", Blockly.BlockSvg.TAB_WIDTH -
-                2 - l.renderWidth), f.push(Blockly.BlockSvg.TAB_PATH_DOWN), f.push("v", l.renderHeight + 1 - Blockly.BlockSvg.TAB_HEIGHT), f.push("h", l.renderWidth + 2 - Blockly.BlockSvg.TAB_WIDTH), f.push("z"), this.RTL ? (g.push("M", c.x - Blockly.BlockSvg.SEP_SPACE_X - 2.5 + Blockly.BlockSvg.TAB_WIDTH - l.renderWidth + "," + (c.y + Blockly.BlockSvg.INLINE_PADDING_Y + .5)), g.push(Blockly.BlockSvg.TAB_PATH_DOWN_HIGHLIGHT_RTL), g.push("v", l.renderHeight - Blockly.BlockSvg.TAB_HEIGHT + 2.5), g.push("h", l.renderWidth - Blockly.BlockSvg.TAB_WIDTH + 2)) : (g.push("M",
-                c.x - Blockly.BlockSvg.SEP_SPACE_X + .5 + "," + (c.y + Blockly.BlockSvg.INLINE_PADDING_Y + .5)), g.push("v", l.renderHeight + 1), g.push("h", Blockly.BlockSvg.TAB_WIDTH - 2 - l.renderWidth), g.push("M", c.x - l.renderWidth - Blockly.BlockSvg.SEP_SPACE_X + .9 + "," + (c.y + Blockly.BlockSvg.INLINE_PADDING_Y + Blockly.BlockSvg.TAB_HEIGHT - .7)), g.push("l", .46 * Blockly.BlockSvg.TAB_WIDTH + ",-2.1")), d.x = this.RTL ? -c.x - Blockly.BlockSvg.TAB_WIDTH + Blockly.BlockSvg.SEP_SPACE_X + l.renderWidth + 1 : c.x + Blockly.BlockSvg.TAB_WIDTH - Blockly.BlockSvg.SEP_SPACE_X -
-            l.renderWidth - 1, d.y = c.y + Blockly.BlockSvg.INLINE_PADDING_Y + 1, l.connection.setOffsetInBlock(d.x, d.y))
+        if (l.type == Blockly.INPUT_VALUE) {
+            n = (b.height - l.renderHeight) / 2;
+            f.push("M", c.x - Blockly.BlockSvg.SEP_SPACE_X + "," + (c.y + n));
+            f.push("h", Blockly.BlockSvg.TAB_WIDTH -
+                2 - l.renderWidth);
+            m = 1 + (l.alignmentHeight - 15) / 2 - 7.5;
+            0 < m && f.push("v", m);
+            f.push(Blockly.BlockSvg.TAB_PATH_DOWN);
+            var p = 1 + (l.renderHeight - 15 - m - 7.5);
+            l.renderHeight == l.alignmentHeight && (p = m + 7.5);
+            f.push("v", p);
+            f.push("h", l.renderWidth + 2 - Blockly.BlockSvg.TAB_WIDTH);
+            f.push("z");
+            this.RTL ? (g.push("M", c.x - Blockly.BlockSvg.SEP_SPACE_X - 2.5 + Blockly.BlockSvg.TAB_WIDTH - l.renderWidth + "," + (c.y + n + .5)), g.push(Blockly.BlockSvg.TAB_PATH_DOWN_HIGHLIGHT_RTL), g.push("v", l.renderHeight - p + 2.5), g.push("h", l.renderWidth - Blockly.BlockSvg.TAB_WIDTH +
+                2)) : (g.push("M", c.x - Blockly.BlockSvg.SEP_SPACE_X + .5 + "," + (c.y + n + .5)), g.push("v", l.renderHeight + 1), g.push("h", Blockly.BlockSvg.TAB_WIDTH - 2 - l.renderWidth), g.push("M", c.x - l.renderWidth - Blockly.BlockSvg.SEP_SPACE_X + .9 + "," + (c.y + n + m + 7.5 + 15 - .7)), g.push("l", .46 * Blockly.BlockSvg.TAB_WIDTH + ",-2.1"));
+            d.x = this.RTL ? -c.x - Blockly.BlockSvg.TAB_WIDTH + Blockly.BlockSvg.SEP_SPACE_X + l.renderWidth + 1 : c.x + Blockly.BlockSvg.TAB_WIDTH - Blockly.BlockSvg.SEP_SPACE_X - l.renderWidth - 1;
+            d.y = c.y + n + 1;
+            l.connection.setOffsetInBlock(d.x,
+                d.y);
+            l.connection.addHighlightMargin(m, p)
+        }
     }
     c.x = Math.max(c.x, e);
     this.width = Math.max(this.width, c.x);
     h.push("H", c.x);
-    a.push("H", c.x - .5);
+    a.push("H", c.x + .5);
     h.push("v", b.height);
     this.RTL && a.push("v", b.height - 1)
 };
@@ -18624,14 +18694,18 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(a, b, c, d, e) {
         var l = e - g.fieldWidth - Blockly.BlockSvg.TAB_WIDTH - 2 * Blockly.BlockSvg.SEP_SPACE_X;
         g.align == Blockly.ALIGN_RIGHT ? h += l : g.align == Blockly.ALIGN_CENTRE && (h += l / 2)
     }
-    this.renderFields_(g.fieldRow, h, k);
+    this.renderFields_(g.fieldRow, h, k, b.alignmentHeight);
+    h = (b.height - 15) / 2 - 7.5;
+    0 > h && (h = 0);
+    f.push("v", h);
     f.push(Blockly.BlockSvg.TAB_PATH_DOWN);
-    b = b.height - Blockly.BlockSvg.TAB_HEIGHT;
-    f.push("v", b);
-    this.RTL ? (a.push(Blockly.BlockSvg.TAB_PATH_DOWN_HIGHLIGHT_RTL),
-        a.push("v", b + .5)) : (a.push("M", e - 5 + "," + (c.y + Blockly.BlockSvg.TAB_HEIGHT - .7)), a.push("l", .46 * Blockly.BlockSvg.TAB_WIDTH + ",-2.1"));
+    b = b.height - Blockly.BlockSvg.TAB_HEIGHT - h;
+    f.push("v",
+        b);
+    this.RTL ? (a.push("v", h), a.push(Blockly.BlockSvg.TAB_PATH_DOWN_HIGHLIGHT_RTL), a.push("v", b + .5)) : (a.push("M", e - 5 + "," + (c.y + Blockly.BlockSvg.TAB_HEIGHT + h - .7)), a.push("l", .46 * Blockly.BlockSvg.TAB_WIDTH + ",-2.1"));
     d.x = this.RTL ? -e - 1 : e + 1;
     g.connection.setOffsetInBlock(d.x, c.y);
+    g.connection.addHighlightMargin(h, b);
     g.connection.isConnected() && (this.width = Math.max(this.width, e + g.connection.targetBlock().getHeightWidth().width - Blockly.BlockSvg.TAB_WIDTH + 1))
 };
 Blockly.BlockSvg.prototype.renderDummyInput_ = function(a, b, c, d, e) {
@@ -18641,7 +18715,7 @@ Blockly.BlockSvg.prototype.renderDummyInput_ = function(a, b, c, d, e) {
         h = c.x;
     c = c.y;
     g.align != Blockly.ALIGN_LEFT && (d = d - g.fieldWidth - 2 * Blockly.BlockSvg.SEP_SPACE_X, e && (d -= Blockly.BlockSvg.TAB_WIDTH), g.align == Blockly.ALIGN_RIGHT ? h += d : g.align == Blockly.ALIGN_CENTRE && (h += d / 2));
-    this.renderFields_(g.fieldRow, h, c);
+    this.renderFields_(g.fieldRow, h, c, b.alignmentHeight);
     f.push("v", b.height);
     this.RTL && a.push("v", b.height - 1)
 };
@@ -18656,8 +18730,9 @@ Blockly.BlockSvg.prototype.renderStatementInput_ = function(a, b, c, d, e, f) {
         var n = e.statementEdge - h.fieldWidth - 2 * Blockly.BlockSvg.SEP_SPACE_X;
         h.align == Blockly.ALIGN_RIGHT ? k += n : h.align == Blockly.ALIGN_CENTRE && (k += n / 2)
     }
-    this.renderFields_(h.fieldRow, k, l);
-    c.x = e.statementEdge + Blockly.BlockSvg.NOTCH_WIDTH;
+    this.renderFields_(h.fieldRow, k, l, b.alignmentHeight);
+    c.x = e.statementEdge +
+        Blockly.BlockSvg.NOTCH_WIDTH;
     g.push("H", c.x);
     g.push(Blockly.BlockSvg.INNER_TOP_LEFT_CORNER);
     g.push("v", b.height - 2 * Blockly.BlockSvg.CORNER_RADIUS);
@@ -19210,7 +19285,7 @@ Blockly.FieldDropdown.prototype.render_ = function() {
         for (var a; a = this.textElement_.firstChild;) this.textElement_.removeChild(a);
         this.imageElement_ && (Blockly.utils.removeNode(this.imageElement_), this.imageElement_ = null);
         this.imageJson_ ? this.renderSelectedImage_() : this.renderSelectedText_();
-        this.borderRect_.setAttribute("height", this.size_.height - 9);
+        this.borderRect_.setAttribute("height", this.size_.height + 2);
         this.borderRect_.setAttribute("width", this.size_.width +
             Blockly.BlockSvg.SEP_SPACE_X)
     } else this.size_.width = 0
@@ -19236,10 +19311,10 @@ Blockly.FieldDropdown.prototype.renderSelectedText_ = function() {
     this.sourceBlock_.RTL ? this.textElement_.insertBefore(this.arrow_, this.textElement_.firstChild) : this.textElement_.appendChild(this.arrow_);
     this.textElement_.setAttribute("text-anchor", "start");
     this.textElement_.setAttribute("x", 0);
+    this.textElement_.setAttribute("y", 22);
     this.textElement_.setAttribute("transform", "translate(0,0)");
-    this.size_.height = Blockly.BlockSvg.MIN_BLOCK_Y + 5;
-    this.size_.width =
-        Blockly.Field.getCachedWidth(this.textElement_)
+    this.size_.height = 30;
+    this.size_.width = Blockly.Field.getCachedWidth(this.textElement_)
 };
 Blockly.FieldDropdown.prototype.updateWidth = function() {
     if (this.imageJson_ && (goog.userAgent.IE || goog.userAgent.EDGE)) {
@@ -19287,7 +19362,7 @@ Blockly.FieldImage = function(a, b, c, d, e) {
     this.sourceBlock_ = null;
     this.height_ = Number(c);
     this.width_ = Number(b);
-    this.size_ = new goog.math.Size(this.width_, this.height_ + 2 * Blockly.BlockSvg.INLINE_PADDING_Y);
+    this.size_ = new goog.math.Size(this.width_, this.height_);
     this.text_ = d || "";
     this.tooltip_ = "";
     this.setValue(a);
@@ -19336,6 +19411,206 @@ Blockly.FieldImage.prototype.showEditor_ = function() {
     this.clickHandler_ && this.clickHandler_(this)
 };
 Blockly.Field.register("field_image", Blockly.FieldImage);
+Blockly.ButtonInput = function(a, b) {
+    Blockly.ButtonInput.superClass_.constructor.call(this, a, b)
+};
+goog.inherits(Blockly.ButtonInput, Blockly.Field);
+Blockly.ButtonInput.FONTSIZE = 11;
+Blockly.ButtonInput.MIN_WIDTH = 50;
+Blockly.ButtonInput.WIDGET_MIN_WIDTH = 0;
+Blockly.ButtonInput.prototype.CURSOR = "button";
+Blockly.ButtonInput.prototype.isSpecial = !0;
+Blockly.ButtonInput.prototype.KEY_CODE = "KEYCODE_SPACEBAR";
+Blockly.ButtonInput.prototype.LOCALIZED_KEY = Blockly.Msg.SPACEBAR;
+Blockly.ButtonInput.prototype.PYTHON_KEY = "Space";
+Blockly.ButtonInput.prototype.dispose = function() {
+    Blockly.WidgetDiv.hideIfOwner(this);
+    Blockly.ButtonInput.superClass_.dispose.call(this)
+};
+Blockly.ButtonInput.prototype.setValue = function(a) {
+    if (null !== a) {
+        if (this.sourceBlock_) {
+            var b = this.callValidator(a);
+            null !== b && (a = b)
+        }
+        this.KEY_CODE = a;
+        Blockly.Field.prototype.setValue.call(this, a);
+        this.setText(this.KEY_CODE)
+    }
+};
+Blockly.ButtonInput.prototype.getValue = function() {
+    return this.KEY_CODE
+};
+Blockly.ButtonInput.prototype.setText = function(a) {
+    null !== a && (a = this.convertText(a), a = String(a), a !== this.text_ && (this.sourceBlock_ && Blockly.Events.isEnabled() && Blockly.Events.fire(new Blockly.Events.Change(this.sourceBlock_, "field", this.name, this.text_, a)), Blockly.Field.prototype.setText.call(this, a), this.resizeInput_()))
+};
+Blockly.ButtonInput.prototype.convertText = function() {
+    switch (this.KEY_CODE) {
+        case "KEYCODE_SPACEBAR":
+            return Blockly.Msg.SPACEBAR;
+        case "KEYCODE_UP":
+            return Blockly.Msg.UP;
+        case "KEYCODE_DOWN":
+            return Blockly.Msg.DOWN;
+        case "KEYCODE_LEFT":
+            return Blockly.Msg.LEFT;
+        case "KEYCODE_RIGHT":
+            return Blockly.Msg.RIGHT;
+        default:
+            return this.KEY_CODE.toLowerCase()
+    }
+};
+Blockly.ButtonInput.prototype.convertKeyToCode = function() {
+    switch (this.KEY_CODE) {
+        case "KEYCODE_SPACEBAR":
+            return "spacebar";
+        case "KEYCODE_UP":
+            return "up";
+        case "KEYCODE_DOWN":
+            return "down";
+        case "KEYCODE_LEFT":
+            return "left";
+        case "KEYCODE_RIGHT":
+            return "right";
+        default:
+            return this.KEY_CODE.toLowerCase()
+    }
+};
+Blockly.ButtonInput.prototype.resizeInput_ = function() {
+    if (void 0 == this.sourceBlock_ || void 0 == this.sourceBlock_.workspace.isFlyout || !this.sourceBlock_.workspace.isFlyout) {
+        var a = 0,
+            b = 0;
+        void 0 != this.size_ && (b = 8 * this.text_.length + 20, a = 8 * this.text_.length, b < Blockly.ButtonInput.MIN_WIDTH && (b = Blockly.ButtonInput.MIN_WIDTH), b < Blockly.ButtonInput.WIDGET_MIN_WIDTH && (b = Blockly.ButtonInput.WIDGET_MIN_WIDTH), this.size_ = new goog.math.Size(b, this.size_.height));
+        void 0 != this.borderRect_ && this.borderRect_.setAttribute("width",
+            b);
+        void 0 != this.textElement_ && this.textElement_.setAttribute("x", (b - a) / 2 - 4);
+        void 0 != this.sourceBlock_ && this.sourceBlock_.rendered && this.sourceBlock_.render();
+        if (void 0 == this.borderRect_ || void 0 == this.textElement_) {
+            var c = this,
+                d = -1;
+            d = setInterval(function() {
+                void 0 != c.borderRect_ && void 0 != c.textElement_ && void 0 != c.sourceBlock_ && (c.resizeInput_(), clearInterval(d))
+            }, 100)
+        }
+    }
+};
+Blockly.ButtonInput.prototype.showEditor_ = function(a) {
+    this.workspace_ = this.sourceBlock_.workspace;
+    a = a || !1;
+    Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, this.widgetDispose_());
+    var b = Blockly.WidgetDiv.DIV,
+        c = goog.dom.createDom("INPUT", "blocklyHtmlButtonInput"),
+        d = Blockly.ButtonInput.FONTSIZE * this.workspace_.scale + "pt";
+    b.style.fontSize = d;
+    c.style.fontSize = d;
+    this.fieldGroup_.getBBox();
+    c.placeholder = Blockly.Msg.PRESS_ANY_KEY;
+    Blockly.ButtonInput.WIDGET_MIN_WIDTH = 8 * c.placeholder.length;
+    c.style.width = Blockly.ButtonInput.WIDGET_MIN_WIDTH *
+        this.workspace_.scale + "px";
+    Blockly.ButtonInput.htmlInput_ = c;
+    b.appendChild(c);
+    this.validate_();
+    this.resizeEditor_();
+    a || (c.focus(), c.select());
+    c.onKeyDownWrapper_ = Blockly.bindEventWithChecks_(c, "keydown", this, this.onHtmlInputKeyDown_);
+    c.onWorkspaceChangeWrapper_ = this.resizeEditor_.bind(this);
+    this.workspace_.addChangeListener(c.onWorkspaceChangeWrapper_)
+};
+Blockly.ButtonInput.prototype.onHtmlInputKeyDown_ = function(a) {
+    var b = !0;
+    27 != a.keyCode && (b = this.keyDisplayParser_(a));
+    if (b) Blockly.WidgetDiv.hide(), this.resizeInput_();
+    else this.onInvalidButtonPressed_()
+};
+Blockly.ButtonInput.prototype.onInvalidButtonPressed_ = function() {
+    var a = Blockly.WidgetDiv.DIV,
+        b = a.children;
+    a.blur();
+    for (a = 0; a < b.length; a++) "blocklyHtmlButtonInput" == b[a].className && (b[a].placeholder = Blockly.Msg.INVALID_KEY_PRESSED, b[a].value = "", Blockly.ButtonInput.WIDGET_MIN_WIDTH = 8 * b[a].placeholder.length, b[a].style.width = Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale + "px", this.resizeInput_(), b[a].className = "blocklyHtmlButtonInput button-input-error-1", b[a].focus(), b[a].select(),
+        setTimeout(this.changePlaceholderAnimation_(b[a], 0), 300))
+};
+Blockly.ButtonInput.prototype.changePlaceholderAnimation_ = function(a, b) {
+    a.className = "blocklyHtmlButtonInput button-input-error-1" == a.className ? "blocklyHtmlButtonInput button-input-error-2" : "blocklyHtmlButtonInput button-input-error-1";
+    a.value = "";
+    a.focus();
+    a.select();
+    5 > b ? setTimeout(this.changePlaceholderAnimation_.bind(this, a, b + 1), 500) : 5 == b ? setTimeout(this.changePlaceholderAnimation_.bind(this, a, b + 1), 2E3) : setTimeout(this.onResetPlaceholder_.bind(this, a), 500)
+};
+Blockly.ButtonInput.prototype.onResetPlaceholder_ = function(a) {
+    a.className = "blocklyHtmlButtonInput";
+    a.placeholder = Blockly.Msg.PRESS_ANY_KEY;
+    0 < Blockly.ButtonInput.WIDGET_MIN_WIDTH && (Blockly.ButtonInput.WIDGET_MIN_WIDTH = 8 * a.placeholder.length, a.style.width = Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale + "px", this.resizeInput_());
+    a.focus();
+    a.select()
+};
+Blockly.ButtonInput.prototype.keyDisplayParser_ = function(a) {
+    console.log(a);
+    switch (a.keyCode) {
+        case 32:
+            a = "KEYCODE_SPACEBAR";
+            break;
+        case 37:
+            a = "KEYCODE_LEFT";
+            break;
+        case 38:
+            a = "KEYCODE_UP";
+            break;
+        case 39:
+            a = "KEYCODE_RIGHT";
+            break;
+        case 40:
+            a = "KEYCODE_DOWN";
+            break;
+        default:
+            if (a = a.key, 1 < a.length) return !1
+    }
+    this.KEY_CODE = a;
+    return !0
+};
+Blockly.ButtonInput.prototype.validate_ = function() {
+    var a = !0;
+    goog.asserts.assertObject(Blockly.ButtonInput.htmlInput_);
+    var b = Blockly.ButtonInput.htmlInput_;
+    this.sourceBlock_ && (a = this.callValidator(b.value));
+    null === a ? Blockly.utils.addClass(b, "blocklyInvalidInput") : Blockly.utils.removeClass(b, "blocklyInvalidInput")
+};
+Blockly.ButtonInput.prototype.resizeEditor_ = function() {
+    var a = Blockly.WidgetDiv.DIV;
+    if (void 0 != this.borderRect_) {
+        var b = this.getAbsoluteXY_();
+        if (this.sourceBlock_.RTL) {
+            var c = this.getScaledBBox_();
+            b.x += c.width;
+            b.x -= a.offsetWidth
+        }
+        b.y += 4;
+        goog.userAgent.GECKO && Blockly.WidgetDiv.DIV.style.top && (--b.x, --b.y);
+        goog.userAgent.WEBKIT && (b.y -= 3);
+        a.style.left = b.x + "px";
+        a.style.top = b.y + "px";
+        this.resizeInput_()
+    }
+};
+Blockly.ButtonInput.prototype.widgetDispose_ = function() {
+    var a = this;
+    return function() {
+        Blockly.ButtonInput.WIDGET_MIN_WIDTH = 0;
+        a.setText(a.KEY_CODE);
+        a.validate_();
+        a.resizeInput_();
+        a.sourceBlock_.rendered && a.sourceBlock_.render();
+        var b = Blockly.FieldTextInput.htmlInput_;
+        null != b && (Blockly.unbindEvent_(b.onKeyDownWrapper_), a.workspace_.removeChangeListener(b.onWorkspaceChangeWrapper_));
+        Blockly.FieldTextInput.htmlInput_ = null;
+        Blockly.Events.setGroup(!1);
+        b = Blockly.WidgetDiv.DIV.style;
+        b.width = "auto";
+        b.height =
+            "auto";
+        b.fontSize = ""
+    }
+};
 Blockly.FieldNumber = function(a, b, c, d, e) {
     a = a && !isNaN(a) ? String(a) : "0";
     Blockly.FieldNumber.superClass_.constructor.call(this, a, e);
@@ -19855,7 +20130,7 @@ Blockly.Flyout = function(a) {
 Blockly.Flyout.prototype.autoClose = !0;
 Blockly.Flyout.prototype.isVisible_ = !1;
 Blockly.Flyout.prototype.containerVisible_ = !0;
-Blockly.Flyout.prototype.CORNER_RADIUS = 0;
+Blockly.Flyout.prototype.CORNER_RADIUS = 8;
 Blockly.Flyout.prototype.MARGIN = Blockly.Flyout.prototype.CORNER_RADIUS;
 Blockly.Flyout.prototype.GAP_X = 3 * Blockly.Flyout.prototype.MARGIN;
 Blockly.Flyout.prototype.GAP_Y = 3 * Blockly.Flyout.prototype.MARGIN;

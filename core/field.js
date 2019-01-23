@@ -383,8 +383,18 @@ Blockly.Field.prototype.render_ = function() {
  */
 Blockly.Field.prototype.updateWidth = function() {
   var width = Blockly.Field.getCachedWidth(this.textElement_);
-  //Make sure the width of an "input" field is at least 15.
-  width = Math.max(width, 15);
+  
+  var textX = -1;
+
+  //Make sure that the width of the text field is at least 16 pixels (otherwise its fugly) 
+  if (width < 16) {
+    //Also, recalculate how much the text should be pushed (because it's smaller and would not be centered)
+    textX = (16 - width) / 2;
+    width = 16;
+  } 
+
+  this.textElement_.setAttribute("x", textX);
+  
   if (this.borderRect_) {
     this.borderRect_.setAttribute('width',
         width + Blockly.BlockSvg.SEP_SPACE_X);
