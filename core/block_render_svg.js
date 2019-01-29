@@ -526,7 +526,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       //SHAPE: If the block has an inner block (AND it is connected), mark this. Required because blocks with blocks in them MUST NOT have margins added to top/bottom.
       row.hasInput = true;
     }
-
+    
     // Blocks have a one pixel shadow that should sometimes overhang.
     if (!isInline && i == inputList.length - 1) {
       // Last value input should overhang.
