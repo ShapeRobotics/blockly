@@ -364,6 +364,13 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   var inputRows = this.renderCompute_(cursorX);
   //Add some margin (aka spacing) to each line, based on WHICH line it is (ex. line 1 will get a bit of space added at the top, the last line will get some space added to the bottom, etc)
   inputRows = this.renderComputeSpacing_(inputRows);
+
+  if (inputRows) {
+    for (var i = 0; i < icons.length; i++) {
+      icons[i].moveVertical(inputRows[0].alignmentHeight);
+    }
+  }
+
   this.renderDraw_(cursorX, inputRows);
   this.renderMoveConnections_();
 
@@ -519,7 +526,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       //SHAPE: If the block has an inner block (AND it is connected), mark this. Required because blocks with blocks in them MUST NOT have margins added to top/bottom.
       row.hasInput = true;
     }
-    
+
     // Blocks have a one pixel shadow that should sometimes overhang.
     if (!isInline && i == inputList.length - 1) {
       // Last value input should overhang.
