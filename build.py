@@ -53,9 +53,6 @@
 #   msg/js/<LANG>.js for every language <LANG> defined in msg/js/<LANG>.json.
 
 import sys
-if sys.version_info[0] != 2:
-  raise Exception("Blockly build only compatible with Python 2.x.\n"
-                  "You are using: " + sys.version)
 
 for arg in sys.argv[1:len(sys.argv)]:
   if (arg != 'core' and
@@ -65,8 +62,15 @@ for arg in sys.argv[1:len(sys.argv)]:
     raise Exception("Invalid argument: \"" + arg + "\". Usage: build.py "
         "<0 or more of accessible, core, generators, langfiles>")
 
-import errno, glob, httplib, json, os, re, subprocess, threading, urllib
+import errno, glob, json, os, re, subprocess, threading, codecs
 
+if sys.version_info[0] == 2:
+  import httplib
+  from urllib import urlencode
+else:
+  import http.client as httplib
+  from urllib.parse import urlencode
+  from importlib import reload
 
 def import_path(fullpath):
   """Import a file with full path specification.
@@ -214,6 +218,7 @@ class Gen_compressed(threading.Thread):
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"
+    beautified_filename = "blockly_compressed_new.js"
     # Define the parameters for the POST request.
     params = [
         ("compilation_level", "SIMPLE_OPTIMIZATIONS"),
@@ -234,11 +239,11 @@ class Gen_compressed(threading.Thread):
       # Filter out the Closure files (the compiler will add them).
       if filename.startswith(os.pardir + os.sep):  # '../'
         continue
-      f = open(filename)
-      params.append(("js_code", "".join(f.readlines())))
+      f = codecs.open(filename, encoding="utf-8")
+      params.append(("js_code", "".join(f.readlines()).encode("utf-8")))
       f.close()
 
-    self.do_compile(params, target_filename, filenames, "")
+    self.do_compile(params, target_filename, filenames, "", beautified_filename)
 
   def gen_accessible(self):
     target_filename = "blockly_accessible_compressed.js"
@@ -263,14 +268,15 @@ class Gen_compressed(threading.Thread):
       # Filter out the Closure files (the compiler will add them).
       if filename.startswith(os.pardir + os.sep):  # '../'
         continue
-      f = open(filename)
-      params.append(("js_code", "".join(f.readlines())))
+      f = codecs.open(filename, encoding="utf-8")
+      params.append(("js_code", "".join(f.readlines()).encode("utf-8")))
       f.close()
 
     self.do_compile(params, target_filename, filenames, "")
 
   def gen_blocks(self):
     target_filename = "blocks_compressed.js"
+    beautified_filename = "blocks_compressed_new.js"
     # Define the parameters for the POST request.
     params = [
         ("compilation_level", "SIMPLE_OPTIMIZATIONS"),
@@ -288,13 +294,13 @@ class Gen_compressed(threading.Thread):
     filenames = glob.glob(os.path.join("blocks", "*.js"))
     filenames.sort()  # Deterministic build.
     for filename in filenames:
-      f = open(filename)
-      params.append(("js_code", "".join(f.readlines())))
+      f = codecs.open(filename, encoding="utf-8")
+      params.append(("js_code", "".join(f.readlines()).encode("utf-8")))
       f.close()
 
     # Remove Blockly.Blocks to be compatible with Blockly.
     remove = "var Blockly={Blocks:{}};"
-    self.do_compile(params, target_filename, filenames, remove)
+    self.do_compile(params, target_filename, filenames, remove, beautified_filename)
 
   def gen_generator(self, language):
     target_filename = language + "_compressed.js"
@@ -317,8 +323,8 @@ class Gen_compressed(threading.Thread):
     filenames.sort()  # Deterministic build.
     filenames.insert(0, os.path.join("generators", language + ".js"))
     for filename in filenames:
-      f = open(filename)
-      params.append(("js_code", "".join(f.readlines())))
+      f = codecs.open(filename, encoding="utf-8")
+      params.append(("js_code", "".join(f.readlines()).encode("utf-8")))
       f.close()
     filenames.insert(0, "[goog.provide]")
 
@@ -326,13 +332,15 @@ class Gen_compressed(threading.Thread):
     remove = "var Blockly={Generator:{}};"
     self.do_compile(params, target_filename, filenames, remove)
 
-  def do_compile(self, params, target_filename, filenames, remove):
+  def do_compile(self, params, target_filename, filenames, remove, beautified_filename = None):
     # Send the request to Google.
     headers = {"Content-type": "application/x-www-form-urlencoded"}
     conn = httplib.HTTPSConnection("closure-compiler.appspot.com")
-    conn.request("POST", "/compile", urllib.urlencode(params), headers)
+    conn.request("POST", "/compile", urlencode(params), headers)
     response = conn.getresponse()
-    json_str = response.read()
+
+    # Decode is necessary for Python 3.4 compatibility
+    json_str = response.read().decode("utf-8")
     conn.close()
 
     # Parse the JSON response.
@@ -349,12 +357,12 @@ class Gen_compressed(threading.Thread):
       n = int(name[6:]) - 1
       return filenames[n]
 
-    if json_data.has_key("serverErrors"):
+    if "serverErrors" in json_data:
       errors = json_data["serverErrors"]
       for error in errors:
         print("SERVER ERROR: %s" % target_filename)
         print(error["error"])
-    elif json_data.has_key("errors"):
+    elif "errors" in json_data:
       errors = json_data["errors"]
       for error in errors:
         print("FATAL ERROR")
@@ -366,7 +374,7 @@ class Gen_compressed(threading.Thread):
           print((" " * error["charno"]) + "^")
         sys.exit(1)
     else:
-      if json_data.has_key("warnings"):
+      if "warnings" in json_data:
         warnings = json_data["warnings"]
         for warning in warnings:
           print("WARNING")
@@ -378,7 +386,7 @@ class Gen_compressed(threading.Thread):
             print((" " * warning["charno"]) + "^")
         print()
 
-      if not json_data.has_key("compiledCode"):
+      if not "compiledCode" in json_data:
         print("FATAL ERROR: Compiler did not return compiledCode.")
         sys.exit(1)
 
@@ -411,10 +419,19 @@ class Gen_compressed(threading.Thread):
       stats = json_data["statistics"]
       original_b = stats["originalSize"]
       compressed_b = stats["compressedSize"]
+
       if original_b > 0 and compressed_b > 0:
         f = open(target_filename, "w")
         f.write(code)
         f.close()
+
+        if (beautified_filename != None):
+          import jsbeautifier 
+          beautified_code = jsbeautifier.beautify(code)
+          f_new = open(beautified_filename, "w")
+          f_new.write(beautified_code)
+          f_new.close()
+
 
         original_kb = int(original_b / 1024 + 0.5)
         compressed_kb = int(compressed_b / 1024 + 0.5)
@@ -424,7 +441,6 @@ class Gen_compressed(threading.Thread):
             original_kb, compressed_kb, ratio))
       else:
         print("UNKNOWN ERROR")
-
 
 class Gen_langfiles(threading.Thread):
   """Generate JavaScript file for each natural language supported.
@@ -452,7 +468,7 @@ class Gen_langfiles(threading.Thread):
           # If a destination file was missing, rebuild.
           return True
       else:
-        print("Error checking file creation times: " + e)
+        print("Error checking file creation times: " + str(e))
 
   def run(self):
     # The files msg/json/{en,qqq,synonyms}.json depend on msg/messages.js.
@@ -530,10 +546,10 @@ developers.google.com/blockly/guides/modify/web/closure""")
 
   core_search_paths = calcdeps.ExpandDirectories(
       ["core", os.path.join(os.path.pardir, "closure-library")])
-  core_search_paths.sort()  # Deterministic build.
+  core_search_paths = sorted(core_search_paths)  # Deterministic build.
   full_search_paths = calcdeps.ExpandDirectories(
       ["accessible", "core", os.path.join(os.path.pardir, "closure-library")])
-  full_search_paths.sort()  # Deterministic build.
+  full_search_paths = sorted(full_search_paths)  # Deterministic build.
 
   if (len(sys.argv) == 1):
     args = ['core', 'accessible', 'generators', 'defaultlangfiles']
@@ -542,11 +558,11 @@ developers.google.com/blockly/guides/modify/web/closure""")
 
   # Uncompressed and compressed are run in parallel threads.
   # Uncompressed is limited by processor speed.
-  if ('core' in args):
-    Gen_uncompressed(core_search_paths, 'blockly_uncompressed.js').start()
+  # if ('core' in args):
+  #   Gen_uncompressed(core_search_paths, 'blockly_uncompressed.js').start()
 
-  if ('accessible' in args):
-    Gen_uncompressed(full_search_paths, 'blockly_accessible_uncompressed.js').start()
+  # if ('accessible' in args):
+  #   Gen_uncompressed(full_search_paths, 'blockly_accessible_uncompressed.js').start()
 
   # Compressed is limited by network and server speed.
   Gen_compressed(full_search_paths, args).start()
