@@ -193,12 +193,12 @@ Blockly.Field.prototype.init = function() {
         'ry': 4,
         'x': -Blockly.BlockSvg.SEP_SPACE_X / 2,
         'y': 0,
-        'height': 16
+        'height': 25
         //SHAPE: Last param added from blockly_changes
       }, this.fieldGroup_, this.sourceBlock_.workspace);
   /** @type {!Element} */
   this.textElement_ = Blockly.utils.createSvgElement('text',
-      {'class': 'blocklyText', 'y': this.size_.height - 11},
+      {'class': 'blocklyText', 'y': this.size_.height - 7.5},
       this.fieldGroup_);
 
   this.updateEditable();

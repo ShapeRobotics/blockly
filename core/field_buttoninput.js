@@ -190,8 +190,18 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
     //   return;
     // }
 
-    tempWidth = (this.text_.length * 8) + 20;
-    textWidth = this.text_.length * 8;
+
+    try {
+        textWidth = this.textElement_.getComputedTextLength();
+    } catch (e) {
+      // In other cases where we fail to geth the computed text. Instead, use an
+      // approximation and do not cache the result. At some later point in time
+      // when the block is inserted into the visible DOM, this method will be
+      // called again and, at that point in time, will not throw an exception.
+      textWidth = this.text_.length * 8;
+    }
+
+    tempWidth = textWidth + 20;
 
     if (tempWidth < Blockly.ButtonInput.MIN_WIDTH) {
       tempWidth = Blockly.ButtonInput.MIN_WIDTH;
@@ -210,7 +220,7 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
 
   if (this.textElement_ != undefined) {
     //The -4 accounts for the rx property of the surrounding rect (used for rounding of the box). Check Blockly.Field.
-    var newX = ((tempWidth - textWidth) / 2) - 4;
+    var newX = ((tempWidth - textWidth) / 2) - 5;
     this.textElement_.setAttribute("x", newX);
   }
 
@@ -230,8 +240,7 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
         }
       }, 100);
   }
-
-}
+};
 
 /**
  * Show the inline free-text editor on top of the text.
@@ -259,6 +268,9 @@ Blockly.ButtonInput.prototype.showEditor_ = function (opt_quietInput) {
   htmlInput.placeholder = Blockly.Msg.PRESS_ANY_KEY;
   Blockly.ButtonInput.WIDGET_MIN_WIDTH = (htmlInput.placeholder.length * 8); 
   htmlInput.style.width = (Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.workspace_.scale) + 'px';
+  //Remove 6 as there is 2 pixels of padding and 4 pixels of border
+  htmlInput.style.height = ((bBox.height * this.workspace_.scale) - 6) + 'px';
+
   /** @type {!HTMLInputElement} */
   Blockly.ButtonInput.htmlInput_ = htmlInput;
   div.appendChild(htmlInput);
@@ -547,3 +559,5 @@ Blockly.ButtonInput.prototype.widgetDispose_ = function () {
     style.fontSize = '';
   };
 };
+
+// Blockly.Field.register('button_input', Blockly.ButtonInput);

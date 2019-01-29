@@ -314,6 +314,7 @@ Blockly.FieldDropdown.prototype.trimOptions_ = function() {
     strings.push(options[i][0]);
   }
   var shortest = Blockly.utils.shortestStringLength(strings);
+  this.longestOption = Blockly.utils.longestString(strings);
   var prefixLength = Blockly.utils.commonWordPrefix(strings, shortest);
   var suffixLength = Blockly.utils.commonWordSuffix(strings, shortest);
   if (!prefixLength && !suffixLength) {
@@ -346,13 +347,17 @@ Blockly.FieldDropdown.prototype.trimOptions_ = function() {
 Blockly.FieldDropdown.applyTrim_ = function(options,
     prefixLength, suffixLength) {
   var newOptions = [];
+  var strings = [];
   // Remove the prefix and suffix from the options.
   for (var i = 0; i < options.length; i++) {
     var text = options[i][0];
     var value = options[i][1];
     text = text.substring(prefixLength, text.length - suffixLength);
     newOptions[i] = [text, value];
+    strings.push(text);
   }
+  
+  this.longestOption = Blockly.utils.longestString(strings);
   return newOptions;
 };
 
@@ -451,7 +456,7 @@ Blockly.FieldDropdown.prototype.render_ = function() {
   } else {
     this.renderSelectedText_();
   }
-  this.borderRect_.setAttribute('height', this.size_.height + 2);
+  this.borderRect_.setAttribute('height', this.size_.height);
   this.borderRect_.setAttribute('width',
       this.size_.width + Blockly.BlockSvg.SEP_SPACE_X);
 };
@@ -504,7 +509,7 @@ Blockly.FieldDropdown.prototype.renderSelectedText_ = function() {
   }
   this.textElement_.setAttribute('text-anchor', 'start');
   this.textElement_.setAttribute('x', 0);
-  this.textElement_.setAttribute('y', 22);
+  this.textElement_.setAttribute('y', 21);
 
   //SHAPE: Added from blockly_changes
   this.textElement_.setAttribute('transform', 'translate(0,0)');
@@ -590,8 +595,8 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
   }
 
    //Go through all options in the dropdown
-  for (child in mainChild.children) {
-    child = mainChild.children[child];
+   for (var i = 0; i < mainChild.children.length; i++) {
+    var child = mainChild.children[i];
     var innerText = child.innerText;
     if (innerText != undefined) {
         //Remove the last character (a new line) and do an uppercase for the Face module

@@ -70,16 +70,19 @@ Blockly.BlockSvg.PathObject = function() {
  * @const
  */
 Blockly.BlockSvg.SEP_SPACE_X = 10;
+
 /**
  * Vertical space between elements.
  * @const
  */
 Blockly.BlockSvg.SEP_SPACE_Y = 10;
+
 /**
  * Vertical padding around inline elements.
  * @const
  */
-Blockly.BlockSvg.INLINE_PADDING_Y = 7.5;
+Blockly.BlockSvg.INLINE_PADDING_Y = 5;
+
 /**
  * Minimum height of a block.
  * @const
@@ -384,6 +387,7 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
  * @param {!Array.<!Blockly.Field>} fieldList List of fields.
  * @param {number} cursorX X-coordinate to start the fields.
  * @param {number} cursorY Y-coordinate to start the fields.
+ * @param {number} rowHeight Height of the entire row. Used to vertically align elements.
  * @return {number} X-coordinate of the end of the field row (plus a gap).
  * @private
  */
@@ -425,13 +429,13 @@ Blockly.BlockSvg.prototype.renderFields_ = function(fieldList,
     if (this.RTL) {
       cursorX -= field.renderSep + field.renderWidth;
       root.setAttribute('transform',
-          'translate(' + cursorX + ',' + cursorY + ')');
+          'translate(' + cursorX + ',' + yPos + ')');
       if (field.renderWidth) {
         cursorX -= Blockly.BlockSvg.SEP_SPACE_X;
       }
     } else {
       root.setAttribute('transform',
-          'translate(' + (cursorX + field.renderSep) + ',' + cursorY + ')');
+          'translate(' + (cursorX + field.renderSep) + ',' + yPos + ')');
       if (field.renderWidth) {
         cursorX += field.renderSep + field.renderWidth +
             Blockly.BlockSvg.SEP_SPACE_X;
@@ -515,6 +519,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       //SHAPE: If the block has an inner block (AND it is connected), mark this. Required because blocks with blocks in them MUST NOT have margins added to top/bottom.
       row.hasInput = true;
     }
+    
     // Blocks have a one pixel shadow that should sometimes overhang.
     if (!isInline && i == inputList.length - 1) {
       // Last value input should overhang.
