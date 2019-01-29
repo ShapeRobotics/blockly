@@ -46,7 +46,7 @@ goog.require('goog.userAgent');
  */
 Blockly.Field = function(text, opt_validator) {
   //SHAPE: Removed dependence of height. It should NOT reference constants in other objects unless extremely necessary.
-  this.size_ = new goog.math.Size(0, 25);
+  this.size_ = new goog.math.Size(0, 19);
   this.setValue(text);
   this.setValidator(opt_validator);
 };
