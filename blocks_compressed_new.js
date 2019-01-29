@@ -483,11 +483,11 @@ Blockly.Blocks.lists_getSublist = {
         b ? (this.appendValueInput("AT" + a).setCheck("Number"), Blockly.Msg.ORDINAL_NUMBER_SUFFIX && this.appendDummyInput("ORDINAL" + a).appendField(Blockly.Msg.ORDINAL_NUMBER_SUFFIX)) :
             this.appendDummyInput("AT" + a);
         var c = new Blockly.FieldDropdown(this["WHERE_OPTIONS_" + a], function(c) {
-            var e = "FROM_START" == c || "FROM_END" == c;
-            if (e != b) {
-                var d = this.sourceBlock_;
-                d.updateAt_(a, e);
-                d.setFieldValue(c, "WHERE" + a);
+            var d = "FROM_START" == c || "FROM_END" == c;
+            if (d != b) {
+                var f = this.sourceBlock_;
+                f.updateAt_(a, d);
+                f.setFieldValue(c, "WHERE" + a);
                 return null
             }
         });
@@ -766,10 +766,11 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     domToMutation: function(a) {
         this.elseifCount_ = parseInt(a.getAttribute("elseif"), 10) || 0;
         this.elseCount_ = parseInt(a.getAttribute("else"), 10) || 0;
-        this.updateShape_()
+        this.rebuildShape_()
     },
     decompose: function(a) {
-        var b = a.newBlock("controls_if_if");
+        var b =
+            a.newBlock("controls_if_if");
         b.initSvg();
         for (var c = b.nextConnection, d = 1; d <= this.elseifCount_; d++) {
             var e = a.newBlock("controls_if_elseif");
@@ -781,39 +782,37 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
         return b
     },
     compose: function(a) {
-        var b = a.nextConnection.targetBlock();
+        a = a.nextConnection.targetBlock();
         this.elseCount_ = this.elseifCount_ = 0;
-        a = [null];
-        for (var c = [null], d = null; b;) {
-            switch (b.type) {
+        for (var b = [null], c = [null], d = null; a;) {
+            switch (a.type) {
                 case "controls_if_elseif":
                     this.elseifCount_++;
-                    a.push(b.valueConnection_);
-                    c.push(b.statementConnection_);
+                    b.push(a.valueConnection_);
+                    c.push(a.statementConnection_);
                     break;
                 case "controls_if_else":
                     this.elseCount_++;
-                    d = b.statementConnection_;
+                    d = a.statementConnection_;
                     break;
                 default:
-                    throw TypeError("Unknown block type: " + b.type);
+                    throw TypeError("Unknown block type: " + a.type);
             }
-            b = b.nextConnection && b.nextConnection.targetBlock()
+            a = a.nextConnection && a.nextConnection.targetBlock()
         }
         this.updateShape_();
-        for (b = 1; b <= this.elseifCount_; b++) Blockly.Mutator.reconnect(a[b], this, "IF" + b), Blockly.Mutator.reconnect(c[b], this, "DO" + b);
-        Blockly.Mutator.reconnect(d, this, "ELSE")
+        this.reconnectChildBlocks_(b, c, d)
     },
     saveConnections: function(a) {
         a = a.nextConnection.targetBlock();
         for (var b = 1; a;) {
             switch (a.type) {
                 case "controls_if_elseif":
-                    var c = this.getInput("IF" +
-                            b),
+                    var c = this.getInput("IF" + b),
                         d = this.getInput("DO" + b);
                     a.valueConnection_ = c && c.connection.targetConnection;
-                    a.statementConnection_ = d && d.connection.targetConnection;
+                    a.statementConnection_ =
+                        d && d.connection.targetConnection;
                     b++;
                     break;
                 case "controls_if_else":
@@ -826,12 +825,30 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
             a = a.nextConnection && a.nextConnection.targetBlock()
         }
     },
+    rebuildShape_: function() {
+        var a = [null],
+            b = [null],
+            c = null;
+        this.getInput("ELSE") && (c = this.getInput("ELSE").connection.targetConnection);
+        for (var d = 1; this.getInput("IF" + d);) {
+            var e = this.getInput("IF" + d),
+                f = this.getInput("DO" + d);
+            a.push(e.connection.targetConnection);
+            b.push(f.connection.targetConnection);
+            d++
+        }
+        this.updateShape_();
+        this.reconnectChildBlocks_(a, b, c)
+    },
     updateShape_: function() {
         this.getInput("ELSE") && this.removeInput("ELSE");
-        for (var a = 1; this.getInput("IF" + a);) this.removeInput("IF" + a), this.removeInput("DO" +
-            a), a++;
+        for (var a = 1; this.getInput("IF" + a);) this.removeInput("IF" + a), this.removeInput("DO" + a), a++;
         for (a = 1; a <= this.elseifCount_; a++) this.appendValueInput("IF" + a).setCheck("Boolean").appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSEIF), this.appendStatementInput("DO" + a).appendField(Blockly.Msg.CONTROLS_IF_MSG_THEN);
         this.elseCount_ && this.appendStatementInput("ELSE").appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSE)
+    },
+    reconnectChildBlocks_: function(a, b, c) {
+        for (var d = 1; d <= this.elseifCount_; d++) Blockly.Mutator.reconnect(a[d], this, "IF" + d), Blockly.Mutator.reconnect(b[d], this, "DO" + d);
+        Blockly.Mutator.reconnect(c, this, "ELSE")
     }
 };
 Blockly.Extensions.registerMutator("controls_if_mutator", Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN, null, ["controls_if_elseif", "controls_if_else"]);
@@ -1481,8 +1498,8 @@ Blockly.Blocks.procedures_defnoreturn = {
                 var d = c.getAttribute("name");
                 c = c.getAttribute("varid") || c.getAttribute("varId");
                 this.arguments_.push(d);
-                d = Blockly.Variables.getOrCreateVariablePackage(this.workspace, c, d, "");
-                this.argumentVarModels_.push(d)
+                c = Blockly.Variables.getOrCreateVariablePackage(this.workspace, c, d, "");
+                null != c ? this.argumentVarModels_.push(c) : console.log("Failed to create a variable with name " + d + ", ignoring.")
             } this.updateParams_();
         Blockly.Procedures.mutateCallers(this);
         this.setStatements_("false" !== a.getAttribute("statements"))
@@ -1490,8 +1507,7 @@ Blockly.Blocks.procedures_defnoreturn = {
     decompose: function(a) {
         var b = a.newBlock("procedures_mutatorcontainer");
         b.initSvg();
-        this.getInput("RETURN") ? b.setFieldValue(this.hasStatements_ ?
-            "TRUE" : "FALSE", "STATEMENTS") : b.getInput("STATEMENT_INPUT").setVisible(!1);
+        this.getInput("RETURN") ? b.setFieldValue(this.hasStatements_ ? "TRUE" : "FALSE", "STATEMENTS") : b.getInput("STATEMENT_INPUT").setVisible(!1);
         for (var c = b.getInput("STACK").connection, d = 0; d < this.arguments_.length; d++) {
             var e = a.newBlock("procedures_mutatorarg");
             e.initSvg();
@@ -1510,8 +1526,8 @@ Blockly.Blocks.procedures_defnoreturn = {
         for (var b = a.getInputTargetBlock("STACK"); b;) {
             var c = b.getFieldValue("NAME");
             this.arguments_.push(c);
-            c = this.workspace.getVariable(c, "");
-            this.argumentVarModels_.push(c);
+            var d = this.workspace.getVariable(c, "");
+            null != d ? this.argumentVarModels_.push(d) : console.log("Failed to get variable named " + c + ", ignoring.");
             this.paramIds_.push(b.id);
             b = b.nextConnection && b.nextConnection.targetBlock()
         }
@@ -1519,11 +1535,11 @@ Blockly.Blocks.procedures_defnoreturn = {
         Blockly.Procedures.mutateCallers(this);
         a = a.getFieldValue("STATEMENTS");
         if (null !== a && (a = "TRUE" == a, this.hasStatements_ != a))
-            if (a) this.setStatements_(!0), Blockly.Mutator.reconnect(this.statementConnection_, this, "STACK"), this.statementConnection_ = null;
+            if (a) this.setStatements_(!0), Blockly.Mutator.reconnect(this.statementConnection_,
+                this, "STACK"), this.statementConnection_ = null;
             else {
                 a = this.getInput("STACK").connection;
-                if (this.statementConnection_ =
-                    a.targetConnection) a = a.targetBlock(), a.unplug(), a.bumpNeighbours_();
+                if (this.statementConnection_ = a.targetConnection) a = a.targetBlock(), a.unplug(), a.bumpNeighbours_();
                 this.setStatements_(!1)
             }
     },
@@ -1540,8 +1556,8 @@ Blockly.Blocks.procedures_defnoreturn = {
         var c = this.workspace.getVariableById(a);
         if ("" == c.type) {
             c = c.name;
-            for (var d = this.workspace.getVariableById(b), e = !1, f = 0; f < this.argumentVarModels_.length; f++) this.argumentVarModels_[f].getId() == a && (this.arguments_[f] =
-                d.name, this.argumentVarModels_[f] = d, e = !0);
+            for (var d = this.workspace.getVariableById(b),
+                    e = !1, f = 0; f < this.argumentVarModels_.length; f++) this.argumentVarModels_[f].getId() == a && (this.arguments_[f] = d.name, this.argumentVarModels_[f] = d, e = !0);
             e && this.displayRenamedVar_(c, d.name)
         }
     },
@@ -1556,8 +1572,8 @@ Blockly.Blocks.procedures_defnoreturn = {
     displayRenamedVar_: function(a, b) {
         this.updateParams_();
         if (this.mutator.isVisible())
-            for (var c = this.mutator.workspace_.getAllBlocks(!1), d = 0, e; e = c[d]; d++) "procedures_mutatorarg" == e.type && Blockly.Names.equals(a,
-                e.getFieldValue("NAME")) && e.setFieldValue(b, "NAME")
+            for (var c =
+                    this.mutator.workspace_.getAllBlocks(!1), d = 0, e; e = c[d]; d++) "procedures_mutatorarg" == e.type && Blockly.Names.equals(a, e.getFieldValue("NAME")) && e.setFieldValue(b, "NAME")
     },
     customContextMenu: function(a) {
         if (!this.isInFlyout) {
@@ -1568,17 +1584,18 @@ Blockly.Blocks.procedures_defnoreturn = {
             b.text = Blockly.Msg.PROCEDURES_CREATE_DO.replace("%1", c);
             var d = document.createElement("mutation");
             d.setAttribute("name", c);
-            for (var e = 0; e < this.arguments_.length; e++) c = document.createElement("arg"), c.setAttribute("name", this.arguments_[e]), d.appendChild(c);
+            for (var e = 0; e < this.arguments_.length; e++) c = document.createElement("arg"), c.setAttribute("name", this.arguments_[e]),
+                d.appendChild(c);
             c = document.createElement("block");
             c.setAttribute("type", this.callType_);
             c.appendChild(d);
-            b.callback =
-                Blockly.ContextMenu.callbackFactory(this, c);
+            b.callback = Blockly.ContextMenu.callbackFactory(this, c);
             a.push(b);
             if (!this.isCollapsed())
                 for (e = 0; e < this.argumentVarModels_.length; e++) b = {
-                    enabled: !0
-                }, d = this.argumentVarModels_[e], c = d.name, b.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace("%1", c), d = Blockly.Variables.generateVariableFieldDom(d), c = document.createElement("block"), c.setAttribute("type", "variables_get"), c.appendChild(d), b.callback = Blockly.ContextMenu.callbackFactory(this, c), a.push(b)
+                        enabled: !0
+                    }, d = this.argumentVarModels_[e], c = d.name, b.text = Blockly.Msg.VARIABLES_SET_CREATE_GET.replace("%1", c), d = Blockly.Variables.generateVariableFieldDom(d), c = document.createElement("block"), c.setAttribute("type", "variables_get"), c.appendChild(d), b.callback =
+                    Blockly.ContextMenu.callbackFactory(this, c), a.push(b)
         }
     },
     callType_: "procedures_callnoreturn"
@@ -2388,7 +2405,30 @@ Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN = {
             e.appendChild(c);
             d.callback = Blockly.ContextMenu.callbackFactory(this, e);
             a.push(d)
-        }
+        } else if ("variables_get" == this.type || "variables_get_reporter" == this.type) b = {
+            text: Blockly.Msg.RENAME_VARIABLE,
+            enabled: !0,
+            callback: Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY(this)
+        }, e = this.getField("VAR").getText(), d = {
+            text: Blockly.Msg.DELETE_VARIABLE.replace("%1", e),
+            enabled: !0,
+            callback: Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY(this)
+        }, a.unshift(b), a.unshift(d)
+    }
+};
+Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY = function(a) {
+    return function() {
+        var b = a.workspace,
+            c = a.getField("VAR").getVariable();
+        Blockly.Variables.renameVariable(b, c)
+    }
+};
+Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY = function(a) {
+    return function() {
+        var b = a.workspace,
+            c = a.getField("VAR").getVariable();
+        b.deleteVariableById(c.getId());
+        b.refreshToolboxSelection()
     }
 };
 Blockly.Extensions.registerMixin("contextMenu_variableSetterGetter", Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN);
@@ -2443,17 +2483,41 @@ Blockly.Constants.VariablesDynamic.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MI
             d.setAttribute("name", "VAR");
             d.setAttribute("variabletype", c);
             d.appendChild(document.createTextNode(f));
-            c = document.createElement("block");
-            c.setAttribute("type", b);
-            c.appendChild(d);
-            e.callback = Blockly.ContextMenu.callbackFactory(this, c);
+            f = document.createElement("block");
+            f.setAttribute("type", b);
+            f.appendChild(d);
+            e.callback = Blockly.ContextMenu.callbackFactory(this, f);
             a.push(e)
-        }
+        } else if ("variables_get_dynamic" == this.type || "variables_get_reporter_dynamic" == this.type) b = {
+                text: Blockly.Msg.RENAME_VARIABLE,
+                enabled: !0,
+                callback: Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY(this)
+            }, f = this.getField("VAR").getText(),
+            e = {
+                text: Blockly.Msg.DELETE_VARIABLE.replace("%1", f),
+                enabled: !0,
+                callback: Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY(this)
+            }, a.unshift(b), a.unshift(e)
     },
     onchange: function() {
         var a = this.getFieldValue("VAR");
         a = this.workspace.getVariableById(a);
         "variables_get_dynamic" == this.type ? this.outputConnection.setCheck(a.type) : this.getInput("VALUE").connection.setCheck(a.type)
+    }
+};
+Blockly.Constants.VariablesDynamic.RENAME_OPTION_CALLBACK_FACTORY = function(a) {
+    return function() {
+        var b = a.workspace,
+            c = a.getField("VAR").getVariable();
+        Blockly.Variables.renameVariable(b, c)
+    }
+};
+Blockly.Constants.VariablesDynamic.DELETE_OPTION_CALLBACK_FACTORY = function(a) {
+    return function() {
+        var b = a.workspace,
+            c = a.getField("VAR").getVariable();
+        b.deleteVariableById(c.getId());
+        b.refreshToolboxSelection()
     }
 };
 Blockly.Extensions.registerMixin("contextMenu_variableDynamicSetterGetter", Blockly.Constants.VariablesDynamic.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN);

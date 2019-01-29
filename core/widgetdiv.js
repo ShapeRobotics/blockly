@@ -99,7 +99,7 @@ Blockly.WidgetDiv.show = function(newOwner, rtl, dispose) {
     Blockly.FieldDropdown.changeRecentModuleColors(activeIDsDict, recentIDsDict);
   }, 100);
 
-  //SHAPE: Added from blockly_changes
+   //SHAPE: Added from blockly_changes
   //After opening the dropdown, check the recent module colors every 1000 ms for changes.
   Blockly.WidgetDiv.intervalID = setInterval(function(){
     Blockly.FieldDropdown.changeRecentModuleColors(activeIDsDict, recentIDsDict);

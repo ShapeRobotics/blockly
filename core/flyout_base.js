@@ -131,8 +131,7 @@ Blockly.Flyout.prototype.containerVisible_ = true;
  * @type {number}
  * @const
  */
-//SHAPE: Updated corner radius to 8 so there is some spacing between blocks
-Blockly.Flyout.prototype.CORNER_RADIUS = 8;
+Blockly.Flyout.prototype.CORNER_RADIUS = 0;
 
 /**
  * Margin around the edges of the blocks in the flyout.
@@ -229,6 +228,7 @@ Blockly.Flyout.prototype.createDom = function(tagName) {
 Blockly.Flyout.prototype.init = function(targetWorkspace) {
   this.targetWorkspace_ = targetWorkspace;
   this.workspace_.targetWorkspace = targetWorkspace;
+
   // Add scrollbar.
   this.scrollbar_ = new Blockly.Scrollbar(this.workspace_,
       this.horizontalLayout_, false, 'blocklyFlyoutScrollbar');
@@ -725,12 +725,11 @@ Blockly.Flyout.prototype.moveRectToBlock_ = function(rect, block) {
  * @private
  */
 Blockly.Flyout.prototype.filterForCapacity_ = function() {
-  var remainingCapacity = this.targetWorkspace_.remainingCapacity();
   var blocks = this.workspace_.getTopBlocks(false);
   for (var i = 0, block; block = blocks[i]; i++) {
     if (this.permanentlyDisabled_.indexOf(block) == -1) {
-      var allBlocks = block.getDescendants(false);
-      block.setDisabled(allBlocks.length > remainingCapacity);
+      block.setDisabled(!this.targetWorkspace_
+          .isCapacityAvailable(Blockly.utils.getBlockTypeCounts(block)));
     }
   }
 };

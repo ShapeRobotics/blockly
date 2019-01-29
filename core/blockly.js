@@ -41,7 +41,6 @@ goog.require('Blockly.FieldColour');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldImage');
 goog.require('Blockly.FieldTextInput');
-goog.require('Blockly.ButtonInput');
 goog.require('Blockly.FieldNumber');
 goog.require('Blockly.FieldVariable');
 goog.require('Blockly.Generator');
@@ -98,6 +97,13 @@ Blockly.clipboardXml_ = null;
  * @private
  */
 Blockly.clipboardSource_ = null;
+
+/**
+ * Map of types to type counts for the clipboard object and descendants.
+ * @type {Object}
+ * @private
+ */
+Blockly.clipboardTypeCounts_ = null;
 
 /**
  * Cached value for whether 3D is supported.
@@ -228,15 +234,18 @@ Blockly.onKeyDown_ = function(e) {
     if (e.keyCode == 86) {
       // 'v' for paste.
       if (Blockly.clipboardXml_) {
-        Blockly.Events.setGroup(true);
         // Pasting always pastes to the main workspace, even if the copy
         // started in a flyout workspace.
         var workspace = Blockly.clipboardSource_;
         if (workspace.isFlyout) {
           workspace = workspace.targetWorkspace;
         }
-        workspace.paste(Blockly.clipboardXml_);
-        Blockly.Events.setGroup(false);
+        if (Blockly.clipboardTypeCounts_ &&
+            workspace.isCapacityAvailable(Blockly.clipboardTypeCounts_)) {
+          Blockly.Events.setGroup(true);
+          workspace.paste(Blockly.clipboardXml_);
+          Blockly.Events.setGroup(false);
+        }
       }
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
@@ -274,6 +283,8 @@ Blockly.copy_ = function(toCopy) {
   }
   Blockly.clipboardXml_ = xml;
   Blockly.clipboardSource_ = toCopy.workspace;
+  Blockly.clipboardTypeCounts_ = toCopy.isComment ? null :
+      Blockly.utils.getBlockTypeCounts(toCopy, true);
 };
 
 /**

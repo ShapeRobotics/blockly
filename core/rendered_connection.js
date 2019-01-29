@@ -97,8 +97,10 @@ Blockly.RenderedConnection.prototype.bumpAwayFrom_ = function(staticConnection) 
   // Raise it to the top for extra visibility.
   var selected = Blockly.selected == rootBlock;
   selected || rootBlock.addSelect();
-  var dx = (staticConnection.x_ + Blockly.SNAP_RADIUS) - this.x_;
-  var dy = (staticConnection.y_ + Blockly.SNAP_RADIUS) - this.y_;
+  var dx = (staticConnection.x_ + Blockly.SNAP_RADIUS +
+      Math.floor(Math.random() * Blockly.BUMP_RANDOMNESS)) - this.x_;
+  var dy = (staticConnection.y_ + Blockly.SNAP_RADIUS +
+      Math.floor(Math.random() * Blockly.BUMP_RANDOMNESS)) - this.y_;
   if (reverse) {
     // When reversing a bump due to an uneditable block, bump up.
     dy = -dy;
@@ -158,11 +160,6 @@ Blockly.RenderedConnection.prototype.setOffsetInBlock = function(x, y) {
   this.offsetInBlock_.y = y;
 };
 
-Blockly.RenderedConnection.prototype.addHighlightMargin = function(top, bottom) {
-  this.topMargin = top;
-  this.bottomMargin = bottom;
-};
-
 /**
  * Registers the margins of a block, so the highlight 
  * (yellow line around block when clickedo on) can also be aligned vertically.
@@ -218,7 +215,7 @@ Blockly.RenderedConnection.prototype.highlight = function() {
       steps = 'm 0,0 ' + 'v ' + this.topMargin + ' ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v ' + this.bottomMargin;
     }
     else {
-      steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 7.5';
+      steps = 'm 0,0 ' + Blockly.BlockSvg.TAB_PATH_DOWN + ' v 7.5'; // OR 5 instead of 7.5, according to Google <<<<<<<<<<<<<<
     }
   } else {
     steps = 'm -20,0 h 5 ' + Blockly.BlockSvg.NOTCH_PATH_LEFT + ' h 5';
