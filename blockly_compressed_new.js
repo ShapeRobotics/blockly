@@ -15318,34 +15318,24 @@ Blockly.Variables.allDeveloperVariables = function(a) {
     return b
 };
 Blockly.Variables.flyoutCategory = function(a) {
-    var b = [],
-        c = document.createElement("button");
-    c.setAttribute("text", "%{BKY_NEW_VARIABLE}");
-    c.setAttribute("callbackKey", "CREATE_VARIABLE");
-    a.registerButtonCallback("CREATE_VARIABLE", function(a) {
-        Blockly.Variables.createVariableButtonHandler(a.getTargetWorkspace())
-    });
-    b.push(c);
+    var b = [];
     a = Blockly.Variables.flyoutCategoryBlocks(a);
     return b = b.concat(a)
 };
 Blockly.Variables.flyoutCategoryBlocks = function(a) {
-    a = a.getVariablesOfType("");
-    a.sort(Blockly.VariableModel.compareByName);
-    var b = [];
-    if (0 < a.length) {
-        var c = a[0];
-        if (Blockly.Blocks.variables_set) {
-            var d = Blockly.Blocks.math_change ? 8 : 24;
-            d = '<xml><block type="variables_set" gap="' + d + '">' + Blockly.Variables.generateVariableFieldXmlString(c) + "</block></xml>";
-            d = Blockly.Xml.textToDom(d).firstChild;
-            b.push(d)
-        }
-        Blockly.Blocks.math_change && (d = Blockly.Blocks.variables_get ? 20 : 8, d = '<xml><block type="math_change" gap="' +
-            d + '">' + Blockly.Variables.generateVariableFieldXmlString(c) + '<value name="DELTA"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block></xml>', d = Blockly.Xml.textToDom(d).firstChild, b.push(d));
-        for (c = 0; d = a[c]; c++) Blockly.Blocks.variables_get && (d = '<xml><block type="variables_get" gap="8">' + Blockly.Variables.generateVariableFieldXmlString(d) + "</block></xml>", d = Blockly.Xml.textToDom(d).firstChild, b.push(d))
+    var b = a.getVariablesOfType("");
+    b.sort(Blockly.VariableModel.compareByName);
+    var c = [];
+    if (Blockly.Blocks.variables_create) {
+        var d = '<xml><block type="variables_create" gap="24"><field name="NAME">' + Blockly.Variables.generateUniqueName(a) + '</field><value name="VALUE"><shadow type="math_number"><field name="NUM">5</field></shadow></value></block></xml>';
+        d = Blockly.Xml.textToDom(d).firstChild;
+        c.push(d)
     }
-    return b
+    if (0 < b.length)
+        for (a = b[0], Blockly.Blocks.variables_set &&
+            (d = Blockly.Blocks.math_change ? 8 : 24, d = '<xml><block type="variables_set" gap="' + d + '">' + Blockly.Variables.generateVariableFieldXmlString(a) + "</block></xml>", d = Blockly.Xml.textToDom(d).firstChild, c.push(d)), Blockly.Blocks.math_change && (d = Blockly.Blocks.variables_get ? 20 : 8, d = '<xml><block type="math_change" gap="' + d + '">' + Blockly.Variables.generateVariableFieldXmlString(a) + '<value name="DELTA"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block></xml>', d = Blockly.Xml.textToDom(d).firstChild,
+                c.push(d)), a = 0; d = b[a]; a++) Blockly.Blocks.variables_get && (d = '<xml><block type="variables_get" gap="8">' + Blockly.Variables.generateVariableFieldXmlString(d) + "</block></xml>", d = Blockly.Xml.textToDom(d).firstChild, c.push(d));
+    return c
 };
 Blockly.Variables.generateUniqueName = function(a) {
     a = a.getAllVariables();
@@ -16911,7 +16901,7 @@ Blockly.Extensions.extensionParentTooltip_ = function() {
 };
 Blockly.Extensions.register("parent_tooltip_when_inline", Blockly.Extensions.extensionParentTooltip_);
 Blockly.Field = function(a, b) {
-    this.size_ = new goog.math.Size(0, 25);
+    this.size_ = new goog.math.Size(0, 19);
     this.setValue(a);
     this.setValidator(b)
 };
@@ -17084,7 +17074,7 @@ Blockly.Field.prototype.referencesVariables = function() {
     return !1
 };
 Blockly.FieldLabel = function(a, b) {
-    this.size_ = new goog.math.Size(0, 18);
+    this.size_ = new goog.math.Size(0, 15);
     this.class_ = b;
     this.setValue(a);
     this.tooltip_ = ""
@@ -17098,7 +17088,7 @@ Blockly.FieldLabel.prototype.EDITABLE = !1;
 Blockly.FieldLabel.prototype.init = function() {
     this.textElement_ || (this.textElement_ = Blockly.utils.createSvgElement("text", {
         "class": "blocklyText",
-        y: this.size_.height - 2
+        y: this.size_.height
     }, null), this.class_ && Blockly.utils.addClass(this.textElement_, this.class_), this.visible_ || (this.textElement_.style.display = "none"), this.sourceBlock_.getSvgRoot().appendChild(this.textElement_), this.textElement_.tooltip = this.tooltip_ ? this.tooltip_ : this.sourceBlock_, Blockly.Tooltip.bindMouseEvents(this.textElement_), this.render_())
 };
 Blockly.FieldLabel.prototype.dispose = function() {

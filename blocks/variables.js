@@ -43,6 +43,26 @@ goog.require('Blockly');
 Blockly.Constants.Variables.HUE = 330;
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
+  {
+    "type": "variables_create",
+    "message0": "%{BKY_NEW_VARIABLE} %1 %2",
+    "args0": [
+      {
+        "type": "field_input",
+        "name": "NAME",
+        "text": "x"
+      },
+      {
+        "type": "input_value",
+        "name": "VALUE"
+      }
+    ],
+    "previousStatement": null,
+    "nextStatement": null,
+    "colour": "%{BKY_VARIABLES_HUE}",
+    "helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
+    "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
+  },
   // Block for variable getter.
   {
     "type": "variables_get",

@@ -28,6 +28,20 @@ goog.provide('Blockly.Python.variables');
 
 goog.require('Blockly.Python');
 
+Blockly.Python['variables_create'] = function(block) {
+    var varName = block.getFieldValue('NAME');
+    
+    var existing = Blockly.Variables.nameUsedWithAnyType_(varName, block.workspace);
+    if (!existing) {
+        block.workspace.createVariable(varName, '');
+    }
+
+    var startVal = Blockly.Python.valueToCode(block, 'VALUE',
+    Blockly.Python.ORDER_NONE) || '0';
+    
+    var code = varName + " = " + startVal + '\n';
+    return code;
+}
 
 Blockly.Python['variables_get'] = function(block) {
   // Variable getter.
