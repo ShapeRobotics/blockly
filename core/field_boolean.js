@@ -143,7 +143,7 @@ Blockly.FieldBoolean.prototype.resizeField_ = function() {
     
     setTimeout(function() {
       thisField.resizeField_();
-    }, 100);
+    }, 50);
 
     return;
   }
@@ -160,14 +160,6 @@ Blockly.FieldBoolean.prototype.resizeField_ = function() {
     // called again and, at that point in time, will not throw an exception.
     textWidth = this.text_.length * 8;
   }
-
-  // if (textWidth == 0) {
-  //   var thisField = this;
-    
-  //   setTimeout(function() {
-  //     thisField.resizeField_();
-  //   }, 100);
-  // }
 
   tempWidth = textWidth + this.ADDED_PADDING;
 
