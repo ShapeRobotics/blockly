@@ -19503,7 +19503,7 @@ Blockly.FieldBoolean.prototype.resizeField_ = function() {
         var e = this;
         setTimeout(function() {
             e.resizeField_()
-        }, 100)
+        }, 50)
     }
 };
 Blockly.FieldBoolean.prototype.showEditor_ = function() {
