@@ -103,7 +103,7 @@ Blockly.FieldBoolean.prototype.init = function() {
   Blockly.utils.addClass(this.fieldGroup_, 'blocklyEditableText');
   Blockly.utils.removeClass(this.fieldGroup_, 'blocklyNonEditableText');
 
-  this.resizeField_();
+  // this.resizeField_();
 };
 
 /**
@@ -112,6 +112,54 @@ Blockly.FieldBoolean.prototype.init = function() {
  */
 Blockly.FieldBoolean.prototype.getValue = function() {
   return String(this.state_).toUpperCase();
+};
+
+/**
+ * Returns the height and width of the field.
+ * @return {!goog.math.Size} Height and width.
+ */
+Blockly.FieldBoolean.prototype.getSize = function() {
+  if (!this.size_.width) {
+    this.render_();
+  }
+  return this.size_;
+};
+
+
+/**
+ * Updates thw width of the field. This calls getCachedWidth which won't cache
+ * the approximated width on IE/Edge when `getComputedTextLength` fails. Once
+ * it eventually does succeed, the result will be cached.
+ */
+Blockly.FieldBoolean.prototype.updateWidth = function() {
+  var textWidth = Blockly.Field.getCachedWidth(this.textElement_);
+
+  var tempWidth = textWidth + this.ADDED_PADDING;
+
+  if (tempWidth < this.MIN_WIDTH) {
+    tempWidth = this.MIN_WIDTH;
+  }
+
+  this.textElement_.setAttribute("x", (tempWidth - textWidth) / 2);
+
+  if (this.borderPath_) {
+    var padding = tempWidth / 2;
+    var diagonalLength = ((this.size_.height - 5) / 2);
+    var newPath = "m 0,0 H " + (textWidth / 2) + 
+                  " l " + diagonalLength + "," + diagonalLength + " v 5 " + 
+                  " l " + (-diagonalLength) + "," + diagonalLength +
+                  " H " + (-textWidth/2) + 
+                  " l " + (-diagonalLength) + "," + (-diagonalLength) + " v -5 " +
+                  " l " + diagonalLength + "," + (-diagonalLength) + " z";
+    this.borderPath_.setAttribute("d", newPath);
+    this.borderPath_.setAttribute("transform", "translate(" + padding + ",0)");
+  }
+  
+  // if (this.borderRect_) {
+  //   this.borderRect_.setAttribute('width',
+  //       width + Blockly.BlockSvg.SEP_SPACE_X);
+  // }
+  this.size_.width = textWidth + this.ADDED_PADDING;
 };
 
 /**
@@ -133,65 +181,65 @@ Blockly.FieldBoolean.prototype.setValue = function(newBool) {
 
     var newText = this.state_ ? Blockly.Msg['LOGIC_BOOLEAN_TRUE'] : Blockly.Msg['LOGIC_BOOLEAN_FALSE'];
     Blockly.Field.prototype.setText.call(this, newText);
-    this.resizeField_();
+    // this.resizeField_();
   }
 };
 
-Blockly.FieldBoolean.prototype.resizeField_ = function() {
-  if (!this.borderPath_ || !this.textElement_) {
-    var thisField = this;
+// Blockly.FieldBoolean.prototype.resizeField_ = function() {
+//   // if (!this.borderPath_ || !this.textElement_) {
+//   //   var thisField = this;
     
-    setTimeout(function() {
-      thisField.resizeField_();
-    }, 50);
+//   //   setTimeout(function() {
+//   //     thisField.resizeField_();
+//   //   }, 50);
 
-    return;
-  }
+//   //   return;
+//   // }
 
-  var tempWidth = 0;
-  var textWidth = 0;
+//   var tempWidth = 0;
+//   var textWidth = 0;
 
-  try {
-    textWidth = this.textElement_.getComputedTextLength();
-  } catch (e) {
-    // In other cases where we fail to geth the computed text. Instead, use an
-    // approximation and do not cache the result. At some later point in time
-    // when the block is inserted into the visible DOM, this method will be
-    // called again and, at that point in time, will not throw an exception.
-    textWidth = this.text_.length * 8;
-  }
+//   try {
+//     textWidth = this.textElement_.getComputedTextLength();
+//   } catch (e) {
+//     // In other cases where we fail to geth the computed text. Instead, use an
+//     // approximation and do not cache the result. At some later point in time
+//     // when the block is inserted into the visible DOM, this method will be
+//     // called again and, at that point in time, will not throw an exception.
+//     textWidth = this.text_.length * 8;
+//   }
 
-  tempWidth = textWidth + this.ADDED_PADDING;
+//   tempWidth = textWidth + this.ADDED_PADDING;
 
-  if (tempWidth < this.MIN_WIDTH) {
-    tempWidth = this.MIN_WIDTH;
-  }
+//   if (tempWidth < this.MIN_WIDTH) {
+//     tempWidth = this.MIN_WIDTH;
+//   }
 
-  this.size_ = new goog.math.Size(tempWidth, this.size_.height);
+//   this.size_ = new goog.math.Size(tempWidth, this.size_.height);
 
-  if (this.borderPath_) {
-    var padding = tempWidth / 2;
-    var diagonalLength = ((this.size_.height - 5) / 2);
-    var newPath = "m 0,0 H " + (textWidth / 2) + 
-                  " l " + diagonalLength + "," + diagonalLength + " v 5 " + 
-                  " l " + (-diagonalLength) + "," + diagonalLength +
-                  " H " + (-textWidth/2) + 
-                  " l " + (-diagonalLength) + "," + (-diagonalLength) + " v -5 " +
-                  " l " + diagonalLength + "," + (-diagonalLength) + " z";
-    this.borderPath_.setAttribute("d", newPath);
-    this.borderPath_.setAttribute("transform", "translate(" + padding + ",0)");
-  }
+//   if (this.borderPath_) {
+//     var padding = tempWidth / 2;
+//     var diagonalLength = ((this.size_.height - 5) / 2);
+//     var newPath = "m 0,0 H " + (textWidth / 2) + 
+//                   " l " + diagonalLength + "," + diagonalLength + " v 5 " + 
+//                   " l " + (-diagonalLength) + "," + diagonalLength +
+//                   " H " + (-textWidth/2) + 
+//                   " l " + (-diagonalLength) + "," + (-diagonalLength) + " v -5 " +
+//                   " l " + diagonalLength + "," + (-diagonalLength) + " z";
+//     this.borderPath_.setAttribute("d", newPath);
+//     this.borderPath_.setAttribute("transform", "translate(" + padding + ",0)");
+//   }
 
-  if (this.textElement_) {
-    //The -4 accounts for the rx property of the surrounding rect (used for rounding of the box). Check Blockly.Field.
-    var newX = ((tempWidth - textWidth) / 2);
-    this.textElement_.setAttribute("x", newX);
-  }
+//   if (this.textElement_) {
+//     //The -4 accounts for the rx property of the surrounding rect (used for rounding of the box). Check Blockly.Field.
+//     var newX = ((tempWidth - textWidth) / 2);
+//     this.textElement_.setAttribute("x", newX);
+//   }
 
-  if (this.sourceBlock_) {
-    this.sourceBlock_.rendered && this.sourceBlock_.render();
-  }
-};
+//   if (this.sourceBlock_) {
+//     this.sourceBlock_.rendered && this.sourceBlock_.render();
+//   }
+// };
 
 /**
  * Toggle the state of the checkbox.
