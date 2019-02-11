@@ -97,7 +97,7 @@ Blockly.FieldJointAngle.CLOCKWISE = true;
  * Offset the location of 0 degrees (and all angles) by a constant.
  * Usually either 0 (0 = right) or 90 (0 = up).
  */
-Blockly.FieldJointAngle.OFFSET = 180;
+Blockly.FieldJointAngle.OFFSET = 90;
 
 /**
  * Maximum allowed angle before wrapping.
@@ -187,12 +187,15 @@ Blockly.FieldJointAngle.prototype.showEditor_ = function() {
     ' 0 0 0 0,' + Blockly.FieldJointAngle.HALF + ' z',
     'class': 'blocklyAngleCircle'
   }, svg);
-  this.gauge_ = Blockly.utils.createSvgElement('path',
-      {'class': 'blocklyAngleGauge'}, svg);
+  this.gauge_ = Blockly.utils.createSvgElement('path', {
+      'class': 'blocklyAngleGauge', 
+      'transform': 'rotate(270,50,50)'
+    }, svg);
   this.line_ = Blockly.utils.createSvgElement('line', {
     'x1': Blockly.FieldJointAngle.HALF,
     'y1': Blockly.FieldJointAngle.HALF,
-    'class': 'blocklyAngleLine'
+    'class': 'blocklyAngleLine',
+    'transform': 'rotate(270,50,50)'
   }, svg);
   // Draw markers around the edge.
   for (var angle = 195; angle < 360; angle += 15) {
@@ -271,9 +274,6 @@ Blockly.FieldJointAngle.prototype.onMouseMove = function(e) {
  * @param {?string} text New text.
  */
 Blockly.FieldJointAngle.prototype.setText = function(text) {
-  // var num = parseInt(text) - 90;
-  // text = String(num);
-
   Blockly.FieldJointAngle.superClass_.setText.call(this, text);
   if (!this.textElement_) {
     // Not rendered yet.
@@ -292,10 +292,7 @@ Blockly.FieldJointAngle.prototype.updateGraph_ = function() {
   if (!this.gauge_) {
     return;
   }
-  if (!this.angle_) {
-    return;
-  }
-  var angleDegrees = this.angle_ + Blockly.FieldJointAngle.OFFSET;
+  var angleDegrees = Number(this.getText()) + (2 * Blockly.FieldJointAngle.OFFSET);
   var angleRadians = Blockly.utils.toRadians(angleDegrees);
   var path = ['M ', Blockly.FieldJointAngle.HALF, ',', Blockly.FieldJointAngle.HALF];
   var x2 = Blockly.FieldJointAngle.HALF;
@@ -338,17 +335,12 @@ Blockly.FieldJointAngle.prototype.classValidator = function(text) {
     return null;
   }
   n = n % 360;
-
   if (n < 0) {
-    n += Blockly.FieldJointAngle.WRAP;
+    n += 360;
   }
   if (n > Blockly.FieldJointAngle.WRAP) {
-    n -= Blockly.FieldJointAngle.WRAP;
+    n -= 360;
   }
-
-  this.angle_ = Number(n);
-
-  n = n - 90;
   return String(n);
 };
 
