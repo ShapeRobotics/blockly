@@ -66,7 +66,7 @@ Blockly.FieldDropdown = function(menuGenerator, opt_validator) {
 goog.inherits(Blockly.FieldDropdown, Blockly.Field);
 
 /**
- * Construct a FieldDropdown from a JSON arg object.
+ * Construct a FieldDropdown from a JSON arg object.f
  * @param {!Object} options A JSON object with options (options).
  * @returns {!Blockly.FieldDropdown} The new field instance.
  * @package
@@ -478,7 +478,7 @@ Blockly.FieldDropdown.prototype.renderSelectedImage_ = function() {
   // Insert dropdown arrow.
   this.textElement_.appendChild(this.arrow_);
   var arrowWidth = Blockly.Field.getCachedWidth(this.arrow_);
-  this.size_.height = Number(this.imageJson_.height) + 19;
+  this.size_.height = Number(this.imageJson_.height) + 10;
   this.size_.width = Number(this.imageJson_.width) + arrowWidth;
   if (this.sourceBlock_.RTL) {
     this.imageElement_.setAttribute('x', arrowWidth);
@@ -489,7 +489,7 @@ Blockly.FieldDropdown.prototype.renderSelectedImage_ = function() {
   }
 
   //SHAPE: Added from blockly_changes
-  this.textElement_.setAttribute('transform', 'translate(0,0)');
+  this.textElement_.setAttribute('transform', 'translate(0,5)');
 };
 
 /**
@@ -574,21 +574,20 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
   var listOfRecentModules = [];
 
    //TODO: As new module types show up, add them in this list
-  var listOfModuleTypes = ["Dongle", "Joint", "Spin", "Face"];
+  var listOfModuleTypes = ["Hub", "Dongle", "Joint", "Spin", "Face"];
 
    for (key in listOfModuleTypes) {
-    moduleType = listOfModuleTypes[key];
+    var moduleType = listOfModuleTypes[key];
 
      //Go through all the active modules of type "moduleType" and add them to the "global" list above
     if (moduleType in activeIDsDict) {
-      for (activeModule in activeIDsDict[moduleType]) {
+      for (var activeModule in activeIDsDict[moduleType]) {
         listOfActiveModules.push(activeIDsDict[moduleType][activeModule][0]);
       }
     }
-
      //Do the same for the recent modules
     if (moduleType in recentIDsDict) {
-      for (recentModule in recentIDsDict[moduleType]) {
+      for (var recentModule in recentIDsDict[moduleType]) {
         listOfRecentModules.push(recentIDsDict[moduleType][recentModule][0]);
       }
     }
@@ -599,8 +598,12 @@ Blockly.FieldDropdown.changeRecentModuleColors = function(activeIDsDict, recentI
     var child = mainChild.children[i];
     var innerText = child.innerText;
     if (innerText != undefined) {
-        //Remove the last character (a new line) and do an uppercase for the Face module
-        innerText = innerText.substring(0, innerText.length - 1).toUpperCase();
+      // remove that fun fun empty space
+      innerText = innerText.substring(0, innerText.length - 1);
+        if (innerText != 'Hub') {
+          //uppercase for the Face module but not the Hub / Dongle
+          innerText = innerText.toUpperCase();
+        } 
 
          //Search in the active and recent lists. If the option is inside the recent list, but not in the active list, grey it out.
         //Otherwise, un-grey it out.

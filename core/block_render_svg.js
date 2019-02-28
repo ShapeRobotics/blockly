@@ -526,7 +526,7 @@ Blockly.BlockSvg.prototype.renderCompute_ = function(iconWidth) {
       //SHAPE: If the block has an inner block (AND it is connected), mark this. Required because blocks with blocks in them MUST NOT have margins added to top/bottom.
       row.hasInput = true;
     }
-
+    
     // Blocks have a one pixel shadow that should sometimes overhang.
     if (!isInline && i == inputList.length - 1) {
       // Last value input should overhang.
@@ -1177,7 +1177,7 @@ Blockly.BlockSvg.prototype.renderExternalValueInput_ = function(pathObject, row,
   //SHAPE: Figure out where the "puzzle" piece of the inner block is vertically positioned.
   //Done because the "parent" block needs a hole in it that has a "puzzle" piece to the left
   //Numbers are hardcoded because the SVG path of the puzzle piece is also hardcoded
-  var topVerticalLine = ((row.height - 15) / 2) - 7.5;
+  var topVerticalLine = ((row.alignmentHeight - 15) / 2) - 7.5;
 
   if (topVerticalLine < 0) {
     topVerticalLine = 0;

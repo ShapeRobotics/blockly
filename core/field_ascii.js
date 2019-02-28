@@ -24,7 +24,7 @@
  */
 'use strict';
 
-goog.provide('Blockly.ButtonInput');
+goog.provide('Blockly.AsciiInput');
 
 goog.require('Blockly.Field');
 goog.require('Blockly.Msg');
@@ -45,29 +45,29 @@ goog.require('goog.userAgent');
  * @extends {Blockly.Field}
  * @constructor
  */
-Blockly.ButtonInput = function (text, opt_validator) {
-    Blockly.ButtonInput.superClass_.constructor.call(this, text,
+Blockly.AsciiInput = function (text, opt_validator) {
+    Blockly.AsciiInput.superClass_.constructor.call(this, text,
         opt_validator);
 };
-goog.inherits(Blockly.ButtonInput, Blockly.Field);
+goog.inherits(Blockly.AsciiInput, Blockly.Field);
 
-Blockly.ButtonInput.FONTSIZE = 11;                  //Point size of text. Should match blocklyText's font-size in CSS.
-Blockly.ButtonInput.MIN_WIDTH = 50;
-Blockly.ButtonInput.WIDGET_MIN_WIDTH = 0;
+Blockly.AsciiInput.FONTSIZE = 11;                  //Point size of text. Should match blocklyText's font-size in CSS.
+Blockly.AsciiInput.MIN_WIDTH = 50;
+Blockly.AsciiInput.WIDGET_MIN_WIDTH = 0;
 
-Blockly.ButtonInput.prototype.CURSOR = 'button';    //Mouse cursor style when over the hotspot that initiates the editor.
-Blockly.ButtonInput.prototype.isSpecial = true;
+Blockly.AsciiInput.prototype.CURSOR = 'button';    //Mouse cursor style when over the hotspot that initiates the editor.
+Blockly.AsciiInput.prototype.isSpecial = true;
 
-Blockly.ButtonInput.prototype.KEY_CODE = "KEYCODE_SPACEBAR";
-Blockly.ButtonInput.prototype.LOCALIZED_KEY = Blockly.Msg.SPACEBAR;
-Blockly.ButtonInput.prototype.PYTHON_KEY = "Space";
+Blockly.AsciiInput.prototype.KEY_CODE = "KEYCODE_SPACEBAR    32";
+Blockly.AsciiInput.prototype.LOCALIZED_KEY = Blockly.Msg.SPACEBAR;
+Blockly.AsciiInput.prototype.PYTHON_KEY = "32";
 
 /**
  * Close the input widget if this input is being deleted.
  */
-Blockly.ButtonInput.prototype.dispose = function () {
+Blockly.AsciiInput.prototype.dispose = function () {
     Blockly.WidgetDiv.hideIfOwner(this);
-    Blockly.ButtonInput.superClass_.dispose.call(this);
+    Blockly.AsciiInput.superClass_.dispose.call(this);
 };
 
 /**
@@ -75,13 +75,13 @@ Blockly.ButtonInput.prototype.dispose = function () {
  * dereferencing any string table references.
  * @param {!Object} options A JSON object with options (text, class, and
  *                          spellcheck).
- * @returns {!Blockly.ButtonInput} The new field instance.
+ * @returns {!Blockly.AsciiInput} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.ButtonInput.fromJson = function(options) {
+Blockly.AsciiInput.fromJson = function(options) {
   var text = Blockly.utils.replaceMessageReferences(options['text']);
-  var field = new Blockly.ButtonInput(text, options['class']);
+  var field = new Blockly.AsciiInput(text, options['class']);
   return field;
 };
 
@@ -90,7 +90,7 @@ Blockly.ButtonInput.fromJson = function(options) {
  * @param {?string} newValue New value.
  * @override
  */
-Blockly.ButtonInput.prototype.setValue = function (newValue) {
+Blockly.AsciiInput.prototype.setValue = function (newValue) {
   // console.log(newValue);
     if (newValue === null) {
         return;  // No change if null.
@@ -118,7 +118,7 @@ Blockly.ButtonInput.prototype.setValue = function (newValue) {
  * are not translated to the language chosen by the user,
  * but remain in english.
  */
-Blockly.ButtonInput.prototype.getValue = function() {
+Blockly.AsciiInput.prototype.getValue = function() {
   //Retrieve the stored KEY (used for caching)
   return this.KEY_CODE;
 };
@@ -127,7 +127,7 @@ Blockly.ButtonInput.prototype.getValue = function() {
  * Set the text in this field and fire a change event.
  * @param {*} newText New text.
  */
-Blockly.ButtonInput.prototype.setText = function (newText) {
+Blockly.AsciiInput.prototype.setText = function (newText) {
     if (newText === null) {
         // No change if null.
         return;
@@ -150,8 +150,9 @@ Blockly.ButtonInput.prototype.setText = function (newText) {
     this.resizeInput_();
 };
 
-Blockly.ButtonInput.prototype.convertText = function() {
-  switch (this.KEY_CODE) {
+Blockly.AsciiInput.prototype.convertText = function() {
+  var stored = this.KEY_CODE.split('    ');
+  switch (stored[0]) {
     case "KEYCODE_SPACEBAR":
       return Blockly.Msg.SPACEBAR;
     case "KEYCODE_UP":
@@ -164,7 +165,7 @@ Blockly.ButtonInput.prototype.convertText = function() {
       return Blockly.Msg.RIGHT;
     default:
       //Lowercase this so caps lock doesn't affect things
-      return this.KEY_CODE.toLowerCase();
+      return stored[0].toLowerCase();
   }
 };
 
@@ -172,25 +173,12 @@ Blockly.ButtonInput.prototype.convertText = function() {
  * Get the text from this field.
  * @return {string} Current text.
  */
-Blockly.ButtonInput.prototype.convertKeyToCode = function() {
-    switch (this.KEY_CODE) {
-      case "KEYCODE_SPACEBAR":
-        return "spacebar";
-      case "KEYCODE_UP":
-        return "up";
-      case "KEYCODE_DOWN":
-        return "down";
-      case "KEYCODE_LEFT":
-        return "left";
-      case "KEYCODE_RIGHT":
-        return "right";
-      default:
-        //Lowercase this so caps lock doesn't affect things
-        return this.KEY_CODE.toLowerCase();
-    }
+Blockly.AsciiInput.prototype.convertKeyToCode = function() {
+    var stored = this.KEY_CODE.split('    ');
+    return stored[1];
 };
 
-Blockly.ButtonInput.prototype.resizeInput_ = function() {
+Blockly.AsciiInput.prototype.resizeInput_ = function() {
   if (this.sourceBlock_ != undefined && 
       this.sourceBlock_.workspace.isFlyout != undefined &&
       this.sourceBlock_.workspace.isFlyout) {
@@ -201,7 +189,7 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
   var tempWidth = 0;
 
   if (this.size_ != undefined) {
-    // if (this.size_.width == Blockly.ButtonInput.MIN_WIDTH) {
+    // if (this.size_.width == Blockly.AsciiInput.MIN_WIDTH) {
     //   return;
     // }
 
@@ -220,12 +208,12 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
 
     tempWidth = textWidth + 20;
 
-    if (tempWidth < Blockly.ButtonInput.MIN_WIDTH) {
-      tempWidth = Blockly.ButtonInput.MIN_WIDTH;
+    if (tempWidth < Blockly.AsciiInput.MIN_WIDTH) {
+      tempWidth = Blockly.AsciiInput.MIN_WIDTH;
     }
 
-    if (tempWidth < Blockly.ButtonInput.WIDGET_MIN_WIDTH) {
-      tempWidth = Blockly.ButtonInput.WIDGET_MIN_WIDTH;
+    if (tempWidth < Blockly.AsciiInput.WIDGET_MIN_WIDTH) {
+      tempWidth = Blockly.AsciiInput.WIDGET_MIN_WIDTH;
     }
 
     this.size_ = new goog.math.Size(tempWidth, this.size_.height);
@@ -265,7 +253,7 @@ Blockly.ButtonInput.prototype.resizeInput_ = function() {
  *     focus.  Defaults to false.
  * @private
  */
-Blockly.ButtonInput.prototype.showEditor_ = function (opt_quietInput) {
+Blockly.AsciiInput.prototype.showEditor_ = function (opt_quietInput) {
   // this.LOCALIZED_KEY = this.text_;
 
   this.workspace_ = this.sourceBlock_.workspace;
@@ -278,18 +266,18 @@ Blockly.ButtonInput.prototype.showEditor_ = function (opt_quietInput) {
   var htmlInput =
     goog.dom.createDom(goog.dom.TagName.INPUT, 'blocklyHtmlButtonInput');
   var fontSize =
-    (Blockly.ButtonInput.FONTSIZE * this.workspace_.scale) + 'pt';
+    (Blockly.AsciiInput.FONTSIZE * this.workspace_.scale) + 'pt';
   div.style.fontSize = fontSize;
   htmlInput.style.fontSize = fontSize;
   var bBox = this.fieldGroup_.getBBox();
   htmlInput.placeholder = Blockly.Msg.PRESS_ANY_KEY;
-  Blockly.ButtonInput.WIDGET_MIN_WIDTH = (htmlInput.placeholder.length * 8); 
-  htmlInput.style.width = (Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.workspace_.scale) + 'px';
+  Blockly.AsciiInput.WIDGET_MIN_WIDTH = (htmlInput.placeholder.length * 8); 
+  htmlInput.style.width = (Blockly.AsciiInput.WIDGET_MIN_WIDTH * this.workspace_.scale) + 'px';
   //Remove 6 as there is 2 pixels of padding and 4 pixels of border
   htmlInput.style.height = ((bBox.height * this.workspace_.scale) - 6) + 'px';
 
   /** @type {!HTMLInputElement} */
-  Blockly.ButtonInput.htmlInput_ = htmlInput;
+  Blockly.AsciiInput.htmlInput_ = htmlInput;
   div.appendChild(htmlInput);
 
   this.validate_();
@@ -312,7 +300,7 @@ Blockly.ButtonInput.prototype.showEditor_ = function (opt_quietInput) {
  * @param {!Event} e Keyboard event.
  * @private
  */
-Blockly.ButtonInput.prototype.onHtmlInputKeyDown_ = function (e) {
+Blockly.AsciiInput.prototype.onHtmlInputKeyDown_ = function (e) {
   var isKeyPressSuccessful = true;
   
   var escKey = 27;
@@ -339,7 +327,7 @@ Blockly.ButtonInput.prototype.onHtmlInputKeyDown_ = function (e) {
  * "Press any key" to "Invalid key pressed" and proceeds to 
  * start a flashing animation.
  */
-Blockly.ButtonInput.prototype.onInvalidButtonPressed_ = function() {
+Blockly.AsciiInput.prototype.onInvalidButtonPressed_ = function() {
   //Get the widget and all HTML children of it
   var div = Blockly.WidgetDiv.DIV;
   var children = div.children;
@@ -358,8 +346,8 @@ Blockly.ButtonInput.prototype.onInvalidButtonPressed_ = function() {
         children[i].value = "";
 
         // children[i].blur();
-        Blockly.ButtonInput.WIDGET_MIN_WIDTH = (children[i].placeholder.length * 8); 
-        children[i].style.width = (Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale) + 'px';
+        Blockly.AsciiInput.WIDGET_MIN_WIDTH = (children[i].placeholder.length * 8); 
+        children[i].style.width = (Blockly.AsciiInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale) + 'px';
         this.resizeInput_();
 
         //Change the class so the animation starts triggering
@@ -380,7 +368,7 @@ Blockly.ButtonInput.prototype.onInvalidButtonPressed_ = function() {
  * After 6 loops, triggers the end animation, which slowly switches back to
  * the "Press any key" placeholder.
  */
-Blockly.ButtonInput.prototype.changePlaceholderAnimation_ = function(elem, count) {
+Blockly.AsciiInput.prototype.changePlaceholderAnimation_ = function(elem, count) {
   //Switch the class between error-1 and error-2
   if (elem.className == "blocklyHtmlButtonInput button-input-error-1") {
     elem.className = "blocklyHtmlButtonInput button-input-error-2";
@@ -417,16 +405,16 @@ Blockly.ButtonInput.prototype.changePlaceholderAnimation_ = function(elem, count
  * Restores the placeholder of the widget to say "Press any key".
  * Done after the "invalid key pressed" animation finishes.
  */
-Blockly.ButtonInput.prototype.onResetPlaceholder_ = function(elem) {
+Blockly.AsciiInput.prototype.onResetPlaceholder_ = function(elem) {
     //Return to the original class name
     elem.className = "blocklyHtmlButtonInput";
     //Change the label
     elem.placeholder = Blockly.Msg.PRESS_ANY_KEY;
 
     //Only update the min width if the widget is still active!
-    if (Blockly.ButtonInput.WIDGET_MIN_WIDTH > 0) {
-      Blockly.ButtonInput.WIDGET_MIN_WIDTH = (elem.placeholder.length * 8); 
-      elem.style.width = (Blockly.ButtonInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale) + 'px';
+    if (Blockly.AsciiInput.WIDGET_MIN_WIDTH > 0) {
+      Blockly.AsciiInput.WIDGET_MIN_WIDTH = (elem.placeholder.length * 8); 
+      elem.style.width = (Blockly.AsciiInput.WIDGET_MIN_WIDTH * this.sourceBlock_.workspace.scale) + 'px';
       this.resizeInput_();
     }
     
@@ -445,7 +433,7 @@ Blockly.ButtonInput.prototype.onResetPlaceholder_ = function(elem) {
  * 
  * @returns {String} A translated string of the special keys.
  */
-Blockly.ButtonInput.prototype.keyDisplayParser_ = function (key_object) {
+Blockly.AsciiInput.prototype.keyDisplayParser_ = function (key_object) {
     console.log(key_object);
 
     let key_code = key_object.keyCode;
@@ -482,6 +470,8 @@ Blockly.ButtonInput.prototype.keyDisplayParser_ = function (key_object) {
             break;
     }
 
+    key_code_for_cache = key_code_for_cache + '    ' + key_code;
+
     this.KEY_CODE = key_code_for_cache;
 
     return true;
@@ -492,10 +482,10 @@ Blockly.ButtonInput.prototype.keyDisplayParser_ = function (key_object) {
  * Style the editor accordingly.
  * @private
  */
-Blockly.ButtonInput.prototype.validate_ = function () {
+Blockly.AsciiInput.prototype.validate_ = function () {
   var valid = true;
-  goog.asserts.assertObject(Blockly.ButtonInput.htmlInput_);
-  var htmlInput = Blockly.ButtonInput.htmlInput_;
+  goog.asserts.assertObject(Blockly.AsciiInput.htmlInput_);
+  var htmlInput = Blockly.AsciiInput.htmlInput_;
   if (this.sourceBlock_) {
     valid = this.callValidator(htmlInput.value);
   }
@@ -510,7 +500,7 @@ Blockly.ButtonInput.prototype.validate_ = function () {
  * Resize the editor and the underlying block to fit the text.
  * @protected
  */
-Blockly.ButtonInput.prototype.resizeEditor_ = function() {
+Blockly.AsciiInput.prototype.resizeEditor_ = function() {
   var div = Blockly.WidgetDiv.DIV;
   var bBox = this.getScaledBBox_();
   div.style.width = bBox.right - bBox.left + 'px';
@@ -543,15 +533,15 @@ Blockly.ButtonInput.prototype.resizeEditor_ = function() {
  * @return {!Function} Closure to call on destruction of the WidgetDiv.
  * @private
  */
-Blockly.ButtonInput.prototype.widgetDispose_ = function () {
+Blockly.AsciiInput.prototype.widgetDispose_ = function () {
   var thisField = this;
   return function () {
-    Blockly.ButtonInput.WIDGET_MIN_WIDTH = 0;
+    Blockly.AsciiInput.WIDGET_MIN_WIDTH = 0;
     thisField.setText(thisField.KEY_CODE);
     thisField.validate_();
     thisField.resizeInput_();
     thisField.sourceBlock_.rendered && thisField.sourceBlock_.render();
-    var htmlInput = Blockly.ButtonInput.htmlInput_;
+    var htmlInput = Blockly.AsciiInput.htmlInput_;
 
     if (htmlInput != null) {
       Blockly.unbindEvent_(htmlInput.onKeyDownWrapper_);
@@ -559,7 +549,7 @@ Blockly.ButtonInput.prototype.widgetDispose_ = function () {
           htmlInput.onWorkspaceChangeWrapper_);
     }
 
-    Blockly.ButtonInput.htmlInput_ = null;
+    Blockly.AsciiInput.htmlInput_ = null;
     Blockly.Events.setGroup(false);
 
     // Delete style properties.
@@ -570,4 +560,4 @@ Blockly.ButtonInput.prototype.widgetDispose_ = function () {
   };
 };
 
-Blockly.Field.register('button_input', Blockly.ButtonInput);
+Blockly.Field.register('ascii_input', Blockly.AsciiInput);
