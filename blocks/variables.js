@@ -42,27 +42,86 @@ goog.require('Blockly');
  */
 Blockly.Constants.Variables.HUE = 330;
 
-Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
-  {
-    "type": "variables_create",
-    "message0": "%{BKY_NEW_VARIABLE} %1 %2",
-    "args0": [
-      {
-        "type": "field_input",
-        "name": "NAME",
-        "text": "x"
-      },
-      {
-        "type": "input_value",
-        "name": "VALUE"
-      }
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "colour": "%{BKY_VARIABLES_HUE}",
-    "helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
-    "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
+Blockly.Blocks['variables_create'] = {
+  /**
+   * Mutator block for procedure argument.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var field = new Blockly.FieldTextInput('x', this.validator_);
+
+    this.appendDummyInput()
+        .appendField("create variable with name")
+        .appendField(field, 'NAME');
+
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(Blockly.Msg['VARIABLES_HUE']);
+    
+
+    // Create the default variable when we drag the block in from the flyout.
+    // Have to do this after installing the field on the block.
+    field.createdVariable_ = null;
   },
+  /**
+   * Obtain a valid name for the procedure argument. Create a variable if
+   * necessary.
+   * Merge runs of whitespace.  Strip leading and trailing whitespace.
+   * Beyond this, all names are legal.
+   * @param {string} varName User-supplied name.
+   * @return {?string} Valid name, or null if a name was not specified.
+   * @private
+   * @this Blockly.FieldTextInput
+   */
+  validator_: function(varName) {
+    if (this.sourceBlock_.isInFlyout) {
+      return varName;
+    }
+
+    var workspace = this.sourceBlock_.workspace;
+    varName = varName.replace(/[\s\xa0]+/g, ' ').replace(/^ | $/g, '');
+
+    if (!varName) {
+      return null;
+    }
+    
+    var model = workspace.getVariable(varName, '');
+    if (model && this.createdVariable_ && model.getId() == this.createdVariable_.getId()) {
+      // Rename the variable (case change)
+      workspace.renameVariableById(this.createdVariable_.getId(), varName);
+    }
+    else if (!model && this.createdVariable_) {
+      // Rename the variable (case change)
+      workspace.renameVariableById(this.createdVariable_.getId(), varName);
+    }
+    else if (model && this.createdVariable_ && model.getId() != this.createdVariable_.getId()) {
+      //TODO: Show warning
+      //TODO: DELETE this.createdVariable_
+      workspace.deleteVariableById(this.createdVariable_.getId());
+      this.createdVariable_ = null;
+      // this.createdVariable_ = model;
+    }
+    else if (model && !this.createdVariable_) {
+      //TODO: Show warning
+      
+      model = workspace.createVariable(varName, '');
+      
+      if (model) {
+        this.createdVariable_ = model;
+      }
+    }
+    if (!model || !this.createdVariable_) {
+      model = workspace.createVariable(varName, '');
+      
+      if (model) {
+        this.createdVariable_ = model;
+      }
+    }
+    return varName;
+  },
+};
+
+Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for variable getter.
   {
     "type": "variables_get",

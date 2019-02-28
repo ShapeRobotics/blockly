@@ -230,6 +230,17 @@ Blockly.Variables.flyoutCategory = function(workspace) {
 
 //   xmlList.push(button);
 
+  if (Blockly.Blocks['variables_create']) {
+    var blockText = '<xml>' +
+          '<block type="variables_create" gap="24">' +
+            '<field name="NAME">' + Blockly.Variables.generateUniqueName(workspace) + '</field>' +
+            //'<value name="VALUE"><shadow type="math_number"><field name="NUM">5</field></shadow></value>' + 
+          '</block>' +
+          '</xml>';
+    var block = Blockly.Xml.textToDom(blockText).firstChild;
+    xmlList.push(block);
+  }
+
   var blockList = Blockly.Variables.flyoutCategoryBlocks(workspace);
   xmlList = xmlList.concat(blockList);
   return xmlList;
@@ -245,16 +256,6 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
   variableModelList.sort(Blockly.VariableModel.compareByName);
 
   var xmlList = [];
-  if (Blockly.Blocks['variables_create']) {
-    var blockText = '<xml>' +
-          '<block type="variables_create" gap="24">' +
-            '<field name="NAME">' + Blockly.Variables.generateUniqueName(workspace) + '</field>' +
-            '<value name="VALUE"><shadow type="math_number"><field name="NUM">5</field></shadow></value>' + 
-          '</block>' +
-          '</xml>';
-    var block = Blockly.Xml.textToDom(blockText).firstChild;
-    xmlList.push(block);
-  }
 
   if (variableModelList.length > 0) {
     var firstVariable = variableModelList[0];
@@ -312,7 +313,7 @@ Blockly.Variables.generateUniqueName = function(workspace) {
   var newName = '';
   if (variableList.length) {
     var nameSuffix = 1;
-    var letters = 'ijkmnopqrstuvwxyzabcdefgh';  // No 'l'.
+    var letters = 'xyzijkmnopqrstuvwabcdefgh';  // No 'l'.
     var letterIndex = 0;
     var potName = letters.charAt(letterIndex);
     while (!newName) {
