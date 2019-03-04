@@ -61,7 +61,16 @@ Blockly.Blocks['variables_create'] = {
 
     // Create the default variable when we drag the block in from the flyout.
     // Have to do this after installing the field on the block.
+    // field.onFinishEditing_ = this.deleteIntermediateVars_;
+
+    // Create an empty list so onFinishEditing_ has something to look at, even
+    // though the editor was never opened.
     field.createdVariable_ = null;
+    this.blocksWithSameVar = [];
+    console.log("test");
+    field.callValidator(field.text_);
+
+    // field.onFinishEditing_('x');
   },
   /**
    * Obtain a valid name for the procedure argument. Create a variable if
@@ -73,52 +82,236 @@ Blockly.Blocks['variables_create'] = {
    * @private
    * @this Blockly.FieldTextInput
    */
-  validator_: function(varName) {
+  validator_: function(newVarName) {
     if (this.sourceBlock_.isInFlyout) {
-      return varName;
+      return newVarName;
     }
 
     var workspace = this.sourceBlock_.workspace;
-    varName = varName.replace(/[\s\xa0]+/g, ' ').replace(/^ | $/g, '');
+    newVarName = newVarName.replace(/[\s\xa0]+/g, ' ').replace(/^ | $/g, '');
 
-    if (!varName) {
+    if (!newVarName) {
       return null;
     }
-    
-    var model = workspace.getVariable(varName, '');
-    if (model && this.createdVariable_ && model.getId() == this.createdVariable_.getId()) {
-      // Rename the variable (case change)
-      workspace.renameVariableById(this.createdVariable_.getId(), varName);
+
+    //If nothing changed in the input, the variable shouldn't be renamed
+    if (this.createdVariable_ && newVarName == this.createdVariable_.name) {
+      return newVarName;
     }
-    else if (!model && this.createdVariable_) {
-      // Rename the variable (case change)
-      workspace.renameVariableById(this.createdVariable_.getId(), varName);
-    }
-    else if (model && this.createdVariable_ && model.getId() != this.createdVariable_.getId()) {
-      //TODO: Show warning
-      //TODO: DELETE this.createdVariable_
-      workspace.deleteVariableById(this.createdVariable_.getId());
-      this.createdVariable_ = null;
-      // this.createdVariable_ = model;
-    }
-    else if (model && !this.createdVariable_) {
-      //TODO: Show warning
+
+    //Search for the new variable
+    var model = workspace.getVariable(newVarName, '');
+
+    if (this.sourceBlock_.blocksWithSameVar && this.sourceBlock_.blocksWithSameVar.length > 0) {
+        if (model && this.createdVariable_ && model.getId() == this.createdVariable_.getId()) {
+            console.log("wtfˆ2");
+        }
+        else if (model && this.createdVariable_ && model.getId() != this.createdVariable_.getId()) {
+            console.log("Renaming");
+            this.createdVariable_ = model;
+            this.sourceBlock_.onWarnedBlockRename_();
+            this.sourceBlock_.iterateAllBlocks_();
+        }
+        else if (model && !this.createdVariable_) {
+          console.log("wtfˆ4");
+        }
+        else if (!model && this.createdVariable_) {
+            console.log("Making a new variable");
+
+            model = workspace.createVariable(newVarName, '');
       
-      model = workspace.createVariable(varName, '');
-      
-      if (model) {
-        this.createdVariable_ = model;
-      }
+            if (model) {
+              this.createdVariable_ = model;
+              this.sourceBlock_.onWarnedBlockRename_();
+            }
+        }
+        else if (!model && !this.createdVariable_) {
+          console.log("wtfˆ3");
+        }
     }
-    if (!model || !this.createdVariable_) {
-      model = workspace.createVariable(varName, '');
+    else {
+        if (model && this.createdVariable_ && model.getId() != this.createdVariable_.getId()) {
+            console.log("Will do some magic");
+            this.createdVariable_ = model;
+            this.sourceBlock_.iterateAllBlocks_();
+        }
+        else if (model && this.createdVariable_ && model.getId() == this.createdVariable_.getId()) {
+            console.log("wtf");
+        }
+        else if (model && !this.createdVariable_) {
+          console.log("Will do some magic 2");
+          this.createdVariable_ = model;
+          this.sourceBlock_.iterateAllBlocks_();
+        }
+        else if (!model && !this.createdVariable_) {
+          console.log("Creating new variable");
+          model = workspace.createVariable(newVarName, '');
       
-      if (model) {
-        this.createdVariable_ = model;
-      }
+          if (model) {
+            this.createdVariable_ = model;
+          }
+        }
+        else if (!model) {
+          console.log("Renaming variable that is only used once");
+          workspace.renameVariableById(this.createdVariable_.getId(), newVarName);
+        }
     }
-    return varName;
+
+    return newVarName;
   },
+  onWarnedBlockRename_: function() {
+      this.setWarningText(null);
+
+      if (this.blocksWithSameVar.length == 1) {
+          this.blocksWithSameVar[0].setWarningText(null);
+          var ind = this.blocksWithSameVar[0].blocksWithSameVar.indexOf(this);
+          if (ind > -1) {
+              this.blocksWithSameVar[0].blocksWithSameVar.splice(ind, 1);
+          }
+      }
+      else {
+          for (var i = 0; i < this.blocksWithSameVar.length; i++) {
+              var ind = this.blocksWithSameVar[i].blocksWithSameVar.indexOf(this);
+              if (ind > -1) {
+                  this.blocksWithSameVar[i].blocksWithSameVar.splice(ind, 1);
+              }
+          }
+      }
+
+      this.blocksWithSameVar = [];
+  },
+  iterateAllBlocks_: function() {
+      var workspace = this.workspace;
+      if (!workspace) {
+          return;
+      }
+
+      var topLevelBlocks = workspace.getTopBlocks();
+      
+      for (var i = 0; i < topLevelBlocks.length; i++) {
+          var block = topLevelBlocks[i];
+
+          this.checkSingleBlockOnRename_(block);
+
+          if (block.childBlocks_ && block.childBlocks_.length > 0) {
+              this.recursiveBlockIteration(block.childBlocks_);
+          }
+      }
+
+      for (var i = 0; i < this.blocksWithSameVar.length; i++) {
+          this.blocksWithSameVar[i].blocksWithSameVar.push(this);
+
+          for (var j = 0; j < this.blocksWithSameVar.length; j++) {
+              if (i != j) {
+                  this.blocksWithSameVar[i].blocksWithSameVar.push(this.blocksWithSameVar[j]);
+              }
+          }
+      }
+  },
+  recursiveBlockIteration: function(blockList) {
+      for (var j = 0; j < blockList.length; j++) {
+          var block = blockList[j];
+          
+          this.checkSingleBlockOnRename_(block);
+
+          if (block.childBlocks_ && block.childBlocks_.length > 0) {
+              this.recursiveBlockIteration(block.childBlocks_);
+          }
+      }
+  },
+  checkSingleBlockOnRename_: function(block) {
+      var originalBlock = this;
+
+      if (block.type == "variables_create") {
+          var blockVarId = block.getField("NAME").createdVariable_.getId();
+
+          if (blockVarId == originalBlock.getField("NAME").createdVariable_.getId()) {
+              if (block.id == originalBlock.id) {
+                  return;
+              }
+
+              block.setWarningText("TODO. This is for another block!");
+              originalBlock.setWarningText("TODO: This is for original block!");
+              originalBlock.blocksWithSameVar.push(block);
+          }
+      }
+      else if (block.type == "variables_get" || block.type == "variables_set") {
+          var blockVarId = block.getField("VAR").getVariable().getId();
+
+          if (blockVarId == originalBlock.getField("NAME").createdVariable_.getId()) {
+              block.setWarningText(null);
+          }
+      }
+  },
+  ondispose: function() {
+      if (!this.getField("NAME") || !this.getField("NAME").createdVariable_) {
+          return;
+      }
+      
+      this.onWarnedBlockRename_();
+
+      var workspace = this.workspace;
+      if (!workspace) {
+          return;
+      }
+
+      var topLevelBlocks = workspace.getTopBlocks();
+
+      var hasFoundVariable = false;
+
+      for (var i = 0; i < topLevelBlocks.length; i++) {
+          var block = topLevelBlocks[i];
+
+          hasFoundVariable = this.onDisposeCheckSingleBlock(block);
+
+          if (block.childBlocks_ && block.childBlocks_.length > 0) {
+              hasFoundVariable = this.onDisposeRecursiveBlockIteration(block.childBlocks_);
+          }
+      }
+
+      if (!hasFoundVariable) {
+          workspace.deleteVariableById(this.getField("NAME").createdVariable_.getId());
+      }
+
+  },
+  onDisposeRecursiveBlockIteration: function(blockList) {
+      var hasFound = false;
+      for (var j = 0; j < blockList.length; j++) {
+          var block = blockList[j];
+          
+          hasFound = this.onDisposeCheckSingleBlock(block);
+
+          if (block.childBlocks_ && block.childBlocks_.length > 0) {
+              hasFound = this.onDisposeRecursiveBlockIteration(block.childBlocks_);
+          }
+      }
+
+      return hasFound;
+  },
+  onDisposeCheckSingleBlock: function(block) {
+      var varId = this.getField("NAME").createdVariable_.getId();
+      
+      if (this.blocksWithSameVar && this.blocksWithSameVar.length > 0 && 
+          block.type == "variables_get" || block.type == "variables_set") {
+          var blockVarId = block.getField("VAR").getVariable().getId();
+
+          if (blockVarId == varId) {
+              block.setWarningText("TODO: You done goofed son!");
+              return true;
+          }
+      }
+      else if (block.type == "variables_create") {
+          var blockVarId = block.getField("NAME").createdVariable_.getId();
+
+          if (block.id == this.id) {
+              return false;
+          }
+
+          return blockVarId == varId;
+      }
+
+      return false;
+  }
 };
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
