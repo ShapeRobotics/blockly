@@ -54,6 +54,12 @@ Blockly.Blocks['variables_create'] = {
         .appendField("create variable with name")
         .appendField(field, 'NAME');
 
+    this.appendDummyInput()
+        .appendField("with starting value");
+
+    this.appendValueInput("VALUE");
+
+    this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(Blockly.Msg['VARIABLES_HUE']);
@@ -313,6 +319,29 @@ Blockly.Blocks['variables_create'] = {
       return false;
   }
 };
+
+// Blockly.Blocks['variables_set'] = {
+//   init: function() {
+//     this.currentVariable = null;
+
+//     var field = new Blockly.FieldVariable(Blockly.Msg['BKY_VARIABLES_DEFAULT_NAME'],
+//                                           this.validator_, 
+//                                           null);
+//     this.appendDummyInput()
+//         .appendField(Blockly.Msg['BKY_VARIABLES_SET'])
+//         .appendField(field);
+
+//     this.appendValueInput("VALUE");
+    
+//     this.setInputsInline(true);
+//     this.setPreviousStatement(true);
+//     this.setNextStatement(true);
+//     this.setColour(Blockly.Msg['VARIABLES_HUE']);
+//   },
+//   validator_: function(newVarName) {
+//     console.log(newVarName);
+//   },
+// };
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for variable getter.

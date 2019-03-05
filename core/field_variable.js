@@ -123,9 +123,91 @@ Blockly.FieldVariable.prototype.initModel = function() {
  * @public
  */
 Blockly.FieldVariable.prototype.dispose = function() {
+  if (this.sourceBlock_.isInFlyout) {
+    Blockly.FieldVariable.superClass_.dispose.call(this);
+    this.workspace_ = null;
+    this.variableMap_ = null;
+    return;
+  }
+
+  if (!this.variable_) {
+    return;
+  }
+
+  //var selectedVar = this.getField("VAR").getVariable().getId();
+
+  var workspace = this.workspace_;
+  if (!workspace) {
+      return;
+  }
+
+  var topLevelBlocks = workspace.getTopBlocks();
+
+  var hasFoundVariable = false;
+
+  for (var i = 0; i < topLevelBlocks.length; i++) {
+      var block = topLevelBlocks[i];
+
+      hasFoundVariable = this.onVarDisposeCheckSingleBlock(block);
+
+      if (!hasFoundVariable && block.childBlocks_ && block.childBlocks_.length > 0) {
+          hasFoundVariable = this.onVarDisposeRecursiveBlockIteration(block.childBlocks_);
+
+          if (hasFoundVariable) {
+            break;
+          }
+      }
+  }
+
+  if (!hasFoundVariable) {
+      workspace.deleteVariableById(this.variable_.getId());
+  }
+
   Blockly.FieldVariable.superClass_.dispose.call(this);
   this.workspace_ = null;
   this.variableMap_ = null;
+};
+
+Blockly.FieldVariable.prototype.onVarDisposeRecursiveBlockIteration = function(blockList) {
+  var hasFound = false;
+  for (var j = 0; j < blockList.length; j++) {
+      var block = blockList[j];
+      
+      hasFound = this.onVarDisposeCheckSingleBlock(block);
+
+      if (!hasFound && block.childBlocks_ && block.childBlocks_.length > 0) {
+          hasFound = this.onVarDisposeRecursiveBlockIteration(block.childBlocks_);
+          if (hasFound) {
+            break;
+          }
+      }
+  }
+
+  return hasFound;
+};
+
+Blockly.FieldVariable.prototype.onVarDisposeCheckSingleBlock = function(block) {
+  var varId = this.variable_.getId();
+  
+  if (this.blocksWithSameVar && this.blocksWithSameVar.length > 0 && 
+      block.type == "variables_get" || block.type == "variables_set") {
+      var blockVarId = block.getField("VAR").getVariable().getId();
+
+      if (block.id == this.id) {
+        return false;
+      }
+
+      if (blockVarId == varId) {
+          return true;
+      }
+  }
+  else if (block.type == "variables_create") {
+      var blockVarId = block.getField("NAME").createdVariable_.getId();
+
+      return blockVarId == varId;
+  }
+
+  return false;
 };
 
 /**
@@ -176,6 +258,7 @@ Blockly.FieldVariable.prototype.getVariable = function() {
 Blockly.FieldVariable.prototype.setValue = function(id) {
   var workspace = this.sourceBlock_.workspace;
   var variable = Blockly.Variables.getVariable(workspace, id);
+  this.workspace_ = workspace;
 
   if (!variable) {
     throw Error('Variable id doesn\'t point to a real variable!  ID was ' + id);
@@ -193,7 +276,16 @@ Blockly.FieldVariable.prototype.setValue = function(id) {
   this.variable_ = variable;
   this.value_ = id;
   this.setText(variable.name);
+  this.onSelectionChanged_(oldValue, variable.getId());
 };
+
+Blockly.FieldVariable.prototype.onSelectionChanged_ = function(oldVar, newVar) {
+  var hasSeenOldVar = false;
+  var hasSeenNewVar = false;
+  console.log("test4534634");
+  console.log(oldVar);
+  console.log(newVar);
+}
 
 /**
  * Check whether the given variable type is allowed on this field.

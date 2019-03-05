@@ -241,6 +241,11 @@ Blockly.Block.prototype.dispose = function(healStack) {
     // Already deleted.
     return;
   }
+  
+  if (typeof this.ondispose == 'function') {
+    this.ondispose();
+  }
+  
   // Terminate onchange event calls.
   if (this.onchangeWrapper_) {
     this.workspace.removeChangeListener(this.onchangeWrapper_);

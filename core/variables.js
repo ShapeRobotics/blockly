@@ -234,7 +234,7 @@ Blockly.Variables.flyoutCategory = function(workspace) {
     var blockText = '<xml>' +
           '<block type="variables_create" gap="24">' +
             '<field name="NAME">' + Blockly.Variables.generateUniqueName(workspace) + '</field>' +
-            //'<value name="VALUE"><shadow type="math_number"><field name="NUM">5</field></shadow></value>' + 
+            '<value name="VALUE"><shadow type="math_number"><field name="NUM">5</field></shadow></value>' + 
           '</block>' +
           '</xml>';
     var block = Blockly.Xml.textToDom(blockText).firstChild;
@@ -258,37 +258,39 @@ Blockly.Variables.flyoutCategoryBlocks = function(workspace) {
   var xmlList = [];
 
   if (variableModelList.length > 0) {
-    var firstVariable = variableModelList[0];
-    if (Blockly.Blocks['variables_set']) {
-      var gap = Blockly.Blocks['math_change'] ? 8 : 24;
-      var blockText = '<xml>' +
-            '<block type="variables_set" gap="' + gap + '">' +
-            Blockly.Variables.generateVariableFieldXmlString(firstVariable) +
+    
+    for (var i = 0, variable; variable = variableModelList[i]; i++) {      
+      if (Blockly.Blocks['variables_set']) {
+        var gap = Blockly.Blocks['math_change'] ? 8 : 24;
+        var blockText = '<xml>' +
+              '<block type="variables_set" gap="' + gap + '">' +
+              Blockly.Variables.generateVariableFieldXmlString(variable) +
+              '<value name="VALUE"><shadow type="math_number"><field name="NUM">1</field></shadow></value>' + 
+              '</block>' +
+              '</xml>';
+        var block = Blockly.Xml.textToDom(blockText).firstChild;
+        xmlList.push(block);
+      }
+      
+      if (Blockly.Blocks['math_change']) {
+        var gap = Blockly.Blocks['variables_get'] ? 8 : 24;
+        var blockText = '<xml>' +
+            '<block type="math_change" gap="' + gap + '">' +
+            Blockly.Variables.generateVariableFieldXmlString(variable) +
+            '<value name="DELTA">' +
+            '<shadow type="math_number">' +
+            '<field name="NUM">1</field>' +
+            '</shadow>' +
+            '</value>' +
             '</block>' +
             '</xml>';
-      var block = Blockly.Xml.textToDom(blockText).firstChild;
-      xmlList.push(block);
-    }
-    if (Blockly.Blocks['math_change']) {
-      var gap = Blockly.Blocks['variables_get'] ? 20 : 8;
-      var blockText = '<xml>' +
-          '<block type="math_change" gap="' + gap + '">' +
-          Blockly.Variables.generateVariableFieldXmlString(firstVariable) +
-          '<value name="DELTA">' +
-          '<shadow type="math_number">' +
-          '<field name="NUM">1</field>' +
-          '</shadow>' +
-          '</value>' +
-          '</block>' +
-          '</xml>';
-      var block = Blockly.Xml.textToDom(blockText).firstChild;
-      xmlList.push(block);
-    }
+        var block = Blockly.Xml.textToDom(blockText).firstChild;
+        xmlList.push(block);
+      }
 
-    for (var i = 0, variable; variable = variableModelList[i]; i++) {
       if (Blockly.Blocks['variables_get']) {
         var blockText = '<xml>' +
-            '<block type="variables_get" gap="8">' +
+            '<block type="variables_get" gap="24">' +
             Blockly.Variables.generateVariableFieldXmlString(variable) +
             '</block>' +
             '</xml>';
