@@ -120,8 +120,12 @@ Blockly.WorkspaceSvg = function(options,
     this.registerToolboxCategoryCallback(Blockly.PROCEDURE_CATEGORY_NAME,
         Blockly.Procedures.flyoutCategory);
   }
+  if (Blockly.MostUsed && Blockly.MostUsed.flyoutCategory) {
+    Blockly.MostUsed.init();
 
-  //TODO: Add Most Used here.
+    this.registerToolboxCategoryCallback(Blockly.MOST_USED_CATEGORY_NAME,
+      Blockly.MostUsed.flyoutCategory);
+  }
 };
 goog.inherits(Blockly.WorkspaceSvg, Blockly.Workspace);
 
@@ -1079,7 +1083,7 @@ Blockly.WorkspaceSvg.prototype.pasteBlock_ = function(xmlBlock) {
     }
 
     //SHAPE: Added from blockly_changes
-    incrementCounter(block);
+    Blockly.MostUsed.incrementCounter(block);
   } finally {
     Blockly.Events.enable();
   }
