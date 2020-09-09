@@ -386,27 +386,28 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       return;
     }
 
+    // # SHAPE CUSTOM
     var block = this;
 
-    //Get function name
+    // Get function name
     var name = this.getFieldValue('NAME');
 
-    //Add an option to export the block to a .fabfunc file
-    //TODO: Localization
+    // Add an option to export the block to a .fabfunc file
+    // TODO: Localization
     var exportOption = {
       text: "Export '%1' to a file".replace('%1', name),
       enabled: true,
-      callback: function() {
+      callback: function () {
         var xml = Blockly.Xml.blockToDom(block, true);
         console.log(xml);
-        Fable.Domain.Platform.Electron.saveProject("Function", xml);
+        Fable.Domain.Platform.Electron.saveProject('Function', xml);
       }
-    }
+    };
 
     // TODO: Reenable
-    // options.push(exportOption);
+    options.push(exportOption);
 
-    //Get the local storage for stored functions
+    // Get the local storage for stored functions.
     let storedFunctionsDict;
 
     try {
@@ -414,9 +415,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       if (storedFunctionsDict === null) {
         storedFunctionsDict = {};
       }
-    }
-    catch (e) {
-      console.log("Error parsing/reading storedFunctions information.");
+    } catch (e) {
+      console.log('Error parsing/reading storedFunctions information.');
       storedFunctionsDict = {};
     }
 
@@ -426,18 +426,17 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       isSaved = true;
     }
 
-    //Add "Save for future use" option
-    //TODO: Localization
+    // Add "Save for future use" option
+    // TODO: Localization
     var savingOption = {
       text: isSaved ? "Overwrite/Update stored '%1' function".replace('%1', name) : "Store '%1' for use in future projects".replace('%1', name),
       enabled: true,
-      callback: function() {
-        //If the function was saved before, then we need to overwrite it. SHow a confirmation prompt
+      callback: function () {
+        // If the function was saved before, then we need to overwrite it. Show a confirmation prompt.
         if (isSaved) {
           Blockly.confirm(
             "Are you sure? You will lose your old '%1' function in the process.".replace('%1', name),
-            
-            function(ok) {
+            function (ok) {
               if (ok) {
                 var xml = Blockly.Xml.blockToDom(block, true);
                 let definitionString = (new XMLSerializer()).serializeToString(xml);
@@ -446,9 +445,8 @@ Blockly.Blocks['procedures_defnoreturn'] = {
                 localStorage.setItem('storedFunctions', JSON.stringify(storedFunctionsDict));
               }
             });
-        }
-        else {
-          //The function was never saved before, so just parse the contents of the block and save it.
+        } else {
+          // The function was never saved before, so just parse the contents of the block and save it.
           var xml = Blockly.Xml.blockToDom(block, true);
           let definitionString = (new XMLSerializer()).serializeToString(xml);
           definitionString = definitionString.replace(/xmlns=\"(.*?)\" /g, '');
@@ -459,25 +457,25 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     };
 
     // TODO: Reenable
-    // options.push(savingOption);
+    options.push(savingOption);
 
-    //Add "Delete function forever" option
-    //TODO: Localization
+    // Add "Delete function forever" option
+    // TODO: Localization
     var deleteOption = {
       text: "Delete stored function '%1'".replace('%1', name),
       enabled: isSaved,
-      callback: function() {
+      callback: function () {
         delete storedFunctionsDict[name];
         localStorage.setItem('storedFunctions', JSON.stringify(storedFunctionsDict));
       }
-    }
+    };
 
     // TODO: Reenable
-    // options.push(deleteOption);
-
+    options.push(deleteOption);
+    // # SHAPE CUSTOM
 
     // Add option to create caller.
-    var option = {enabled: true};
+    var option = { enabled: true };
     option.text = Blockly.Msg['PROCEDURES_CREATE_DO'].replace('%1', name);
     var xmlMutation = Blockly.utils.xml.createElement('mutation');
     xmlMutation.setAttribute('name', name);
@@ -495,7 +493,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     // Add options to create getters for each parameter.
     if (!this.isCollapsed()) {
       for (var i = 0; i < this.argumentVarModels_.length; i++) {
-        var argOption = {enabled: true};
+        var argOption = { enabled: true };
         var argVar = this.argumentVarModels_[i];
         argOption.text = Blockly.Msg['VARIABLES_SET_CREATE_GET']
             .replace('%1', argVar.name);

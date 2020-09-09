@@ -184,7 +184,7 @@ Blockly.Procedures.rename = function(name) {
 Blockly.Procedures.flyoutCategory = function(workspace) {
   var xmlList = [];
 
-  //Add a label to the top of the category
+  // Add a label to the top of the category
   var toAdd = '<xml><label text="' + Blockly.Msg.LABEL_PROCEDURE_DEFINITION + '" web-class="subcategoryClass"></label></xml>';
 
   toAdd = Blockly.Xml.textToDom(toAdd);
@@ -322,27 +322,27 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     }
   }
 
+  // # SHAPE CUSTOM ################################################################### //
   /**
    * Retrieves all of the "saved" functions and adds them to the Functions category
    * whenever the category is opened. TODO: Add blocks that execute the function
    * rather than the function definition with all of the blocks inside.
    */
-  function populateStoredProcedures() {
+  function populateStoredProcedures () {
     let storedFunctionsDict;
 
-    //Retrieve all of the stored functions
+    // Retrieve all of the stored functions
     try {
       storedFunctionsDict = JSON.parse(localStorage.getItem('storedFunctions'));
       if (storedFunctionsDict === null) {
         storedFunctionsDict = {};
       }
-    }
-    catch (e) {
-      console.log("Error parsing/reading storedFunctions information.");
+    } catch (e) {
+      console.log('Error parsing/reading storedFunctions information.');
       storedFunctionsDict = {};
     }
 
-    //If there are any stored functions, add a label
+    // If there are any stored functions, add a label.
     if (storedFunctionsDict && Object.keys(storedFunctionsDict).length > 0) {
       var toAdd = '<xml><sep gap="32"></sep><label text="' + Blockly.Msg.LABEL_PROCEDURE_STORED + '" web-class="subcategoryClass"></label></xml>';
 
@@ -353,7 +353,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
       xmlList.push(label);
     }
 
-    //Go through all of the stored functions and add them to the flyout
+    // Go through all of the stored functions and add them to the flyout.
     for (var i in storedFunctionsDict) {
       var storedFunc = storedFunctionsDict[i];
       let definitionXML = new DOMParser().parseFromString(storedFunc, 'text/xml');
@@ -363,7 +363,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
 
   var tuple = Blockly.Procedures.allProcedures(workspace);
 
-  //If there are ANY functions added to the Blockly workspace, add a label
+  // If there are ANY functions added to the Blockly workspace, add a label.
   if (tuple[0].length > 0 || tuple[1].length > 0) {
     var toAdd = '<xml><sep gap="32"></sep><label text="' + Blockly.Msg.LABEL_PROCEDURE_EXECUTION + '" web-class="subcategoryClass"></label></xml>';
 
@@ -372,13 +372,11 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     var label = toAdd.lastChild;
     xmlList.push(gap);
     xmlList.push(label);
-  } 
+  }
 
   populateProcedures(tuple[0], 'procedures_callnoreturn');
   populateProcedures(tuple[1], 'procedures_callreturn');
   populateStoredProcedures();
-
-
 
   return xmlList;
 };
