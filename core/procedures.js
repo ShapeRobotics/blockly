@@ -322,11 +322,13 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     }
   }
 
-  // # SHAPE CUSTOM ################################################################### //
+  // # SHAPE CUSTOM ################################################################################################################ //
   /**
    * Retrieves all of the "saved" functions and adds them to the Functions category
    * whenever the category is opened. TODO: Add blocks that execute the function
    * rather than the function definition with all of the blocks inside.
+   *
+   * @author Shape Robotics ApS
    */
   function populateStoredProcedures () {
     let storedFunctionsDict;
@@ -360,9 +362,11 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
       xmlList.push(definitionXML.getElementsByTagName('block')[0]);
     }
   }
+  // ############################################################################################################################### //
 
   var tuple = Blockly.Procedures.allProcedures(workspace);
 
+  // # SHAPE CUSTOM ################################################################################################################ //
   // If there are ANY functions added to the Blockly workspace, add a label.
   if (tuple[0].length > 0 || tuple[1].length > 0) {
     var toAdd = '<xml><sep gap="32"></sep><label text="' + Blockly.Msg.LABEL_PROCEDURE_EXECUTION + '" web-class="subcategoryClass"></label></xml>';
@@ -373,6 +377,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     xmlList.push(gap);
     xmlList.push(label);
   }
+  // ############################################################################################################################### //
 
   populateProcedures(tuple[0], 'procedures_callnoreturn');
   populateProcedures(tuple[1], 'procedures_callreturn');
