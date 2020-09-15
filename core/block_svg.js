@@ -614,6 +614,11 @@ Blockly.BlockSvg.prototype.setCollapsed = function(collapsed) {
     renderList.push.apply(renderList, input.setVisible(!collapsed));
   }
 
+  // # SHAPE ROBOTICS ###################################################################################################
+  const isProcedure = (this.getStyleName() === 'procedure_blocks');
+  // const COLLPASED_INPUT_PROCEDURE_ICON = '_TEMP_COLLAPSED_PROCEDURE_ICON'
+  // ####################################################################################################################
+
   var COLLAPSED_INPUT_NAME = '_TEMP_COLLAPSED_INPUT';
   if (collapsed) {
     var icons = this.getIcons();
@@ -621,7 +626,27 @@ Blockly.BlockSvg.prototype.setCollapsed = function(collapsed) {
       icons[i].setVisible(false);
     }
     var text = this.toString(Blockly.COLLAPSE_CHARS);
-    this.appendDummyInput(COLLAPSED_INPUT_NAME).appendField(text).init();
+
+    // # SHAPE ROBOTICS ###################################################################################################
+    if (isProcedure) {
+      /*var image = new Blockly.FieldImage(
+        Blockly.Blocks.Definitions.spinIcon,
+        Blockly.Blocks.Definitions.iconSize,
+        Blockly.Blocks.Definitions.iconSize, '*');
+      
+      this.appendDummyInput(COLLPASED_INPUT_PROCEDURE_ICON).appendField(image);*/
+      const procedureName = this.getProcedureDef()[0] || 'f';
+      const procedureArgs = this.getProcedureDef()[1] || '';
+      procedureArgs.toString();
+
+      text = `${procedureName}(${procedureArgs})`;
+
+      this.appendDummyInput(COLLAPSED_INPUT_NAME).appendField('def').appendField(text).init();
+      this.getInput(COLLAPSED_INPUT_NAME).fieldRow[0].setClass('blocklyProcedureDef');
+    } else {
+      // ####################################################################################################################
+      this.appendDummyInput(COLLAPSED_INPUT_NAME).appendField(text).init();
+    }
 
     // Add any warnings on enclosed blocks to this block.
     var descendants = this.getDescendants(true);

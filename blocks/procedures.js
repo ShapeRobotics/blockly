@@ -386,7 +386,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       return;
     }
 
-    // # SHAPE CUSTOM
+    // # SHAPE CUSTOM ################################################################################################################ //
     var block = this;
 
     // Get function name
@@ -399,8 +399,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       enabled: true,
       callback: function () {
         var xml = Blockly.Xml.blockToDom(block, true);
+        xml.setAttribute('collapsed', 'true');
         console.log(xml);
-        Fable.Domain.Platform.Electron.saveProject('Function', xml);
+        // Fable.Domain.Platform.Electron.saveProject('Function', xml);
+        Fable.Domain.Platform.Helpers.exportProcedure(xml);
       }
     };
 
@@ -439,6 +441,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
             function (ok) {
               if (ok) {
                 var xml = Blockly.Xml.blockToDom(block, true);
+
+                xml.setAttribute('collapsed', 'true');
+
                 let definitionString = (new XMLSerializer()).serializeToString(xml);
                 definitionString = definitionString.replace(/xmlns=\"(.*?)\" /g, '');
                 storedFunctionsDict[name] = definitionString;
@@ -448,6 +453,9 @@ Blockly.Blocks['procedures_defnoreturn'] = {
         } else {
           // The function was never saved before, so just parse the contents of the block and save it.
           var xml = Blockly.Xml.blockToDom(block, true);
+
+          xml.setAttribute('collapsed', 'true');
+          
           let definitionString = (new XMLSerializer()).serializeToString(xml);
           definitionString = definitionString.replace(/xmlns=\"(.*?)\" /g, '');
           storedFunctionsDict[name] = definitionString;
@@ -472,7 +480,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
 
     // TODO: Reenable
     options.push(deleteOption);
-    // # SHAPE CUSTOM
+    // ############################################################################################################################### //
 
     // Add option to create caller.
     var option = { enabled: true };
@@ -1040,7 +1048,10 @@ Blockly.Blocks['procedures_callnoreturn'] = {
          *   </block>
          * </xml>
          */
-        var xml = Blockly.utils.xml.createElement('xml');
+        console.log(`This procedure call ${this.getProcedureCall()} is not defined in the workspace.`);
+        this.setEnabled(false);
+        this.setWarningText('Procedure not defined');
+        /* var xml = Blockly.utils.xml.createElement('xml');
         var block = Blockly.utils.xml.createElement('block');
         block.setAttribute('type', this.defType_);
         var xy = this.getRelativeToSurfaceXY();
@@ -1056,7 +1067,7 @@ Blockly.Blocks['procedures_callnoreturn'] = {
             this.getProcedureCall()));
         block.appendChild(field);
         xml.appendChild(block);
-        Blockly.Xml.domToWorkspace(xml, this.workspace);
+        Blockly.Xml.domToWorkspace(xml, this.workspace);*/
         Blockly.Events.setGroup(false);
       }
     } else if (event.type == Blockly.Events.BLOCK_DELETE) {
