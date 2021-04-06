@@ -36,4 +36,4 @@ python_compressed.js
 msg/js/*.js
 msg/js
 
-msg/json/*/*.json
+msg/json/*.json
