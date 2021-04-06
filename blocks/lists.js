@@ -305,10 +305,10 @@ Blockly.Blocks['lists_create_with'] = {
         this.removeShadowBlock_(this.disconnectedChildBlocks.pop());
       }
     }
-    // SHAPe: add shadow blocks to empty inputs.
-    if (this.addShadowBlocks) {
-      // this.connectShadowBlock_();
-    }
+    // SHAPE: add shadow blocks to empty inputs.
+    // if (this.addShadowBlocks) {
+    //   this.connectShadowBlock_();
+    // }
   },
   /**
    * Deletes a disconnected shadow child block if it
