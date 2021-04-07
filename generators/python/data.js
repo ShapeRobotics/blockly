@@ -8,10 +8,11 @@ goog.provide('Blockly.Python.data');
 
 goog.require('Blockly.Python');
 
-Blockly.Python.fable_log = function (block) {
+Blockly.Python.fable_save_as_csv = function (block) {
   var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
-  var filename = block.getFieldValue('FILENAME');
-  var code = 'api.log(' + value + ', \'' + filename + '\')\n';
+  var fileName = Blockly.Python.valueToCode(block, 'FILENAME', Blockly.Python.ORDER_NONE) || 'MyFableCSV';
+  // Generated: api.log([BLOCK], "FileName");
+  var code = `api.log(${value}, ${fileName})\n`;
 
   return code;
 };

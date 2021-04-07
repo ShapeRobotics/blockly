@@ -190,7 +190,7 @@ Blockly.Blocks.fable_make_scatter_plot = {
   }
 };
 
-Blockly.Blocks.fable_log = {
+Blockly.Blocks.fable_save_as_csv = {
   /**
      * Block for data loggin into a csv file.
      * @this Blockly.Block
@@ -211,8 +211,10 @@ Blockly.Blocks.fable_log = {
       .setCheck(null);
 
     this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_LOG_IN_FILE)
-      .appendField(new Blockly.FieldTextInput('Fable-log.csv'), 'FILENAME');
+      .appendField(Blockly.Msg.FABLE_LOG_IN_FILE);
+
+    this.appendValueInput('FILENAME')
+      .setCheck('String');
 
     // Properties:
     this.setStyle(Blockly.Blocks.Definitions.dataStyle);
@@ -227,13 +229,15 @@ Blockly.Blocks.fable_log = {
       Blockly.Msg.FABLE_LOG,
       Blockly.Msg.FABLE_LOG_IN_FILE,
       '%{BKY_DATA}',
-      '%{BKY_LABEL_FILE_LOGGING}'
+      '%{BKY_LABEL_FILE_LOGGING}',
+      'csv',
+      'CSV'
     ];
 
     var toolboxKeywords = [
-      'Fable-log.csv'
+      'MyFableLog'
     ];
 
-    Blockly.Search.preprocessSearchKeywords('fable_log', keywords, toolboxKeywords);
+    Blockly.Search.preprocessSearchKeywords('fable_save_as_csv', keywords, toolboxKeywords);
   }
 };
