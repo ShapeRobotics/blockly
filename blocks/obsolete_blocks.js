@@ -1374,3 +1374,53 @@ Blockly.Blocks.camera_check_for_face = {
     Blockly.Search.preprocessSearchKeywords('camera_check_for_face', keywords);
   }
 };
+
+Blockly.Blocks.fable_log = {
+  /**
+     * Block for data loggin into a csv file.
+     * @replacedBy data.js -> Blockly.Blocks.fable_save_as_csv
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.saveIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_LOG);
+
+    this.appendValueInput('VALUE')
+      .setCheck(null);
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_LOG_IN_FILE)
+      .appendField(new Blockly.FieldTextInput('Fable-log.csv'), 'FILENAME');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip(Blockly.Msg.FABLE_LOG_TOOLTIP);
+    this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('This block is deprecated. Please update your program by dragging the new block (save log) and saving it.', 'deprecatedBlock');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_LOG,
+      Blockly.Msg.FABLE_LOG_IN_FILE,
+      '%{BKY_DATA}',
+      '%{BKY_LABEL_FILE_LOGGING}'
+    ];
+
+    var toolboxKeywords = [
+      'Fable-log.csv'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_log', keywords, toolboxKeywords);
+  }
+};

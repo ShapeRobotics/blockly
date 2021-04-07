@@ -216,3 +216,12 @@ Blockly.Python.fable_spin_gesture_detected = function (block) {
   var code = 'api.getGestureDetected("' + gesture + '", ' + id + ')';
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
+
+// @replacedBy data.js -> fable_save_as_csv
+Blockly.Python.fable_log = function (block) {
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
+  var filename = block.getFieldValue('FILENAME');
+  var code = 'api.log(' + value + ', \'' + filename + '\')\n';
+
+  return code;
+};
