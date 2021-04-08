@@ -17,6 +17,26 @@ Blockly.Python.fable_save_as_csv = function (block) {
   return code;
 };
 
+Blockly.Python.fable_load_from_csv = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var fileName = Blockly.Python.valueToCode(block, 'FILENAME', Blockly.Python.ORDER_NONE) || 'MyFableCSV';
+  // Generated: api.loadCSV("FileName", delimiter=';', skip_header=True);
+  var code = `api.loadCSV(${fileName}, delimiter=';', skipheader=True)\n`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_load_from_csv_advance = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var fileName = Blockly.Python.valueToCode(block, 'FILENAME', Blockly.Python.ORDER_NONE) || 'MyFableCSV';
+  var delimiter = Blockly.Python.valueToCode(block, 'DELIMITER', Blockly.Python.ORDER_NONE) || ';';
+  var skipHeader = Blockly.Python.valueToCode(block, 'SKIPHEADER', Blockly.Python.ORDER_NONE);
+  // Generated: api.loadCSV("FileName", delimiter=';', skip_header=True);
+  var code = `api.loadCSV(${fileName}, delimiter=${delimiter}, skipheader=${skipHeader})\n`;
+
+  return [code, order];
+};
+
 Blockly.Python.fable_make_plot = function (block) {
   var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE) || 'None';
   var sid = block.getFieldValue('SERIES_ID');

@@ -241,3 +241,94 @@ Blockly.Blocks.fable_save_as_csv = {
     Blockly.Search.preprocessSearchKeywords('fable_save_as_csv', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_load_from_csv = {
+  /**
+     * Block for reading data from a csv file.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.saveIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_READ_CSV);
+
+    this.appendValueInput('FILENAME').setCheck('String');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_READ_CSV_TOOLTIP);
+    this.setOutput(true, 'Array');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_READ_CSV,
+      '%{BKY_DATA}',
+      '%{BKY_LABEL_FILE_LOGGING}',
+      'csv',
+      'CSV'
+    ];
+
+    var toolboxKeywords = [
+      'MyFableLog'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_load_from_csv', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_load_from_csv_advance = {
+  /**
+     * Block for reading data from a csv file.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.saveIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_READ_CSV);
+    this.appendValueInput('FILENAME').setCheck('String');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_READ_CSV_DELIMITER);
+    this.appendValueInput('DELIMITER').setCheck('String');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_READ_CSV_SKIP_HEADER);
+    this.appendValueInput('SKIPHEADER').setCheck('Boolean');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_READ_CSV_TOOLTIP_ADVANCE);
+    this.setOutput(true, 'Array');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_READ_CSV,
+      Blockly.Msg.FABLE_READ_CSV_DELIMITER,
+      Blockly.Msg.FABLE_READ_CSV_SKIP_HEADER,
+      '%{BKY_DATA}',
+      '%{BKY_LABEL_FILE_LOGGING}',
+      'csv',
+      'CSV'
+    ];
+
+    var toolboxKeywords = [
+      'MyFableLog'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_load_from_csv_advance', keywords, toolboxKeywords);
+  }
+};
