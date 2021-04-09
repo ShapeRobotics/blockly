@@ -332,3 +332,176 @@ Blockly.Blocks.fable_load_from_csv_advance = {
     Blockly.Search.preprocessSearchKeywords('fable_load_from_csv_advance', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_cast_to_string = {
+  /**
+     * Block for casting value to string.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'string'));
+
+    this.appendValueInput('VALUE');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
+    this.setOutput(true, 'String');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'string'];
+    var toolboxKeywords = ['cast'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_cast_to_string', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_cast_to_int = {
+  /**
+     * Block for casting value to integer.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'int'));
+
+    this.appendValueInput('VALUE');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
+    this.setOutput(true, 'Number');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'int'];
+    var toolboxKeywords = ['cast'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_cast_to_int', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_cast_to_float = {
+  /**
+     * Block for casting value to string.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'float'));
+
+    this.appendValueInput('VALUE');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
+    this.setOutput(true, 'Number');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'float'];
+    var toolboxKeywords = ['cast'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_cast_to_float', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_cast_to_list = {
+  /**
+     * Block for casting value to string.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'list'));
+
+    this.appendValueInput('VALUE');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
+    this.setOutput(true, 'Array');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'list', 'array'];
+    var toolboxKeywords = ['cast'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_cast_to_list', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_cast_list_values_to_type = {
+  /**
+     * Block for casting values from a list to a selected type.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST_LIST);
+
+    this.appendValueInput('LIST').setCheck('Array');
+
+    var targetTypes = new Blockly.FieldDropdown(
+      [['string', 'STR'], ['int', 'INT'], ['float', 'FLOAT']]
+    );
+
+    this.appendDummyInput().appendField(Blockly.Msg.TO);
+
+    this.appendDummyInput().appendField(targetTypes, 'TYPE');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_LIST_TOOLTIP);
+    this.setOutput(true, 'Array');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST_LIST, '%{BKY_DATA}', 'list', 'array', 'string', 'float', 'int'];
+    var toolboxKeywords = ['cast'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_cast_list_values_to_type', keywords, toolboxKeywords);
+  }
+};

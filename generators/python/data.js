@@ -62,3 +62,54 @@ Blockly.Python.fable_make_scatter_plot = function (block) {
 
   return code;
 };
+
+Blockly.Python.fable_cast_to_string = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
+  // Generated: str(value);
+  var code = `str(${value})`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_cast_to_int = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
+  // Generated: int(value);
+  var code = `int(${value})`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_cast_to_float = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
+  // Generated: float(value);
+  var code = `float(${value})`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_cast_to_list = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
+  // Generated: list(value);
+  var code = `list(${value})`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_cast_list_values_to_type = function (block) {
+  const TYPES = {
+    STR: 'str',
+    INT: 'int',
+    FLOAT: 'float'
+  };
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var list = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_ATOMIC) || 'None';
+  var targetType = TYPES[block.getFieldValue('TYPE')] || TYPES.STR;
+  // Generated: catValuesTo(list, type);
+  var code = `api.castValuesTo(${list}, ${targetType})`;
+
+  return [code, order];
+};
