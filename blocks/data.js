@@ -28,21 +28,19 @@ Blockly.Blocks.fable_make_plot = {
       Blockly.Blocks.Definitions.graphIcon,
       Blockly.Blocks.Definitions.iconSize,
       Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
+    this.appendDummyInput().appendField(image);
 
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_TIME_SERIES);
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TIME_SERIES);
 
-    this.appendValueInput('VALUE')
-      .setCheck('Number');
+    this.appendValueInput('VALUE').setCheck('Number');
 
+    var labelColorOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.RED, 'A'], [Blockly.Msg.GREEN, 'B'], [Blockly.Msg.BLUE, 'C'],
+      [Blockly.Msg.YELLOW, 'D'], [Blockly.Msg.CYAN, 'E'], [Blockly.Msg.MAGENTA, 'F']
+    ]);
     this.appendDummyInput()
       .appendField(Blockly.Msg.FABLE_PLOT_LABEL)
-      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.BLUE, 'A'],
-        [Blockly.Msg.ORANGE, 'B'],
-        [Blockly.Msg.BROWN, 'C']]),
-      'SERIES_ID');
+      .appendField(labelColorOptions, 'SERIES_ID');
 
     // Properties:
     this.setStyle(Blockly.Blocks.Definitions.dataStyle);
@@ -61,9 +59,8 @@ Blockly.Blocks.fable_make_plot = {
     ];
 
     var toolboxKeywords = [
-      Blockly.Msg.BLUE,
-      Blockly.Msg.ORANGE,
-      Blockly.Msg.BROWN
+      Blockly.Msg.RED, Blockly.Msg.GREEN, Blockly.Msg.BLUE,
+      Blockly.Msg.YELLOW, Blockly.Msg.CYAN, Blockly.Msg.MAGENTA
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_make_plot', keywords, toolboxKeywords);
@@ -95,12 +92,13 @@ Blockly.Blocks.fable_make_plot_xy = {
       .appendField('Y: ')
       .setCheck('Number');
 
+    var labelColorOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.RED, 'A'], [Blockly.Msg.GREEN, 'B'], [Blockly.Msg.BLUE, 'C'],
+      [Blockly.Msg.YELLOW, 'D'], [Blockly.Msg.CYAN, 'E'], [Blockly.Msg.MAGENTA, 'F']
+    ]);
     this.appendDummyInput()
       .appendField(Blockly.Msg.FABLE_PLOT_LABEL)
-      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.BLUE, 'A'],
-        [Blockly.Msg.ORANGE, 'B'],
-        [Blockly.Msg.BROWN, 'C']]),
-      'SERIES_ID');
+      .appendField(labelColorOptions, 'SERIES_ID');
 
     // Properties:
     this.setStyle(Blockly.Blocks.Definitions.dataStyle);
@@ -119,11 +117,9 @@ Blockly.Blocks.fable_make_plot_xy = {
     ];
 
     var toolboxKeywords = [
-      'X',
-      'Y',
-      Blockly.Msg.BLUE,
-      Blockly.Msg.ORANGE,
-      Blockly.Msg.BROWN
+      'X', 'Y',
+      Blockly.Msg.RED, Blockly.Msg.GREEN, Blockly.Msg.BLUE,
+      Blockly.Msg.YELLOW, Blockly.Msg.CYAN, Blockly.Msg.MAGENTA
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_make_plot_xy', keywords, toolboxKeywords);
@@ -155,12 +151,13 @@ Blockly.Blocks.fable_make_scatter_plot = {
       .appendField('Y: ')
       .setCheck('Number');
 
+    var labelColorOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.RED, 'A'], [Blockly.Msg.GREEN, 'B'], [Blockly.Msg.BLUE, 'C'],
+      [Blockly.Msg.YELLOW, 'D'], [Blockly.Msg.CYAN, 'E'], [Blockly.Msg.MAGENTA, 'F']
+    ]);
     this.appendDummyInput()
       .appendField(Blockly.Msg.FABLE_PLOT_LABEL)
-      .appendField(new Blockly.FieldDropdown([[Blockly.Msg.BLUE, 'A'],
-        [Blockly.Msg.ORANGE, 'B'],
-        [Blockly.Msg.BROWN, 'C']]),
-      'SERIES_ID');
+      .appendField(labelColorOptions, 'SERIES_ID');
 
     // Properties:
     this.setStyle(Blockly.Blocks.Definitions.dataStyle);
@@ -179,11 +176,9 @@ Blockly.Blocks.fable_make_scatter_plot = {
     ];
 
     var toolboxKeywords = [
-      'X',
-      'Y',
-      Blockly.Msg.BLUE,
-      Blockly.Msg.ORANGE,
-      Blockly.Msg.BROWN
+      'X', 'Y',
+      Blockly.Msg.RED, Blockly.Msg.GREEN, Blockly.Msg.BLUE,
+      Blockly.Msg.YELLOW, Blockly.Msg.CYAN, Blockly.Msg.MAGENTA
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_make_scatter_plot', keywords, toolboxKeywords);
