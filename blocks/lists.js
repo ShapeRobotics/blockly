@@ -126,8 +126,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "%{BKY_LISTS_ISEMPTY_TITLE}",
         "%{BKY_LISTS}"
     ],
-    "search_toolbox_keywords": [
-    ]
+    "search_toolbox_keywords": []
   },
   // Block for getting the list length
   {
@@ -1082,5 +1081,82 @@ Blockly.Blocks['lists_split'] = {
    */
   domToMutation: function(xmlElement) {
     this.updateType_(xmlElement.getAttribute('mode'));
+  }
+};
+
+Blockly.Blocks.fable_lists_append = {
+  /**
+     * Block for append a value to a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField('append');
+    this.appendValueInput('VALUE');
+
+    this.appendDummyInput().appendField(Blockly.Msg.TO);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setStyle('list_blocks');
+    this.setTooltip('FABLE_LISTS_APPEND_TOOLTIP');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = ['append', 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_append', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_lists_clear = {
+  /**
+     * Block for clearing a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField('clear');
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setStyle('list_blocks');
+    this.setTooltip('FABLE_LISTS_CLEAR_TOOLTIP');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = ['clear', 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_clear', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_lists_pop = {
+  /**
+     * Block for clearing a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField('pop item at');
+    this.appendValueInput('INDEX').setCheck('Number');
+
+    this.appendDummyInput().appendField('from list');
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setOutput(true);
+    this.setStyle('list_blocks');
+    this.setTooltip('FABLE_LISTS_POP_TOOLTIP');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = ['pop', 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_pop', keywords, toolboxKeywords);
   }
 };
