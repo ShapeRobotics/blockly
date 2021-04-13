@@ -500,3 +500,35 @@ Blockly.Blocks.fable_cast_list_values_to_type = {
     Blockly.Search.preprocessSearchKeywords('fable_cast_list_values_to_type', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_print = {
+  /**
+     * Block for print.
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(Blockly.Blocks.Definitions.consoleIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    this.appendValueInput('DATA')
+      .appendField(Blockly.Msg.FABLE_PRINT);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
+    this.setTooltip(Blockly.Msg.FABLE_PRINT_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_PRINT];
+    var toolboxKeywords = ['print'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_print', keywords, toolboxKeywords);
+  }
+};

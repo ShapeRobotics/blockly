@@ -113,3 +113,11 @@ Blockly.Python.fable_cast_list_values_to_type = function (block) {
 
   return [code, order];
 };
+
+Blockly.Python.fable_print = function (block) {
+  var data = Blockly.Python.valueToCode(block, 'DATA', Blockly.Python.ORDER_ATOMIC);
+  // Generated: print(data);
+  var code = `print(${data})`;
+
+  return code;
+};
