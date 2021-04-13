@@ -62,13 +62,6 @@ Blockly.Python.fable_make_advanced_plot = function (block) {
   return code;
 };
 
-Blockly.Python.fable_print = function (block) {
-  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE) || 'None';
-  var code = 'api.output(' + value + ')\n';
-
-  return code;
-};
-
 Blockly.Python.fable_set_module_motor_position = function (block) {
   var id = block.getDynamicIDFieldString();
   var pos = Blockly.Python.valueToCode(block, 'MOTOR_POSITION', Blockly.Python.ORDER_NONE) || 'None';

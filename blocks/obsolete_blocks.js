@@ -828,40 +828,6 @@ Blockly.Blocks.fable_set_color_rgb = {
   }
 };
 
-Blockly.Blocks.fable_print = {
-  /**
-     * Block for print.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(Blockly.Blocks.Definitions.consoleIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
-
-    this.appendValueInput('VALUE')
-      .appendField(Blockly.Msg.FABLE_PRINT)
-      .setCheck(['String', 'Number']);
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
-    this.setTooltip(Blockly.Msg.FABLE_PRINT_TOOLTIP);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    // TODO
-    var keywords = [
-      // Blockly.Msg.FABLE_PRINT
-    ];
-
-    Blockly.Search.preprocessSearchKeywords('fable_print', keywords);
-  }
-};
 Blockly.Blocks.empty_block = {
   /**
      * Block with label, used as placeholder when most used category is empty.
