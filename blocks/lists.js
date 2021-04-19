@@ -1160,3 +1160,79 @@ Blockly.Blocks.fable_lists_pop = {
     Blockly.Search.preprocessSearchKeywords('fable_lists_pop', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_lists_copy = {
+  /**
+     * Block for copying a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_COPY);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setOutput(true, 'Array');
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_COPY_TOOLTIP);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_COPY, 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_copy', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_lists_sort = {
+  /**
+     * Block for sorting a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_SORT);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_SORT_REVERSE);
+    this.appendValueInput('REVERSE').setCheck('Boolean');
+
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_SORT_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_SORT, Blockly.Msg.FABLE_LISTS_SORT_REVERSE, 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_sort', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_lists_count = {
+  /**
+     * Block for count elements in a list.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_COUNT);
+    this.appendValueInput('ELEMENT');
+
+    this.appendDummyInput().appendField(Blockly.Msg.COMMON_IN);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setOutput(true);
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_COUNT_TOOLTIP);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_COUNT, 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_count', keywords, toolboxKeywords);
+  }
+};

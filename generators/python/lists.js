@@ -385,3 +385,31 @@ Blockly.Python.fable_lists_pop = function (block) {
 
   return [code, order];
 };
+
+Blockly.Python.fable_lists_copy = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
+  // Generated: targetList.copy();
+  var code = `${targetList}.copy()\n`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_lists_sort = function (block) {
+  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
+  var reversed = Blockly.Python.valueToCode(block, 'REVERSE', Blockly.Python.ORDER_NONE) || 'False';
+  // Generated: targetList.sort(reverse=);
+  var code = `${targetList}.sort(reverse=${reversed})\n`;
+
+  return code;
+};
+
+Blockly.Python.fable_lists_count = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var targetElement = Blockly.Python.valueToCode(block, 'ELEMENT', Blockly.Python.ORDER_ATOMIC) || 0;
+  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
+  // Generated: targetList.count(element);
+  var code = `${targetList}.count(${targetElement})\n`;
+
+  return [code, order];
+}
