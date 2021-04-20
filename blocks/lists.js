@@ -1236,3 +1236,52 @@ Blockly.Blocks.fable_lists_count = {
     Blockly.Search.preprocessSearchKeywords('fable_lists_count', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_lists_set = {
+  /**
+     * Block for casting a list to a set.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_SET);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setOutput(true, 'Array');
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_SET_TOOLTIP);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_SET, 'list', 'set'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_set', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_lists_max = {
+  /**
+     * Block for getting the max from an iterable, using a key.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_MAX);
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_MAX_KEY);
+    this.appendValueInput('KEY').setCheck('String');
+
+    this.setOutput(true);
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_MAX_TOOLTIP);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_MAX, 'list'];
+    var toolboxKeywords = ['list'];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_max', keywords, toolboxKeywords);
+  }
+};
