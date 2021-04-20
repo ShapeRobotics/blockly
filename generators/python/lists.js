@@ -412,4 +412,30 @@ Blockly.Python.fable_lists_count = function (block) {
   var code = `${targetList}.count(${targetElement})\n`;
 
   return [code, order];
-}
+};
+
+Blockly.Python.fable_lists_set = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
+  // Generated: set(targetList);
+  var code = `set(${targetList})\n`;
+
+  return [code, order];
+};
+
+Blockly.Python.fable_lists_max = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
+  var keyArgument = Blockly.Python.valueToCode(block, 'KEY', Blockly.Python.ORDER_ATOMIC) || '';
+
+  var stripKeyArgument = keyArgument.replace(/['"]+/g, '');
+
+  // Generated: max(targetList, key=keyArgument);
+  var code = `max(${targetList})\n`;
+
+  if (stripKeyArgument.length !== 0) {
+    code = `max(${targetList}, key=${stripKeyArgument})\n`;
+  }
+
+  return [code, order];
+};
