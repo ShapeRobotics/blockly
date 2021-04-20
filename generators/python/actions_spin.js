@@ -98,3 +98,33 @@ Blockly.Python.fable_spin_reset_encoder = function (block) {
   const code = 'api.spinResetEncoder(\'' + motorID + '\', ' + id + ')\n';
   return code;
 };
+
+Blockly.Python.fable_spin_set_axle = function (block) {
+  const id = block.getDynamicIDFieldString();
+  const axleWidth = Blockly.Python.valueToCode(block, 'AXLE_VALUE', Blockly.Python.ORDER_NONE) || 121.38;
+
+  const code = `api.setSpinAxle(${axleWidth}, ${id})\n`;
+
+  return code;
+};
+
+Blockly.Python.fable_spin_set_wheel_diameter = function (block) {
+  const id = block.getDynamicIDFieldString();
+  const wheelDiameter = Blockly.Python.valueToCode(block, 'WHEEL_DIAMETER', Blockly.Python.ORDER_NONE) || 107.4;
+
+  const code = `api.setSpinAxle(${wheelDiameter}, ${id})\n`;
+
+  return code;
+};
+
+Blockly.Python.fable_spin_spin_wheel_by_metric = function (block) {
+  const id = block.getDynamicIDFieldString();
+  const motor = block.getFieldValue('MOTOR');
+  const turns = Blockly.Python.valueToCode(block, 'TURNS', Blockly.Python.ORDER_NONE) || 'None';
+  const metric = block.getFieldValue('METRIC');
+  const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE) || 'None';
+
+  const code = `api.spinWheelByMetric('${motor}', ${turns}, ${metric}, ${id}, ${speed})\n`;
+
+  return code;
+};

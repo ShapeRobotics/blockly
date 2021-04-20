@@ -522,3 +522,139 @@ Blockly.Blocks.fable_spin_reset_encoder = {
     Blockly.Search.preprocessSearchKeywords('fable_spin_reset_encoder', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_spin_set_axle = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_AXLE);
+
+    this.appendValueInput('AXLE_VALUE').setCheck('Number');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_AXLE_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_SPIN_SET_AXLE, '%{BKY_OUTPUT}', '%{BKY_LABEL_SPIN}'];
+    var toolboxKeywords = [];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_set_axle', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_spin_set_wheel_diameter = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER);
+
+    this.appendValueInput('WHEEL_DIAMETER').setCheck('Number');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER, '%{BKY_OUTPUT}', '%{BKY_LABEL_SPIN}'];
+    var toolboxKeywords = [];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_set_wheel_diameter', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_WHEEL_SPIN);
+
+    const motorOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.FABLE_SPIN_MOTOR_A, 'A'],
+      [Blockly.Msg.FABLE_SPIN_MOTOR_B, 'B'],
+      [Blockly.Msg.FABLE_SPIN_BOTH_MOTORS, 'both']
+    ]);
+    this.appendDummyInput().appendField(motorOptions, 'MOTOR');
+
+    this.appendDummyInput().appendField(Blockly.Msg.BY);
+    this.appendValueInput('TURNS').setCheck('Number');
+
+    const metricOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.TIMES, '\'times\''],
+      [Blockly.Msg.DEGREES, '\'degrees\''],
+      [Blockly.Msg.RADIANS, '\'radians\'']
+    ]);
+    this.appendDummyInput().appendField(metricOptions, 'METRIC');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_WITH_SPEED);
+
+    this.appendValueInput('SPEED').setCheck('Number');
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_WHEEL_SPIN_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_WHEEL_SPIN,
+      Blockly.Msg.FABLE_WITH_SPEED,
+      Blockly.Msg.FABLE_SPIN_MOTOR_A,
+      Blockly.Msg.FABLE_SPIN_MOTOR_B,
+      Blockly.Msg.FABLE_SPIN_MOTOR_BOTH_MOTORS,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
+
+    var toolboxKeywords = [Blockly.Msg.TIMES, Blockly.Msg.DEGREES, Blockly.Msg.RADIANS];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_spin_wheel_by_metric', keywords, toolboxKeywords);
+  }
+};
