@@ -21,7 +21,7 @@ Blockly.Python.fable_load_from_csv = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
   var fileName = Blockly.Python.valueToCode(block, 'FILENAME', Blockly.Python.ORDER_NONE) || 'MyFableCSV';
   // Generated: api.loadCSV("FileName", delimiter=';', skip_header=True);
-  var code = `api.loadCSV(${fileName}, delimiter=';', skipheader=True)\n`;
+  var code = `api.loadCSV(${fileName}, delimiter=';', skipheader=True)`;
 
   return [code, order];
 };
@@ -32,7 +32,7 @@ Blockly.Python.fable_load_from_csv_advance = function (block) {
   var delimiter = Blockly.Python.valueToCode(block, 'DELIMITER', Blockly.Python.ORDER_NONE) || ';';
   var skipHeader = Blockly.Python.valueToCode(block, 'SKIPHEADER', Blockly.Python.ORDER_NONE);
   // Generated: api.loadCSV("FileName", delimiter=';', skip_header=True);
-  var code = `api.loadCSV(${fileName}, delimiter=${delimiter}, skipheader=${skipHeader})\n`;
+  var code = `api.loadCSV(${fileName}, delimiter=${delimiter}, skipheader=${skipHeader})`;
 
   return [code, order];
 };

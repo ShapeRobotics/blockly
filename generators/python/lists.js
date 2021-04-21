@@ -381,7 +381,7 @@ Blockly.Python.fable_lists_pop = function (block) {
   var atIndex = Blockly.Python.valueToCode(block, 'INDEX', Blockly.Python.ORDER_ATOMIC) || 0;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
   // Generated: targetList.pop(atIndex);
-  var code = `${targetList}.pop(${atIndex})\n`;
+  var code = `${targetList}.pop(${atIndex})`;
 
   return [code, order];
 };
@@ -390,7 +390,7 @@ Blockly.Python.fable_lists_copy = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
   // Generated: targetList.copy();
-  var code = `${targetList}.copy()\n`;
+  var code = `${targetList}.copy()`;
 
   return [code, order];
 };
@@ -409,7 +409,7 @@ Blockly.Python.fable_lists_count = function (block) {
   var targetElement = Blockly.Python.valueToCode(block, 'ELEMENT', Blockly.Python.ORDER_ATOMIC) || 0;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
   // Generated: targetList.count(element);
-  var code = `${targetList}.count(${targetElement})\n`;
+  var code = `${targetList}.count(${targetElement})`;
 
   return [code, order];
 };
@@ -418,7 +418,7 @@ Blockly.Python.fable_lists_set = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
   // Generated: set(targetList);
-  var code = `set(${targetList})\n`;
+  var code = `set(${targetList})`;
 
   return [code, order];
 };
@@ -431,10 +431,10 @@ Blockly.Python.fable_lists_max = function (block) {
   var stripKeyArgument = keyArgument.replace(/['"]+/g, '');
 
   // Generated: max(targetList, key=keyArgument);
-  var code = `max(${targetList})\n`;
+  var code = `max(${targetList})`;
 
   if (stripKeyArgument.length !== 0) {
-    code = `max(${targetList}, key=${stripKeyArgument})\n`;
+    code = `max(${targetList}, key=${stripKeyArgument})`;
   }
 
   return [code, order];
