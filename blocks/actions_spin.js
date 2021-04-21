@@ -540,6 +540,8 @@ Blockly.Blocks.fable_spin_set_axle = {
 
     this.appendValueInput('AXLE_VALUE').setCheck('Number');
 
+    this.appendDummyInput().appendField('mm');
+
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
 
@@ -575,6 +577,8 @@ Blockly.Blocks.fable_spin_set_wheel_diameter = {
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER);
 
     this.appendValueInput('WHEEL_DIAMETER').setCheck('Number');
+
+    this.appendDummyInput().appendField('mm');
 
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
