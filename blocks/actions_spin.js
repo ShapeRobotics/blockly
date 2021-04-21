@@ -652,7 +652,7 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
       Blockly.Msg.FABLE_WITH_SPEED,
       Blockly.Msg.FABLE_SPIN_MOTOR_A,
       Blockly.Msg.FABLE_SPIN_MOTOR_B,
-      Blockly.Msg.FABLE_SPIN_MOTOR_BOTH_MOTORS,
+      Blockly.Msg.FABLE_SPIN_BOTH_MOTORS,
       '%{BKY_OUTPUT}',
       '%{BKY_LABEL_SPIN}'
     ];
