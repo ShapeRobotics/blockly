@@ -112,7 +112,7 @@ Blockly.Python.fable_spin_set_wheel_diameter = function (block) {
   const id = block.getDynamicIDFieldString();
   const wheelDiameter = Blockly.Python.valueToCode(block, 'WHEEL_DIAMETER', Blockly.Python.ORDER_NONE) || 107.4;
 
-  const code = `api.setSpinAxle(${wheelDiameter}, ${id})\n`;
+  const code = `api.setSpinWheelDiameter(${wheelDiameter}, ${id})\n`;
 
   return code;
 };
