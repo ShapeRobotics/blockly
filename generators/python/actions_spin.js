@@ -99,22 +99,25 @@ Blockly.Python.fable_spin_reset_encoder = function (block) {
   return code;
 };
 
-Blockly.Python.fable_spin_set_axle = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const axleWidth = Blockly.Python.valueToCode(block, 'AXLE_VALUE', Blockly.Python.ORDER_NONE) || 121.38;
+Blockly.Python.fable_spin_set_constant = function (block) {
+  var id = block.getDynamicIDFieldString();
+  var metric = block.getFieldValue('METRIC');
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE);
 
-  const code = `api.setSpinAxle(${axleWidth}, ${id})\n`;
+  var codeSignature = `api.PLACEHOLDER_METHOD(${value}, ${id})\n`;
 
-  return code;
-};
+  if (metric === 'AXLE') {
+    value = value || 121.38;
+    codeSignature = codeSignature.replace('PLACEHOLDER_METHOD', 'setSpinAxle');
+  } else if (metric === 'WHEEL_DIAMETER') {
+    value = value || 107.4;
+    codeSignature = codeSignature.replace('PLACEHOLDER_METHOD', 'setSpinWheelDiameter');
+  } else {
+    value = value || 0;
+    codeSignature = 'raise NotFoundException';
+  }
 
-Blockly.Python.fable_spin_set_wheel_diameter = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const wheelDiameter = Blockly.Python.valueToCode(block, 'WHEEL_DIAMETER', Blockly.Python.ORDER_NONE) || 107.4;
-
-  const code = `api.setSpinWheelDiameter(${wheelDiameter}, ${id})\n`;
-
-  return code;
+  return codeSignature;
 };
 
 Blockly.Python.fable_spin_spin_wheel_by_metric = function (block) {

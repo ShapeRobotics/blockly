@@ -523,79 +523,72 @@ Blockly.Blocks.fable_spin_reset_encoder = {
   }
 };
 
-Blockly.Blocks.fable_spin_set_axle = {
+Blockly.Blocks.fable_spin_set_constant = {
   /**
-     *
-     * @this Blockly.Block
-     */
+   * Changes the spin axle and wheel diameter constants.
+   * @this Blockly.Block
+   */
   init: function () {
-    // Inputs:
     var image = new Blockly.FieldImage(
       Blockly.Blocks.Definitions.spinIcon,
       Blockly.Blocks.Definitions.iconSize,
       Blockly.Blocks.Definitions.iconSize, '*');
     this.appendDummyInput().appendField(image);
 
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_AXLE);
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_CONSTANT);
 
-    this.appendValueInput('AXLE_VALUE').setCheck('Number');
+    var constantOptions = [
+      [Blockly.Msg.FABLE_SPIN_SET_AXLE, 'AXLE'],
+      [Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER, 'WHEEL_DIAMETER']
+    ];
 
+    var dropdown = new Blockly.FieldDropdown(constantOptions);
+    this.appendDummyInput().appendField(dropdown, 'METRIC');
+
+    this.appendValueInput('VALUE').setCheck('Number').appendField(Blockly.Msg.TO);
     this.appendDummyInput().appendField('mm');
 
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
 
     // Properties:
+    var thisBlock = this;
+    this.setTooltip(function () {
+      const metricSelected = thisBlock.getFieldValue('METRIC');
+
+      var TOOLTIPS = {
+        AXLE: Blockly.Msg.FABLE_SPIN_SET_AXLE_TOOLTIP,
+        WHEEL_DIAMETER: Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER_TOOLTIP
+      };
+
+      try {
+        return TOOLTIPS[metricSelected];
+      } catch (err) {
+        return '';
+      }
+    });
+
     this.setStyle(Blockly.Blocks.Definitions.actionStyle);
-    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_AXLE_TOOLTIP);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
   },
   ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_SPIN_SET_AXLE, '%{BKY_OUTPUT}', '%{BKY_LABEL_SPIN}'];
-    var toolboxKeywords = [];
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_CONSTANT,
+      Blockly.Msg.FABLE_SPIN_SET_AXLE,
+      Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
 
-    Blockly.Search.preprocessSearchKeywords('fable_spin_set_axle', keywords, toolboxKeywords);
-  }
-};
+    var toolboxKeywords = [
+      Blockly.Msg.FABLE_SPIN_SET_AXLE,
+      Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER
+    ];
 
-Blockly.Blocks.fable_spin_set_wheel_diameter = {
-  /**
-     *
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.spinIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput().appendField(image);
-
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER);
-
-    this.appendValueInput('WHEEL_DIAMETER').setCheck('Number');
-
-    this.appendDummyInput().appendField('mm');
-
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
-    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
-    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER_TOOLTIP);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER, '%{BKY_OUTPUT}', '%{BKY_LABEL_SPIN}'];
-    var toolboxKeywords = [];
-
-    Blockly.Search.preprocessSearchKeywords('fable_spin_set_wheel_diameter', keywords, toolboxKeywords);
+    Blockly.Search.preprocessSearchKeywords('fable_spin_set_constant', keywords, toolboxKeywords);
   }
 };
 
