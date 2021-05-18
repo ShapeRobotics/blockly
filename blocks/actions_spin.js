@@ -537,12 +537,12 @@ Blockly.Blocks.fable_spin_set_constant = {
 
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_SET_CONSTANT);
 
-    var constantOptions = [
+    var METRICOPT = [
       [Blockly.Msg.FABLE_SPIN_SET_AXLE, 'AXLE'],
       [Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER, 'WHEEL_DIAMETER']
     ];
 
-    var dropdown = new Blockly.FieldDropdown(constantOptions);
+    var dropdown = new Blockly.FieldDropdown(METRICOPT);
     this.appendDummyInput().appendField(dropdown, 'METRIC');
 
     this.appendValueInput('VALUE').setCheck('Number').appendField(Blockly.Msg.TO);
@@ -552,9 +552,9 @@ Blockly.Blocks.fable_spin_set_constant = {
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
 
     // Properties:
-    var thisBlock = this;
+    var thisBlock_ = this;
     this.setTooltip(function () {
-      const metricSelected = thisBlock.getFieldValue('METRIC');
+      const metricSelected = thisBlock_.getFieldValue('METRIC');
 
       var TOOLTIPS = {
         AXLE: Blockly.Msg.FABLE_SPIN_SET_AXLE_TOOLTIP,
