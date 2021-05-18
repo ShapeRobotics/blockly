@@ -328,13 +328,13 @@ Blockly.Blocks.fable_load_from_csv_advance = {
   }
 };
 
-Blockly.Blocks.fable_cast_to_string = {
+Blockly.Blocks.fable_cast_to_type = {
   /**
-     * Block for casting value to string.
-     * @this Blockly.Block
-     */
+   * Casts value to selected type.
+   * @this Blockly.Block
+   */
+
   init: function () {
-    // Inputs:
     var image = new Blockly.FieldImage(
       Blockly.Blocks.Definitions.consoleIcon,
       Blockly.Blocks.Definitions.iconSize,
@@ -342,121 +342,60 @@ Blockly.Blocks.fable_cast_to_string = {
 
     this.appendDummyInput().appendField(image);
 
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'string'));
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST);
 
     this.appendValueInput('VALUE');
 
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
-    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
-    this.setOutput(true, 'String');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'string'];
-    var toolboxKeywords = ['cast'];
+    var TYPEOPT = [['string', 'STRING'], ['int', 'INT'], ['float', 'FLOAT']];
+    var thisBlock_ = this;
 
-    Blockly.Search.preprocessSearchKeywords('fable_cast_to_string', keywords, toolboxKeywords);
-  }
-};
+    var dropdown = new Blockly.FieldDropdown(TYPEOPT, function (selectedType) {
+      thisBlock_.updateOutputType_(selectedType);
+    });
 
-Blockly.Blocks.fable_cast_to_int = {
-  /**
-     * Block for casting value to integer.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.consoleIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-
-    this.appendDummyInput().appendField(image);
-
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'int'));
-
-    this.appendValueInput('VALUE');
+    this.appendDummyInput().appendField(Blockly.Msg.TO).appendField(dropdown, 'TYPE');
 
     // Properties:
+    this.setTooltip(function () {
+      const selection = thisBlock_.getFieldValue('TYPE');
+
+      var TOOLTIPS = {
+        STRING: Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP.replace('{0}', 'string'),
+        INT: Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP.replace('{0}', 'int'),
+        FLOAT: Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP.replace('{0}', 'float')
+      };
+
+      try {
+        return TOOLTIPS[selection];
+      } catch (err) {
+        return '';
+      }
+    });
+
     this.setStyle(Blockly.Blocks.Definitions.dataStyle);
-    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
     this.setOutput(true, 'Number');
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
   },
   ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'int'];
-    var toolboxKeywords = ['cast'];
+    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'string', 'int', 'float'];
+    var toolboxKeywords = [Blockly.Msg.FABLE_TYPE_CAST, 'string', 'int', 'float'];
 
-    Blockly.Search.preprocessSearchKeywords('fable_cast_to_int', keywords, toolboxKeywords);
-  }
-};
-
-Blockly.Blocks.fable_cast_to_float = {
-  /**
-     * Block for casting value to string.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.consoleIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-
-    this.appendDummyInput().appendField(image);
-
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'float'));
-
-    this.appendValueInput('VALUE');
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
-    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
-    this.setOutput(true, 'Number');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
+    Blockly.Search.preprocessSearchKeywords('fable_cast_to_type', keywords, toolboxKeywords);
   },
-  ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'float'];
-    var toolboxKeywords = ['cast'];
+  updateOutputType_: function (selectedType) {
+    const OUTPUT_TYPES = {
+      STRING: 'String',
+      INT: 'Number',
+      FLOAT: 'Number'
+    };
 
-    Blockly.Search.preprocessSearchKeywords('fable_cast_to_float', keywords, toolboxKeywords);
-  }
-};
-
-Blockly.Blocks.fable_cast_to_list = {
-  /**
-     * Block for casting value to string.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.consoleIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-
-    this.appendDummyInput().appendField(image);
-
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_TYPE_CAST.replace('{0}', 'list'));
-
-    this.appendValueInput('VALUE');
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.dataStyle);
-    this.setTooltip(Blockly.Msg.FABLE_TYPE_CAST_TOOLTIP);
-    this.setOutput(true, 'Array');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_TYPE_CAST, '%{BKY_DATA}', 'list', 'array'];
-    var toolboxKeywords = ['cast'];
-
-    Blockly.Search.preprocessSearchKeywords('fable_cast_to_list', keywords, toolboxKeywords);
+    try {
+      this.outputConnection.setCheck(OUTPUT_TYPES[selectedType]);
+    } catch (ex) {
+      console.log(ex);
+      this.outputConnection.setCheck('Number');
+    }
   }
 };
 
@@ -479,7 +418,7 @@ Blockly.Blocks.fable_cast_list_values_to_type = {
     this.appendValueInput('LIST').setCheck('Array');
 
     var targetTypes = new Blockly.FieldDropdown(
-      [['string', 'STR'], ['int', 'INT'], ['float', 'FLOAT']]
+      [['string', 'STRING'], ['int', 'INT'], ['float', 'FLOAT']]
     );
 
     this.appendDummyInput().appendField(Blockly.Msg.TO);
