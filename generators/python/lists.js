@@ -359,33 +359,6 @@ Blockly.Python['lists_reverse'] = function(block) {
   return [code, Blockly.Python.ORDER_FUNCTION_CALL];
 };
 
-Blockly.Python.fable_lists_append = function (block) {
-  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC);
-  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  // Generated: targetList.append(value);
-  var code = `${targetList}.append(${value})\n`;
-
-  return code;
-};
-
-Blockly.Python.fable_lists_clear = function (block) {
-  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  // Generated: targetList.clear();
-  var code = `${targetList}.clear()\n`;
-
-  return code;
-};
-
-Blockly.Python.fable_lists_pop = function (block) {
-  var order = Blockly.Python.ORDER_ATOMIC;
-  var atIndex = Blockly.Python.valueToCode(block, 'INDEX', Blockly.Python.ORDER_ATOMIC) || 0;
-  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  // Generated: targetList.pop(atIndex);
-  var code = `${targetList}.pop(${atIndex})`;
-
-  return [code, order];
-};
-
 Blockly.Python.fable_lists_copy = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
@@ -414,28 +387,3 @@ Blockly.Python.fable_lists_count = function (block) {
   return [code, order];
 };
 
-Blockly.Python.fable_lists_set = function (block) {
-  var order = Blockly.Python.ORDER_ATOMIC;
-  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  // Generated: set(targetList);
-  var code = `set(${targetList})`;
-
-  return [code, order];
-};
-
-Blockly.Python.fable_lists_max = function (block) {
-  var order = Blockly.Python.ORDER_ATOMIC;
-  var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  var keyArgument = Blockly.Python.valueToCode(block, 'KEY', Blockly.Python.ORDER_ATOMIC) || '';
-
-  var stripKeyArgument = keyArgument.replace(/['"]+/g, '');
-
-  // Generated: max(targetList, key=keyArgument);
-  var code = `max(${targetList})`;
-
-  if (stripKeyArgument.length !== 0) {
-    code = `max(${targetList}, key=${stripKeyArgument})`;
-  }
-
-  return [code, order];
-};
