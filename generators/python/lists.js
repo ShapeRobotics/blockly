@@ -378,12 +378,45 @@ Blockly.Python.fable_lists_sort = function (block) {
 };
 
 Blockly.Python.fable_lists_count = function (block) {
-  var order = Blockly.Python.ORDER_ATOMIC;
-  var targetElement = Blockly.Python.valueToCode(block, 'ELEMENT', Blockly.Python.ORDER_ATOMIC) || 0;
+  var order = Blockly.Python.ORDER_FUNCTION_CALL;
   var targetList = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_NONE);
-  // Generated: targetList.count(element);
-  var code = `${targetList}.count(${targetElement})`;
+  var action = block.getFieldValue('ACTION') || 'MOST_FREQUENT';
+
+  var code;
+
+  if (action === 'COUNT_ELEMENT') {
+    var elementToCount = Blockly.Python.valueToCode(block, 'ELEMENT', Blockly.Python.ORDER_ATOMIC) || 0;
+    order = Blockly.Python.ORDER_ATOMIC;
+    code = `${targetList}.count(${elementToCount})`;
+
+    return [code, order];
+  }
+
+  var getMostFrequentFunctionName = Blockly.Python.provideFunction_(
+    'getMostFrequent', [
+      `def ${Blockly.Python.FUNCTION_NAME_PLACEHOLDER_}(a_list):`,
+      '  return max(set(a_list), key = a_list.count)'
+    ]
+  );
+
+  code = `${getMostFrequentFunctionName}(${targetList})`;
 
   return [code, order];
 };
 
+Blockly.Python.fable_lists_concat = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var listOne = Blockly.Python.valueToCode(block, 'LIST_1', Blockly.Python.ORDER_NONE);
+  var listTwo = Blockly.Python.valueToCode(block, 'LIST_2', Blockly.Python.ORDER_NONE);
+  var withDups = Blockly.Python.valueToCode(block, 'WITH_DUPS', Blockly.Python.ORDER_NONE) || 'False';
+
+  var code;
+
+  if (withDups === 'False') {
+    code = `list(${listOne}).extend(x for x in ${listTwo} if x not in ${listOne})\n`;
+  } else {
+    code = `${listOne} + ${listTwo})\n`;
+  }
+
+  return [code, order];
+};

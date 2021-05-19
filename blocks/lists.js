@@ -1136,26 +1136,87 @@ Blockly.Blocks.fable_lists_sort = {
 
 Blockly.Blocks.fable_lists_count = {
   /**
-     * Block for count elements in a list.
+     * Block for count operations in a list.
      * @author SHAPEROBOTICS
      * @this Blockly.Block
      */
   init: function () {
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_COUNT);
-    this.appendValueInput('ELEMENT');
+    this.appendValueInput('LIST').setCheck('Array').appendField(Blockly.Msg.LISTS_GET_INDEX_INPUT_IN_LIST);
 
-    this.appendDummyInput().appendField(Blockly.Msg.COMMON_IN);
-    this.appendValueInput('LIST').setCheck('Array');
+    const ACTIONSOPT = [
+      [Blockly.Msg.FABLE_LISTS_MOST_FREQ, 'MOST_FREQUENT'],
+      [Blockly.Msg.FABLE_LISTS_COUNT, 'COUNT_ELEMENT']
+    ];
+
+    var dropdown = new Blockly.FieldDropdown(ACTIONSOPT, function (selection) {
+      this.sourceBlock_.updateInputs_(selection === 'COUNT_ELEMENT');
+    });
+
+    this.appendDummyInput().appendField(dropdown, 'ACTION');
+
+    var thisBlock_ = this;
+    this.setTooltip(function () {
+      var action = thisBlock_.getFieldValue('ACTION');
+      var TOOLTIPS = {
+        MOST_FREQUENT: Blockly.Msg.FABLE_LISTS_MOST_FREQ_TOOLTIP,
+        COUNT_ELEMENT: Blockly.Msg.FABLE_LISTS_COUNT_TOOLTIP
+      };
+      try {
+        return TOOLTIPS[action];
+      } catch (err) {
+        return Blockly.Msg.FABLE_LISTS_MOST_FREQ_TOOLTIP;
+      }
+    });
 
     this.setOutput(true);
     this.setStyle('list_blocks');
-    this.setTooltip(Blockly.Msg.FABLE_LISTS_COUNT_TOOLTIP);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
   },
   ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_LISTS_COUNT, 'list'];
+    var keywords = [Blockly.Msg.FABLE_LISTS_COUNT, Blockly.Msg.FABLE_LISTS_MOST_FREQ];
     var toolboxKeywords = ['list'];
     Blockly.Search.preprocessSearchKeywords('fable_lists_count', keywords, toolboxKeywords);
+  },
+  mutationToDom: function () {
+    var a = document.createElement('mutation');
+    var b = this.getInput('ELEMENT')?.type == Blockly.INPUT_VALUE;
+
+    a.setAttribute('elementInput', b);
+
+    return a;
+  },
+  domToMutation: function (a) {
+    var shouldAddInput = 'true' == a.getAttribute('elementInput');
+    this.updateInputs_(shouldAddInput);
+  },
+  updateInputs_: function (addInput) {
+    addInput ? !this.getInput('ELEMENT') && this.appendValueInput('ELEMENT').setCheck(['String', 'Number'])
+      : this.getInput('ELEMENT') && this.removeInput('ELEMENT');
+  }
+};
+
+Blockly.Blocks.fable_lists_concat = {
+  /**
+     * Block for concatenating two lists.
+     * @author SHAPEROBOTICS
+     * @this Blockly.Block
+     */
+  init: function () {
+    this.appendValueInput('LIST_1').setCheck('Array').appendField(Blockly.Msg.FABLE_LISTS_CONCAT);
+    this.appendValueInput('LIST_2').setCheck('Array').appendField(Blockly.Msg.COMMON_AND);
+
+    this.appendValueInput('WITH_DUPS').setCheck('Boolean').appendField(Blockly.Msg.FABLE_LISTS_CONCAT_DUPS);
+
+    this.setStyle('list_blocks');
+    this.setTooltip(Blockly.Msg.FABLE_LISTS_CONCAT_TOOLTIP);
+    this.setOutput(true, 'Array');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [Blockly.Msg.FABLE_LISTS_CONCAT, Blockly.Msg.FABLE_LISTS_CONCAT_DUPS, 'list'];
+    var toolboxKeywords = [Blockly.Msg.FABLE_LISTS_CONCAT];
+    Blockly.Search.preprocessSearchKeywords('fable_lists_concat', keywords, toolboxKeywords);
   }
 };
