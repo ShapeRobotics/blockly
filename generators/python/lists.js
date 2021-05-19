@@ -420,3 +420,85 @@ Blockly.Python.fable_lists_concat = function (block) {
 
   return [code, order];
 };
+
+Blockly.Python.fable_lists_sublist = function (block) {
+  // Get sublist.
+  var list = Blockly.Python.valueToCode(block, 'LIST', Blockly.Python.ORDER_MEMBER) || '[]';
+  var where1 = block.getFieldValue('WHERE1');
+  var where2 = block.getFieldValue('WHERE2');
+  var action = block.getFieldValue('ACTION');
+
+  switch (where1) {
+    case 'FROM_START':
+      var at1 = Blockly.Python.getAdjustedInt(block, 'AT1');
+      if (at1 == '0') {
+        at1 = '';
+      }
+      break;
+    case 'FROM_END':
+      var at1 = Blockly.Python.getAdjustedInt(block, 'AT1', 1, true);
+      break;
+    case 'FIRST':
+      var at1 = '';
+      break;
+    default:
+      throw Error('Unhandled option (lists_getSublist)');
+  }
+  switch (where2) {
+    case 'FROM_START':
+      var at2 = Blockly.Python.getAdjustedInt(block, 'AT2', 1);
+      break;
+    case 'FROM_END':
+      var at2 = Blockly.Python.getAdjustedInt(block, 'AT2', 0, true);
+      // Ensure that if the result calculated is 0 that sub-sequence will
+      // include all elements as expected.
+      if (!Blockly.isNumber(String(at2))) {
+        Blockly.Python.definitions_['import_sys'] = 'import sys';
+        at2 += ' or sys.maxsize';
+      } else if (at2 == '0') {
+        at2 = '';
+      }
+      break;
+    case 'LAST':
+      var at2 = '';
+      break;
+    default:
+      throw Error('Unhandled option (lists_getSublist)');
+  }
+
+  var code;
+
+  switch (action) {
+    case 'GET':
+      code = list + '[' + at1 + ' : ' + at2 + ']';
+      break;
+    case 'GET_REMOVE':
+      var getAndRemoveFunctionName = Blockly.Python.provideFunction_(
+        'getAndRemove', [
+          `def ${Blockly.Python.FUNCTION_NAME_PLACEHOLDER_}(a_list, start, end):`,
+          '  removed = a_list[start:end]',
+          '  for x in removed:',
+          '    a_list.remove(x)',
+          '  return removed'
+        ]
+      );
+      code = `${getAndRemoveFunctionName}(${list}, ${at1}, ${at2})`;
+      break;
+    case 'REMOVE':
+      var removeFunctionName = Blockly.Python.provideFunction_(
+        'remove', [
+          `def ${Blockly.Python.FUNCTION_NAME_PLACEHOLDER_}(a_list, start, end):`,
+          '  toRemove = a_list[start:end]',
+          '  for x in toRemove:',
+          '    a_list.remove(x)',
+          '  return a_list'
+        ]
+      );
+      code = `${removeFunctionName}(${list}, ${at1}, ${at2})`;
+      break;
+    default:
+      throw Error('Not a valid action (list_getSublist)');
+  }
+
+  return [code, Blockly.Python.ORDER_MEMBER];
+};
