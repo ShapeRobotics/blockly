@@ -290,9 +290,7 @@ Blockly.Blocks.camera_check_for_motion = {
       '%{BKY_VISION}'
     ];
 
-    var toolboxKeywords = [
-    
-    ];
+    var toolboxKeywords = [];
 
     Blockly.Search.preprocessSearchKeywords('camera_check_for_motion', keywords, toolboxKeywords);
   }
@@ -343,5 +341,76 @@ Blockly.Blocks.camera_get_center_of_motion = {
     ];
 
     Blockly.Search.preprocessSearchKeywords('camera_get_center_of_motion', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.camera_check_for_face = {
+  /**
+   * Block for face detection.
+   * @this Blockly.Block
+   */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.cameraIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.cameraStyle);
+    this.setTooltip(Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE_TOOLTIP);
+    this.setOutput(true, 'Boolean');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE,
+      '%{BKY_VISION}'
+    ];
+
+    var toolboxKeywords = [];
+
+    Blockly.Search.preprocessSearchKeywords('camera_check_for_face', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.camera_get_center_of_face = {
+  /**
+   * Block for getting the center coordinates of a detected face.
+   * @this Blockly.Block
+   */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.cameraIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    this.CENTER_AXES = [['X', 'X_COORD'], ['Y', 'Y_COORD']];
+    var dropdown = new Blockly.FieldDropdown(this.CENTER_AXES);
+
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER).appendField(dropdown, 'FACE_CENTER');
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.cameraStyle);
+    this.setTooltip(Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER_TOOLTIP);
+    this.setOutput(true, 'Number');
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER,
+      '%{BKY_VISION}'
+    ];
+
+    var toolboxKeywords = ['X', 'Y'];
+
+    Blockly.Search.preprocessSearchKeywords('camera_get_center_of_face', keywords, toolboxKeywords);
   }
 };

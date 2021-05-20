@@ -70,3 +70,20 @@ Blockly.Python.camera_get_center_of_motion = function (block) {
 
   return [code, order];
 };
+
+Blockly.Python.camera_check_for_face = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var code = 'api.detectedFace()';
+
+  return [code, order];
+};
+
+Blockly.Python.camera_get_center_of_face = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var axis = block.getFieldValue('FACE_CENTER');
+  var index = (axis === 'X_COORD') ? 0 : 1;
+
+  var code = `api.getFaceCenter()[${index}]`;
+
+  return [code, order];
+};
