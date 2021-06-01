@@ -542,7 +542,10 @@ Blockly.Blocks.fable_spin_set_constant = {
       [Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER, 'WHEEL_DIAMETER']
     ];
 
-    var dropdown = new Blockly.FieldDropdown(METRICOPT);
+    var dropdown = new Blockly.FieldDropdown(METRICOPT, function (selection) {
+      this.sourceBlock_.updateShadowBlockDefaultValue_(selection);
+    });
+
     this.appendDummyInput().appendField(dropdown, 'METRIC');
 
     this.appendValueInput('VALUE').setCheck('Number').appendField(Blockly.Msg.TO);
@@ -589,6 +592,15 @@ Blockly.Blocks.fable_spin_set_constant = {
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_spin_set_constant', keywords, toolboxKeywords);
+  },
+  updateShadowBlockDefaultValue_: function (selection) {
+    const DEFAULT_VALUES = {
+      AXLE: 121.38,
+      WHEEL_DIAMETER: 107.4
+    };
+
+    var inputValueBlock = this.getInputTargetBlock("VALUE");
+    inputValueBlock?.isShadow() && inputValueBlock?.setFieldValue(DEFAULT_VALUES[selection], "NUM");
   }
 };
 
