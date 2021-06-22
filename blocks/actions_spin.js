@@ -626,7 +626,13 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     ]);
     this.appendDummyInput().appendField(motorOptions, 'MOTOR');
 
-    this.appendDummyInput().appendField(Blockly.Msg.BY);
+    const referenceOptions = new Blockly.FieldDropdown([
+      [Blockly.Msg.BY, 'relative'],
+      [Blockly.Msg.TO, 'absolute']
+    ]);
+
+    this.appendDummyInput().appendField(referenceOptions, 'REFERENCE');
+
     this.appendValueInput('TURNS').setCheck('Number');
 
     const metricOptions = new Blockly.FieldDropdown([

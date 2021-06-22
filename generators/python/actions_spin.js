@@ -123,11 +123,14 @@ Blockly.Python.fable_spin_set_constant = function (block) {
 Blockly.Python.fable_spin_spin_wheel_by_metric = function (block) {
   const id = block.getDynamicIDFieldString();
   const motor = block.getFieldValue('MOTOR');
+  const reference = block.getFieldValue('REFERENCE');
   const turns = Blockly.Python.valueToCode(block, 'TURNS', Blockly.Python.ORDER_NONE) || 'None';
   const metric = block.getFieldValue('METRIC');
   const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE) || 'None';
 
-  const code = `api.spinWheelByMetric('${motor}', ${turns}, ${metric}, ${id}, ${speed})\n`;
+  const isAbsoluteReference = (reference === 'absolute') ? 'True' : 'False';
+
+  const code = `api.spinWheelByMetric('${motor}', ${turns}, ${metric}, ${id}, ${speed}, abs=${isAbsoluteReference})\n`;
 
   return code;
 };
