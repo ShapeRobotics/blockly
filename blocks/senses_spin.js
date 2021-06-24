@@ -292,8 +292,8 @@ Blockly.Blocks.fable_spin_get_motor = {
 
     var optionsArray = [[Blockly.Msg.FABLE_SPIN_GET_ANGLE_A, 'angleA'],
       [Blockly.Msg.FABLE_SPIN_GET_ANGLE_B, 'angleB'],
-      [Blockly.Msg.FABLE_SPIN_GET_ROUNDS_A, 'roundsA'],
-      [Blockly.Msg.FABLE_SPIN_GET_ROUNDS_B, 'roundsB'],
+      [Blockly.Msg.FABLE_SPIN_GET_ROUNDS_A, 'rotationsA'],
+      [Blockly.Msg.FABLE_SPIN_GET_ROUNDS_B, 'rotationsB'],
       [Blockly.Msg.FABLE_SPIN_GET_SPEED_A, 'velocityA'],
       [Blockly.Msg.FABLE_SPIN_GET_SPEED_B, 'velocityB']];
 
