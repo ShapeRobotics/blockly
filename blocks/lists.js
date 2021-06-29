@@ -930,62 +930,6 @@ Blockly.Blocks['lists_getSublist'] = {
   }
 };
 
-Blockly.Blocks['lists_sort'] = {
-  /**
-   * Block for sorting a list.
-   * @this {Blockly.Block}
-   */
-  init: function() {
-    this.jsonInit({
-      "message0": Blockly.Msg['LISTS_SORT_TITLE'],
-      "args0": [
-        {
-          "type": "field_dropdown",
-          "name": "TYPE",
-          "options": [
-            [Blockly.Msg['LISTS_SORT_TYPE_NUMERIC'], "NUMERIC"],
-            [Blockly.Msg['LISTS_SORT_TYPE_TEXT'], "TEXT"],
-            [Blockly.Msg['LISTS_SORT_TYPE_IGNORECASE'], "IGNORE_CASE"]
-          ]
-        },
-        {
-          "type": "field_dropdown",
-          "name": "DIRECTION",
-          "options": [
-            [Blockly.Msg['LISTS_SORT_ORDER_ASCENDING'], "1"],
-            [Blockly.Msg['LISTS_SORT_ORDER_DESCENDING'], "-1"]
-          ]
-        },
-        {
-          "type": "input_value",
-          "name": "LIST",
-          "check": "Array"
-        }
-      ],
-      "output": "Array",
-      "style": "list_blocks",
-      "tooltip": Blockly.Msg['LISTS_SORT_TOOLTIP'],
-      "helpUrl": Blockly.Msg['LISTS_SORT_HELPURL']
-    });
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [
-      Blockly.Msg.LISTS_SORT_TITLE,
-      '%{BKY_LISTS}'
-    ];
-
-    var toolboxKeywords = [
-      Blockly.Msg.LISTS_SORT_TYPE_NUMERIC,
-      Blockly.Msg.LISTS_SORT_TYPE_TEXT,
-      Blockly.Msg.LISTS_SORT_TYPE_IGNORECASE,
-      Blockly.Msg.LISTS_SORT_ORDER_ASCENDING,
-      Blockly.Msg.LISTS_SORT_ORDER_DESCENDING
-    ];
-
-    Blockly.Search.preprocessSearchKeywords("lists_sort", keywords, toolboxKeywords);
-  }
-};
-
 Blockly.Blocks['lists_split'] = {
   /**
    * Block for splitting text into a list, or joining a list into text.
@@ -1117,19 +1061,26 @@ Blockly.Blocks.fable_lists_sort = {
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_SORT);
     this.appendValueInput('LIST').setCheck('Array');
 
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_LISTS_SORT_REVERSE);
-    this.appendValueInput('REVERSE').setCheck('Boolean');
+    const ORDER_OPTS = [
+      [Blockly.Msg['LISTS_SORT_ORDER_ASCENDING'], 'False'],
+      [Blockly.Msg['LISTS_SORT_ORDER_DESCENDING'], 'True']
+    ];
 
+    var dropdown = new Blockly.FieldDropdown(ORDER_OPTS);
+    this.appendDummyInput().appendField(dropdown, 'ORDER');
+
+    this.setOutput(true, 'Array');
     this.setStyle('list_blocks');
     this.setTooltip(Blockly.Msg.FABLE_LISTS_SORT_TOOLTIP);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
   },
   ensureSearchKeywords: function () {
-    var keywords = [Blockly.Msg.FABLE_LISTS_SORT, Blockly.Msg.FABLE_LISTS_SORT_REVERSE, 'list'];
-    var toolboxKeywords = ['list'];
+    var keywords = [Blockly.Msg.FABLE_LISTS_SORT, '%{BKY_LISTS}'];
+    var toolboxKeywords = [
+      Blockly.Msg.LISTS_SORT_ORDER_ASCENDING,
+      Blockly.Msg.LISTS_SORT_ORDER_DESCENDING
+    ];
     Blockly.Search.preprocessSearchKeywords('fable_lists_sort', keywords, toolboxKeywords);
   }
 };
