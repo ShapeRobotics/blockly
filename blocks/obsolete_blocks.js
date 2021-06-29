@@ -1271,76 +1271,6 @@ Blockly.Blocks.fable_wait_for = {
   }
 };
 
-Blockly.Blocks.camera_get_center_of_face = {
-  /**
-     * Block for getting the center coordinates of a detected face.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(Blockly.Blocks.Definitions.cameraIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER)
-      .appendField(new Blockly.FieldDropdown([
-        ['X', '\'x\''],
-        ['Y', '\'y\'']
-      ]), 'FACE_CENTER');
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.cameraStyle);
-    this.setTooltip(Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER_TOOLTIP);
-    this.setOutput(true, 'Number');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [
-      // Blockly.Msg.FABLE_CAMERA_GET_FACE_CENTER,
-      // '%{BKY_VISION}'
-    ];
-
-    Blockly.Search.preprocessSearchKeywords('camera_get_center_of_face', keywords);
-  }
-};
-
-Blockly.Blocks.camera_check_for_face = {
-  /**
-     * Block for face detection.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(Blockly.Blocks.Definitions.cameraIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE);
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.cameraStyle);
-    this.setTooltip(Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE_TOOLTIP);
-    this.setOutput(true, 'Boolean');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [
-      // Blockly.Msg.FABLE_CAMERA_CHECK_FOR_FACE,
-      // '%{BKY_VISION}'
-    ];
-
-    Blockly.Search.preprocessSearchKeywords('camera_check_for_face', keywords);
-  }
-};
-
 Blockly.Blocks.fable_log = {
   /**
      * Block for data loggin into a csv file.
@@ -1388,5 +1318,63 @@ Blockly.Blocks.fable_log = {
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_log', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks['lists_sort'] = {
+  /**
+   * Block for sorting a list.
+   * @this {Blockly.Block}
+   */
+  init: function() {
+    this.jsonInit({
+      "message0": Blockly.Msg['LISTS_SORT_TITLE'],
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "TYPE",
+          "options": [
+            [Blockly.Msg['LISTS_SORT_TYPE_NUMERIC'], "NUMERIC"],
+            [Blockly.Msg['LISTS_SORT_TYPE_TEXT'], "TEXT"],
+            [Blockly.Msg['LISTS_SORT_TYPE_IGNORECASE'], "IGNORE_CASE"]
+          ]
+        },
+        {
+          "type": "field_dropdown",
+          "name": "DIRECTION",
+          "options": [
+            [Blockly.Msg['LISTS_SORT_ORDER_ASCENDING'], "1"],
+            [Blockly.Msg['LISTS_SORT_ORDER_DESCENDING'], "-1"]
+          ]
+        },
+        {
+          "type": "input_value",
+          "name": "LIST",
+          "check": "Array"
+        }
+      ],
+      "output": "Array",
+      "style": "list_blocks",
+      "tooltip": Blockly.Msg['LISTS_SORT_TOOLTIP'],
+      "helpUrl": Blockly.Msg['LISTS_SORT_HELPURL']
+    });
+    const depecrationMsg = 'This block is deprecated. Please update your program by draggin the new SORT block.';
+    this.setWarningText(depecrationMsg, 'deprecatedBlock');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.LISTS_SORT_TITLE,
+      '%{BKY_LISTS}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.LISTS_SORT_TYPE_NUMERIC,
+      Blockly.Msg.LISTS_SORT_TYPE_TEXT,
+      Blockly.Msg.LISTS_SORT_TYPE_IGNORECASE,
+      Blockly.Msg.LISTS_SORT_ORDER_ASCENDING,
+      Blockly.Msg.LISTS_SORT_ORDER_DESCENDING
+    ];
+
+    Blockly.Search.preprocessSearchKeywords("lists_sort", keywords, toolboxKeywords);
   }
 };

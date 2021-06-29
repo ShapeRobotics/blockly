@@ -188,21 +188,6 @@ Blockly.Python.fable_play_face_sound = function (block) {
   return code;
 };
 
-Blockly.Python.camera_check_for_face = function (block) {
-  var order = Blockly.Python.ORDER_ATOMIC;
-  var code = 'api.detectedFace()';
-
-  return [code, order];
-};
-
-Blockly.Python.camera_get_center_of_face = function (block) {
-  var coord = block.getFieldValue('FACE_CENTER');
-  var code = 'api.getFaceCenter()';
-  code += (coord[1] === 'x') ? '[0]' : '[1]';
-  var order = Blockly.Python.ORDER_ATOMIC;
-  return [code, order];
-};
-
 Blockly.Python.fable_spin_gesture_detected = function (block) {
   const id = block.getDynamicIDFieldString();
   const gesture = block.getFieldValue('GESTURE');
@@ -217,4 +202,34 @@ Blockly.Python.fable_log = function (block) {
   var code = 'api.log(' + value + ', \'' + filename + '\')\n';
 
   return code;
+};
+
+// @replacedBy list.js -> fable_lists_sort
+Blockly.Python['lists_sort'] = function(block) {
+  // Block for sorting a list.
+  var list = (Blockly.Python.valueToCode(block, 'LIST',
+      Blockly.Python.ORDER_NONE) || '[]');
+  var type = block.getFieldValue('TYPE');
+  var reverse = block.getFieldValue('DIRECTION') === '1' ? 'False' : 'True';
+  var sortFunctionName = Blockly.Python.provideFunction_('lists_sort',
+  ['def ' + Blockly.Python.FUNCTION_NAME_PLACEHOLDER_ +
+      '(my_list, type, reverse):',
+    '  def try_float(s):',
+    '    try:',
+    '      return float(s)',
+    '    except:',
+    '      return 0',
+    '  key_funcs = {',
+    '    "NUMERIC": try_float,',
+    '    "TEXT": str,',
+    '    "IGNORE_CASE": lambda s: str(s).lower()',
+    '  }',
+    '  key_func = key_funcs[type]',
+    '  list_cpy = list(my_list)', // Clone the list.
+    '  return sorted(list_cpy, key=key_func, reverse=reverse)'
+  ]);
+
+  var code = sortFunctionName +
+      '(' + list + ', "' + type + '", ' + reverse + ')';
+  return [code, Blockly.Python.ORDER_FUNCTION_CALL];
 };
