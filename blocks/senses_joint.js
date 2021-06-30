@@ -17,52 +17,6 @@ goog.require('Blockly.FieldLabel');
 goog.require('Blockly.FieldColour');
 goog.require('Blockly.FieldLabel');
 
-Blockly.Blocks.fable_get_module_motor_position = {
-  /**
-     * Block for getting joint motor position.
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.jointIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_JOINT_MOTOR_GET_POSITION);
-
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([['X', '\'X\''], ['Y', '\'Y\'']]), 'MOTOR_ID');
-    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
-
-    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Joint, [], [['#']]);
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.sensesStyle);
-    this.setTooltip(Blockly.Msg.FABLE_JOINT_MOTOR_GET_POSITION_TOOLTIP);
-    this.setOutput(true, 'Number');
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [
-      Blockly.Msg.FABLE_JOINT_MOTOR_GET_POSITION,
-      '%{BKY_INPUT}',
-      '%{BKY_LABEL_JOINT}'
-    ];
-
-    var toolboxKeywords = [
-      'X',
-      'Y'
-    ];
-
-    Blockly.Search.preprocessSearchKeywords('fable_get_module_motor_position', keywords, toolboxKeywords);
-  }
-};
-
 Blockly.Blocks.fable_read_joint_sensor = {
   /**
      * Block collapsing the previous getter blocks. It displays a dropdown with Position, Speed or Torque.

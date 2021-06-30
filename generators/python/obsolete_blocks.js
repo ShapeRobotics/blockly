@@ -1,6 +1,7 @@
 /**
- * @fileoverview Generating Python for obsolete blocks.
+ * @fileoverview Generated Python code for obsolete blocks.
  * @author ivan@shaperobotics.com (Ivan Mladenov)
+ * @author nicolas@shaperobotics.com (Nicolas Laverde)
  */
 'use strict';
 
@@ -8,130 +9,66 @@ goog.provide('Blockly.Python.obsolete');
 
 goog.require('Blockly.Python');
 
-Blockly.Python.fable_is_face_playing_sound = function (block) {
+// ----------------------------------------------------------------------------------- //
+// --[JOINT BLOCKS]------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
+
+/**
+ * @replacement Blockly.Python.fable_read_joint_sensor
+ * @deprecated
+ */
+Blockly.Python.fable_get_module_motor_position = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
-  var code = 'api.getIsFacePlayingSound()';
+  var id = block.getDynamicIDFieldString();
+  var mid = block.getFieldValue('MOTOR_ID');
+  var code = 'api.getPos(' + mid + ', ' + id + ')';
 
   return [code, order];
 };
 
-Blockly.Python.fable_set_module_buzzer = function (block) {
-  var toneValue = Blockly.Python.valueToCode(block, 'TONE', Blockly.Python.ORDER_NONE) || '0';
-  var code = 'api.playBeep(' + toneValue + ')\n';
-  return code;
-};
-
-Blockly.Python.fable_tts = function (block) {
-  let text = block.getFieldValue('text');
-  let name = block.getFieldValue('file_name');
-  const lang = block.getFieldValue('language');
-
-  const wRegEx = '^\s*$'; // checks if empty string or arbitrary number of spaces
-
-  if (text.match(wRegEx)) {
-    // set default string if empty string or spaces
-    text = 'Your text here';
-  } else if (name.match(wRegEx)) {
-    // and default file name + ISO date string
-    name = 'text_to_speech' + (new Date().toISOString()).toString();
-  }
-  const code = 'api.generateTextToSpeech("' + text + '", "' + name + '", "' + lang + '")\n';
-
-  return code;
-};
-
-Blockly.Python.fable_percentage = function (block) {
+/**
+ * @replacement Blockly.Python.fable_read_joint_sensor
+ * @deprecated
+ */
+Blockly.Python.fable_get_module_motor_speed = function (block) {
   var order = Blockly.Python.ORDER_ATOMIC;
-  var value = block.getFieldValue('PERCENTAGE');
-
-  return [value, order];
-};
-
-Blockly.Python.fable_code = function (block) {
-  var value = block.getFieldValue('CODE');
-  var code = value + '\n';
-
-  return code;
-};
-
-Blockly.Python.fable_make_advanced_plot = function (block) {
-  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE) || 'None';
-  var color = Blockly.Python.valueToCode(block, 'COLOUR', Blockly.Python.ORDER_NONE) || '[0, 0, 0]';
-  var type = block.getFieldValue('LEGEND');
-  var code = 'api.plot(' + value + ', "' + type + '","' + color + '")\n';
-  return code;
-};
-
-Blockly.Python.fable_set_module_motor_position = function (block) {
   var id = block.getDynamicIDFieldString();
-  var pos = Blockly.Python.valueToCode(block, 'MOTOR_POSITION', Blockly.Python.ORDER_NONE) || 'None';
-  var code = 'api.setPos(' + pos + ', None,' + id + ')\n';
+  var mid = block.getFieldValue('MOTOR_ID');
+  var code = 'api.getSpeed(' + mid + ', ' + id + ')';
 
-  return code;
+  return [code, order];
 };
 
-Blockly.Python.fable_set_iris_color = function (block) {
-  var color = Blockly.Python.valueToCode(block, 'COLOUR', Blockly.Python.ORDER_NONE) || '[247, 148, 27]';
-  var code = 'api.setIrisColor(' + color + ')\n';
-  return code;
+/**
+ * @replacement Blockly.Python.fable_read_joint_sensor
+ * @deprecated
+ */
+Blockly.Python.fable_get_module_motor_torque = function (block) {
+  var order = Blockly.Python.ORDER_ATOMIC;
+  var id = block.getDynamicIDFieldString();
+  var mid = block.getFieldValue('MOTOR_ID');
+  var code = 'api.getTorque(' + mid + ', ' + id + ')';
+
+  return [code, order];
 };
 
-Blockly.Python.fable_set_eyelid_color = function (block) {
-  var color = Blockly.Python.valueToCode(block, 'COLOUR', Blockly.Python.ORDER_NONE) || '[247, 148, 27]';
-  var code = 'api.setEyelidColor(' + color + ')\n';
+// ----------------------------------------------------------------------------------- //
+// --[SPIN BLOCKS]-------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
 
-  return code;
-};
-
-Blockly.Python.fable_set_face_focus_single_eye = function (block) {
-  var x = Blockly.Python.valueToCode(block, 'POS_X', Blockly.Python.ORDER_NONE) || '0';
-  var y = Blockly.Python.valueToCode(block, 'POS_Y', Blockly.Python.ORDER_NONE) || '0';
-  var z = Blockly.Python.valueToCode(block, 'POS_Z', Blockly.Python.ORDER_NONE) || '0';
-  var eye = block.getFieldValue('EYE');
-  var code = 'api.setFaceFocus(' + x + ', ' + y + ', ' + z + ', ' + eye + ')\n';
-
-  return code;
-};
-
-Blockly.Python.fable_set_face_blink = function (block) {
-  var duration = Blockly.Python.valueToCode(block, 'BLINK_DURATION', Blockly.Python.ORDER_NONE) || '0';
-  var code = 'api.setFaceBlink(' + duration + ')\n';
-
-  return code;
-};
-
-Blockly.Python.fable_set_face_blink_single_eye = function (block) {
-  var duration = Blockly.Python.valueToCode(block, 'BLINK_DURATION', Blockly.Python.ORDER_NONE) || '0';
-  var eye = block.getFieldValue('EYE');
-  var code = 'api.setFaceBlink(' + duration + ', ' + eye + ')\n';
-
-  return code;
-};
-
-Blockly.Python.test_key = function (block) {
-  var argument0 = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE) || '0';
-  var varName = Blockly.Python.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-
-  return varName + ' = ' + argument0 + '\n';
-};
-
-Blockly.Python.test_variables_set = function (block) {
-  var argument0 = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_NONE) || '0';
-  var varName = Blockly.Python.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-
-  return varName + ' = ' + argument0 + '\n';
-};
-
-Blockly.Python.fable_spin_lift_and_hold = function (block) {
+/**
+ * @removed
+ */
+Blockly.Python.fable_spin_gesture_detected = function (block) {
   const id = block.getDynamicIDFieldString();
-  const angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_NONE) || 'None';
-  const motorID = block.getFieldValue('MOTOR_ID');
-
-  const code = 'api.spinLiftPos(' + angle + ', \'' + motorID + '\', moduleID=' + id + ')\n';
-
-  return code;
+  const gesture = block.getFieldValue('GESTURE');
+  var code = 'api.getGestureDetected("' + gesture + '", ' + id + ')';
+  return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+/**
+ * @removed
+ */
 Blockly.Python.fable_spin_turn_with_radius = function (block) {
   const id = block.getDynamicIDFieldString();
   const angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_NONE) || '0';
@@ -144,58 +81,87 @@ Blockly.Python.fable_spin_turn_with_radius = function (block) {
   return code;
 };
 
-Blockly.Python.fable_spin_reset = function (block) {
+/**
+ * @removed
+ */
+Blockly.Python.fable_spin_lift_and_hold = function (block) {
   const id = block.getDynamicIDFieldString();
-  const target = block.getFieldValue('TARGET_MOTOR');
-  const code = 'api.spinReset(\'' + target + '\', ' + id + ')\n';
+  const angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_NONE) || 'None';
+  const motorID = block.getFieldValue('MOTOR_ID');
+
+  const code = 'api.spinLiftPos(' + angle + ', \'' + motorID + '\', moduleID=' + id + ')\n';
 
   return code;
 };
 
-Blockly.Python.fable_spin_signal = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const signalValue = Blockly.Python.valueToCode(block, 'SIGNAL_VALUE', Blockly.Python.ORDER_NONE) || '100';
+// ----------------------------------------------------------------------------------- //
+// --[FACE BLOCKS]-------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
 
-  const code = 'api.setSpinSignal(' + signalValue + ', ' + id + ')\n';
+/**
+ * @replacement Blockly.Python.fable_set_eyes_color
+ * @deprecated
+ */
+Blockly.Python.fable_set_iris_color = function (block) {
+  var color = Blockly.Python.valueToCode(block, 'COLOUR', Blockly.Python.ORDER_NONE) || '[247, 148, 27]';
+  var code = 'api.setIrisColor(' + color + ')\n';
   return code;
 };
 
-Blockly.Python.fable_spin_get_odometry = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const coord = block.getFieldValue('COORDINATE');
-
-  const code = 'api.getSpinOdometry(\'' + coord + '\', ' + id + ')';
-  return [code, Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python.fable_spin_reset_odometry = function (block) {
-  const id = block.getDynamicIDFieldString();
-
-  const code = 'api.resetSpinOdometry(' + id + ')\n';
-  return code;
-};
-
-Blockly.Python.fable_spin_get_signal = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const code = 'api.getSpinSignal(' + id + ')';
-  return [code, Blockly.Python.ORDER_ATOMIC];
-};
-
-Blockly.Python.fable_play_face_sound = function (block) {
-  var value = block.getFieldValue('SOUNDFILE');
-  var code = 'api.playFaceSound(\'' + value + '\')\n';
+/**
+ * @replacement Blockly.Python.fable_set_eyes_color
+ * @deprecated
+ */
+Blockly.Python.fable_set_eyelid_color = function (block) {
+  var color = Blockly.Python.valueToCode(block, 'COLOUR', Blockly.Python.ORDER_NONE) || '[247, 148, 27]';
+  var code = 'api.setEyelidColor(' + color + ')\n';
 
   return code;
 };
 
-Blockly.Python.fable_spin_gesture_detected = function (block) {
-  const id = block.getDynamicIDFieldString();
-  const gesture = block.getFieldValue('GESTURE');
-  var code = 'api.getGestureDetected("' + gesture + '", ' + id + ')';
-  return [code, Blockly.Python.ORDER_ATOMIC];
+/**
+ * @replacement Blockly.Python.fable_set_face_focus
+ * @deprecated
+ */
+Blockly.Python.fable_set_face_focus_single_eye = function (block) {
+  var x = Blockly.Python.valueToCode(block, 'POS_X', Blockly.Python.ORDER_NONE) || '0';
+  var y = Blockly.Python.valueToCode(block, 'POS_Y', Blockly.Python.ORDER_NONE) || '0';
+  var z = Blockly.Python.valueToCode(block, 'POS_Z', Blockly.Python.ORDER_NONE) || '0';
+  var eye = block.getFieldValue('EYE');
+  var code = 'api.setFaceFocus(' + x + ', ' + y + ', ' + z + ', ' + eye + ')\n';
+
+  return code;
 };
 
-// @replacedBy data.js -> fable_save_as_csv
+/**
+ * @removed
+ */
+Blockly.Python.fable_set_face_blink = function (block) {
+  var duration = Blockly.Python.valueToCode(block, 'BLINK_DURATION', Blockly.Python.ORDER_NONE) || '0';
+  var code = 'api.setFaceBlink(' + duration + ')\n';
+
+  return code;
+};
+
+/**
+ * @removed
+ */
+Blockly.Python.fable_set_face_blink_single_eye = function (block) {
+  var duration = Blockly.Python.valueToCode(block, 'BLINK_DURATION', Blockly.Python.ORDER_NONE) || '0';
+  var eye = block.getFieldValue('EYE');
+  var code = 'api.setFaceBlink(' + duration + ', ' + eye + ')\n';
+
+  return code;
+};
+
+// ----------------------------------------------------------------------------------- //
+// --[DATA BLOCKS]-------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
+
+/**
+ * @replacement Blockly.Python.fable_save_as_csv
+ * @deprecated
+ */
 Blockly.Python.fable_log = function (block) {
   var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC) || 'None';
   var filename = block.getFieldValue('FILENAME');
@@ -204,11 +170,16 @@ Blockly.Python.fable_log = function (block) {
   return code;
 };
 
-// @replacedBy list.js -> fable_lists_sort
-Blockly.Python['lists_sort'] = function(block) {
-  // Block for sorting a list.
+// ----------------------------------------------------------------------------------- //
+// --[LIST BLOCKS]-------------------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
+
+/**
+ * @replacement Blockly.Python.fable_lists_sort
+ */
+Blockly.Python['lists_sort'] = function (block) {
   var list = (Blockly.Python.valueToCode(block, 'LIST',
-      Blockly.Python.ORDER_NONE) || '[]');
+    Blockly.Python.ORDER_NONE) || '[]');
   var type = block.getFieldValue('TYPE');
   var reverse = block.getFieldValue('DIRECTION') === '1' ? 'False' : 'True';
   var sortFunctionName = Blockly.Python.provideFunction_('lists_sort',
@@ -233,3 +204,7 @@ Blockly.Python['lists_sort'] = function(block) {
       '(' + list + ', "' + type + '", ' + reverse + ')';
   return [code, Blockly.Python.ORDER_FUNCTION_CALL];
 };
+
+// ----------------------------------------------------------------------------------- //
+// --[UNKNOWN - NO CATEGORY]---------------------------------------------------------- //
+// ----------------------------------------------------------------------------------- //
