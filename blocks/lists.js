@@ -123,7 +123,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "tooltip": "%{BKY_LISTS_ISEMPTY_TOOLTIP}",
     "helpUrl": "%{BKY_LISTS_ISEMPTY_HELPURL}",
     "search_keywords": [
-        "%{BKY_LISTS_ISEMPTY_TITLE}",
+        "%{BKY_LISTS_CREATE_EMPTY_TITLE}",
         "%{BKY_LISTS}"
     ],
     "search_toolbox_keywords": []
