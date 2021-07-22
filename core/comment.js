@@ -251,7 +251,8 @@ Blockly.Comment.prototype.createEditableBubble_ = function() {
   this.bubble_ = new Blockly.Bubble(
       /** @type {!Blockly.WorkspaceSvg} */ (this.block_.workspace),
       this.createEditor_(), this.block_.svgPath_,
-      this.iconXY_, this.model_.size.width, this.model_.size.height);
+      this.iconXY_, this.model_.size.width, this.model_.size.height,
+      this.model_.relativePos);
   // Expose this comment's block's ID on its top-level SVG group.
   this.bubble_.setSvgId(this.block_.id);
   this.bubble_.registerResizeEvent(this.onBubbleResize_.bind(this));
@@ -264,6 +265,9 @@ Blockly.Comment.prototype.createEditableBubble_ = function() {
  */
 Blockly.Comment.prototype.createNonEditableBubble_ = function() {
   // TODO (#2917): It would be great if the comment could support line breaks.
+  // SHAPE ROBOTICS -----------
+  if (!this.block_) { return; }
+  // --------------------------
   Blockly.Warning.prototype.createBubble.call(this);
 };
 

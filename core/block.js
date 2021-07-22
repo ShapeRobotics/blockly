@@ -141,7 +141,8 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
   this.commentModel = {
     text: null,
     pinned: false,
-    size: new Blockly.utils.Size(160, 80)
+    size: new Blockly.utils.Size(160, 80),
+    relativePos: { left: 0, top: 0 } // Shape Robotics
   };
 
   /**
@@ -222,7 +223,8 @@ Blockly.Block = function(workspace, prototypeName, opt_id) {
  * @typedef {{
  *            text:?string,
  *            pinned:boolean,
- *            size:Blockly.utils.Size
+ *            size:Blockly.utils.Size,
+ *            relativePos: { left: number, top: number}
  *          }}
  */
 Blockly.Block.CommentModel;

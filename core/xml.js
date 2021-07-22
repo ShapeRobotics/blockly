@@ -165,11 +165,24 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
     var size = block.commentModel.size;
     var pinned = block.commentModel.pinned;
 
+    // SHAPE ROBOTICS----------------------------------------
+    var relativePos = {
+      left: 0,
+      top: 0
+    };
+    if (block.commentModel.hasOwnProperty('relativePos')) {
+      relativePos = block.commentModel.relativePos;
+    }
+    // -----------------------------------------------------
+
     var commentElement = Blockly.utils.xml.createElement('comment');
     commentElement.appendChild(Blockly.utils.xml.createTextNode(commentText));
     commentElement.setAttribute('pinned', pinned);
     commentElement.setAttribute('h', size.height);
     commentElement.setAttribute('w', size.width);
+    // SHAPE ROBOTICS
+    commentElement.setAttribute('left', relativePos.left);
+    commentElement.setAttribute('top', relativePos.top);
 
     element.appendChild(commentElement);
   }
@@ -675,11 +688,27 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
         var width = parseInt(xmlChild.getAttribute('w'), 10);
         var height = parseInt(xmlChild.getAttribute('h'), 10);
 
+        // SHAPE ROBOTICS----------------------------------------------------
+        var posLeft = 0;
+        var posTop = 0;
+        if (xmlChild.hasAttribute('left') && xmlChild.hasAttribute('top')) {
+          posLeft = parseFloat(xmlChild.getAttribute('left'));
+          posTop = parseFloat(xmlChild.getAttribute('top'));
+        }
+        // -----------------------------------------------------------------
+
         block.setCommentText(text);
         block.commentModel.pinned = pinned;
         if (!isNaN(width) && !isNaN(height)) {
           block.commentModel.size = new Blockly.utils.Size(width, height);
         }
+
+        // SHAPE ROBOTICS--------------------------------
+        if (!isNaN(posLeft) && !isNaN(posTop)) {
+          block.commentModel.relativePos.left = posLeft;
+          block.commentModel.relativePos.top = posTop;
+        }
+        // ---------------------------------------------
 
         if (pinned && block.getCommentIcon && !block.isInFlyout) {
           setTimeout(function() {

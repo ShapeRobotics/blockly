@@ -43,13 +43,18 @@ goog.require('Blockly.Workspace');
  *     anchor point.
  * @param {?number} bubbleWidth Width of bubble, or null if not resizable.
  * @param {?number} bubbleHeight Height of bubble, or null if not resizable.
+ * @param {?{left: number, top: number}} commentModelPosition Reference to update the bubble relative pos.
  * @constructor
  */
 Blockly.Bubble = function(workspace, content, shape, anchorXY,
-    bubbleWidth, bubbleHeight) {
+    bubbleWidth, bubbleHeight, commentModelPosition = null) {
   this.workspace_ = workspace;
   this.content_ = content;
   this.shape_ = shape;
+
+  // SHAPE ROBOTICS---------------------------------
+  this.commentModelPosition_ = commentModelPosition;
+  // -----------------------------------------------
 
   var angle = Blockly.Bubble.ARROW_ANGLE;
   if (this.workspace_.RTL) {
@@ -67,6 +72,10 @@ Blockly.Bubble = function(workspace, content, shape, anchorXY,
     bubbleHeight = bBox.height + 2 * Blockly.Bubble.BORDER_WIDTH;
   }
   this.setBubbleSize(bubbleWidth, bubbleHeight);
+
+  // SHAPE ROBOTICS---------
+  this.setCachedPosition_();
+  // -----------------------
 
   // Render the bubble.
   this.positionBubble_();
@@ -597,6 +606,23 @@ Blockly.Bubble.prototype.getOptimalRelativeTop_ = function(metrics) {
 };
 
 /**
+ * Updates the relative position properties with the cached values.
+ * This allows for the comment bubble to remain in the position it
+ * was moved.
+ * @private
+ * @author Nicolas Laverde
+ * @organization Shape Robotics AS
+ */
+Blockly.Bubble.prototype.setCachedPosition_ = function () {
+  if (this.commentModelPosition_.left !== 0) {
+    this.relativeLeft_ = this.commentModelPosition_.left;
+  }
+  if (this.commentModelPosition_.top !== 0) {
+    this.relativeTop_ = this.commentModelPosition_.top;
+  }
+};
+
+/**
  * Move the bubble to a location relative to the anchor's centre.
  * @private
  */
@@ -789,6 +815,9 @@ Blockly.Bubble.prototype.moveDuringDrag = function(dragSurface, newLoc) {
   }
   this.relativeTop_ = newLoc.y - this.anchorXY_.y;
   this.renderArrow_();
+
+  this.commentModelPosition_.left = this.relativeLeft_;
+  this.commentModelPosition_.top = this.relativeTop_;
 };
 
 /**
