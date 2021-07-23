@@ -614,6 +614,10 @@ Blockly.Bubble.prototype.getOptimalRelativeTop_ = function(metrics) {
  * @organization Shape Robotics AS
  */
 Blockly.Bubble.prototype.setCachedPosition_ = function () {
+  if (!this.commentModelPosition_) {
+    return;
+  }
+
   if (this.commentModelPosition_.left !== 0) {
     this.relativeLeft_ = this.commentModelPosition_.left;
   }
@@ -816,8 +820,10 @@ Blockly.Bubble.prototype.moveDuringDrag = function(dragSurface, newLoc) {
   this.relativeTop_ = newLoc.y - this.anchorXY_.y;
   this.renderArrow_();
 
-  this.commentModelPosition_.left = this.relativeLeft_;
-  this.commentModelPosition_.top = this.relativeTop_;
+  if (this.commentModelPosition_) {
+    this.commentModelPosition_.left = this.relativeLeft_;
+    this.commentModelPosition_.top = this.relativeTop_;
+  }
 };
 
 /**
