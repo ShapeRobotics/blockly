@@ -202,15 +202,15 @@ Blockly.Blocks.custom_color = {
       .appendField(Blockly.Msg.FABLE_CUSTOM_COLOR);
 
     this.appendValueInput('RED')
-      .appendField(Blockly.Msg.RED + ':')
+      .appendField(Blockly.Msg.RED + ' % :')
       .setCheck('Number');
 
     this.appendValueInput('GREEN')
-      .appendField(Blockly.Msg.GREEN + ':')
+      .appendField(Blockly.Msg.GREEN + ' % :')
       .setCheck('Number');
 
     this.appendValueInput('BLUE')
-      .appendField(Blockly.Msg.BLUE + ':')
+      .appendField(Blockly.Msg.BLUE + ' % :')
       .setCheck('Number');
 
     // Properties:
