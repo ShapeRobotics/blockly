@@ -385,7 +385,7 @@ Blockly.Python.fable_lists_concat = function (block) {
   var code;
 
   if (withDups === 'False') {
-    code = `list(${listOne}).extend(x for x in ${listTwo} if x not in ${listOne})\n`;
+    code = `list(${listOne}) + list(e for e in ${listTwo} if e not in ${listOne})\n`;
   } else {
     code = `${listOne} + ${listTwo}\n`;
   }
