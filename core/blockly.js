@@ -377,6 +377,7 @@ Blockly.getMainWorkspace = function() {
 Blockly.alert = function(message, callback) {
   console.log('Alert: ' + message);
   Fable.View.Workspace.CustomDialog.show('Alert', message, {
+      showCancel: true,
       onCancel: callback
   });
 };
