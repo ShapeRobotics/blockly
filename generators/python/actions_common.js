@@ -83,6 +83,11 @@ Blockly.Python.fable_play_sound = function (block) {
  */
 Blockly.Python.fable_play_custom_sound = function (block) {
   var file = block.getFieldValue('SOUNDFILE');
+
+  if (file === 'NOFILE') {
+    file = '';
+  }
+
   var code = 'api.playPCSound("' + file + '", \'' + 'custom' + '\')\n';
 
   return code;
