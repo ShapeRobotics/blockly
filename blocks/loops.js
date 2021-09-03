@@ -227,8 +227,8 @@ Blockly.Blocks.controls_whileUntil = {
         return 'controls_whileUntil_tooltip';
       }
     });
-    this.setPreviousStatement(null);
-    this.setNextStatement(null);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
   },
