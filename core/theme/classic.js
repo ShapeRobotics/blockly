@@ -72,6 +72,9 @@ Blockly.Themes.Classic.defaultBlockStyles = {
   "hat_blocks": {
     "colourPrimary": "330",
     "hat": "cap"
+  },
+  "prototype_blocks": {
+    "colourPrimary": "#283747"
   }
 };
 

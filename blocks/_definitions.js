@@ -36,6 +36,7 @@ Blockly.Blocks.Definitions.sensesStyle = 'sense_blocks';
 Blockly.Blocks.Definitions.cameraStyle = 'vision_blocks';
 Blockly.Blocks.Definitions.dataStyle = 'data_blocks';
 Blockly.Blocks.Definitions.mathStyle = 'math_blocks';
+Blockly.Blocks.Definitions.prototypeStyle = 'prototype_blocks';
 
 Blockly.Blocks.Definitions.requestedModules_any = ['Joint', 'Face', 'Spin'];
 Blockly.Blocks.Definitions.requestedModules_anyNoDongle = ['Joint', 'Face', 'Spin'];
