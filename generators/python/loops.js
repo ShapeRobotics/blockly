@@ -247,3 +247,13 @@ Blockly.Python.fable_wait_until = function (block) {
 
   return code;
 };
+
+Blockly.Python.fable_wait_for_spin = function (block) {
+  const spinID = block.getDynamicIDFieldString();
+  const hasReachedTargetAPI = `api.getSpinHasReachedTarget('both', ${spinID})`;
+  const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
+
+  const code = `while not ${hasReachedTargetAPI}:\n${passCode}`;
+
+  return code;
+};

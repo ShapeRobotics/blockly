@@ -645,4 +645,48 @@ Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN = {
 };
 
 Blockly.Extensions.registerMixin('controls_flow_in_loop_check',
-    Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN);
+  Blockly.Constants.Loops.CONTROL_FLOW_IN_LOOP_CHECK_MIXIN);
+
+Blockly.Blocks.fable_wait_for_spin = {
+  /**
+   * @author Shape Robotics AS
+   * @this Blockly.Block
+   */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.waitIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    const LABEL_PLACEHOLDER = 'wait until spin has finished driving';
+    const TOOLTIP_PLACEHOLDER = 'Waits until both motors on the Spin have reached their target.';
+
+    this.appendDummyInput().appendField(LABEL_PLACEHOLDER);
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
+
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
+    this.setTooltip(TOOLTIP_PLACEHOLDER);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      'wait until spin has finished driving',
+      '%{BKY_LOOPS}',
+      '%{BKY_LABEL_TIME_CONTROL}'
+    ];
+
+    var toolboxKeywords = [];
+
+    Blockly.Search.preprocessSearchKeywords('fable_wait_for_spin', keywords, toolboxKeywords);
+  }
+};
