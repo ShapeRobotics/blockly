@@ -26,7 +26,7 @@
  */
 'use strict';
 
-goog.provide('Blockly.Blocks.math');  // Deprecated
+goog.provide('Blockly.Blocks.math'); // Deprecated
 goog.provide('Blockly.Constants.Math');
 
 goog.require('Blockly');
@@ -220,6 +220,287 @@ Blockly.Blocks.math_min_max = {
   }
 };
 
+Blockly.Blocks.math_single = {
+  /**
+   * Block for advanced math operators with single operand.
+   * @override Blockly.Block.math_single JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    var mathOperatorOptions = [
+      [Blockly.Msg.MATH_SINGLE_OP_ROOT, 'ROOT'],
+      [Blockly.Msg.MATH_SINGLE_OP_ABSOLUTE, 'ABS'],
+      ['-', 'NEG'],
+      ['ln', 'LN'],
+      ['log10', 'LOG10'],
+      ['e^', 'EXP'],
+      ['10^', 'POW10']
+    ];
+    var operatorDropdown = new Blockly.FieldDropdown(mathOperatorOptions);
+
+    this.appendDummyInput().appendField(operatorDropdown, 'OP');
+    this.appendValueInput('NUM').setCheck('Number');
+
+    this.setStyle(Blockly.Blocks.Definitions.mathStyle);
+
+    const _this = this;
+    this.setTooltip(function () {
+      const operator = _this.getFieldValue('OP');
+
+      var TOOLTIPS = {
+        ROOT: Blockly.Msg.MATH_SINGLE_TOOLTIP_ROOT,
+        ABS: Blockly.Msg.MATH_SINGLE_TOOLTIP_ABS,
+        NEG: Blockly.Msg.MATH_SINGLE_TOOLTIP_NEG,
+        LN: Blockly.Msg.MATH_SINGLE_TOOLTIP_LN,
+        LOG10: Blockly.Msg.MATH_SINGLE_TOOLTIP_LOG10,
+        EXP: Blockly.Msg.MATH_SINGLE_TOOLTIP_EXP,
+        POW10: Blockly.Msg.MATH_SINGLE_TOOLTIP_POW10
+      };
+
+      try {
+        return TOOLTIPS[operator];
+      } catch (err) {
+        return 'math_single_tooltip';
+      }
+    });
+
+    this.setOutput(true, 'Number');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_MATH}',
+      '%{BKY_LABEL_ARITHMETICS}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.MATH_SINGLE_OP_ROOT,
+      Blockly.Msg.MATH_SINGLE_OP_ABSOLUTE,
+      '-',
+      'ln',
+      'log10',
+      'e^',
+      '10^'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('math_single', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.math_number_property = {
+  /**
+   * Block for checking if a number is even, odd, prime, whole, positive,
+   * negative or if it is divisible by certain number.
+   * @override Blockly.Block.math_number_property JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    this.appendValueInput('NUMBER_TO_CHECK').setCheck('Number');
+
+    var numberPropertyOptions = [
+      [Blockly.Msg.MATH_IS_EVEN, 'EVEN'],
+      [Blockly.Msg.MATH_IS_ODD, 'ODD'],
+      [Blockly.Msg.MATH_IS_PRIME, 'PRIME'],
+      [Blockly.Msg.MATH_IS_WHOLE, 'WHOLE'],
+      [Blockly.Msg.MATH_IS_POSITIVE, 'POSITIVE'],
+      [Blockly.Msg.MATH_IS_NEGATIVE, 'NEGATIVE'],
+      [Blockly.Msg.MATH_IS_DIVISIBLE_BY, 'DIVISIBLE_BY']
+    ];
+
+    const _this = this;
+    var numberPropertyDropdown = new Blockly.FieldDropdown(numberPropertyOptions, function (option) {
+      _this.updateShape_(option === 'DIVISIBLE_BY');
+    });
+
+    this.appendDummyInput().appendField(numberPropertyDropdown, 'PROPERTY');
+
+    this.setStyle(Blockly.Blocks.Definitions.mathStyle);
+    this.setTooltip(Blockly.Msg.MATH_IS_TOOLTIP);
+    this.setOutput(true, 'Boolean');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_MATH}',
+      '%{BKY_LABEL_MATH_FUNCTION}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.MATH_IS_EVEN,
+      Blockly.Msg.MATH_IS_ODD,
+      Blockly.Msg.MATH_IS_PRIME,
+      Blockly.Msg.MATH_IS_WHOLE,
+      Blockly.Msg.MATH_IS_POSITIVE,
+      Blockly.Msg.MATH_IS_NEGATIVE,
+      Blockly.Msg.MATH_IS_DIVISIBLE_BY
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('math_number_property', keywords, toolboxKeywords);
+  },
+  mutationToDom: function () {
+    var container = Blockly.utils.xml.createElement('mutation');
+    var divisorInput = (this.getFieldValue('PROPERTY') === 'DIVISIBLE_BY');
+    container.setAttribute('divisor_input', divisorInput);
+    return container;
+  },
+  domToMutation: function (xmlElement) {
+    var divisorInput = (xmlElement.getAttribute('divisor_input') === 'true');
+    this.updateShape_(divisorInput);
+  },
+  updateShape_: function (divisorInput) {
+    // Add or remove a Value Input.
+    var inputExists = this.getInput('DIVISOR');
+    if (divisorInput) {
+      if (!inputExists) {
+        this.appendValueInput('DIVISOR').setCheck('Number');
+      }
+    } else if (inputExists) {
+      this.removeInput('DIVISOR');
+    }
+  }
+};
+
+Blockly.Blocks.math_round = {
+  /**
+   * Block for rounding functions.
+   * @override Blockly.Block.math_round JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    var roundingOptions = [
+      [Blockly.Msg.MATH_ROUND_OPERATOR_ROUND, 'ROUND'],
+      [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDUP, 'ROUNDUP'],
+      [Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDDOWN, 'ROUNDDOWN']
+    ];
+    var roundingDropdown = new Blockly.FieldDropdown(roundingOptions);
+
+    this.appendDummyInput().appendField(roundingDropdown, 'OP');
+    this.appendValueInput('NUM').setCheck('Number');
+
+    this.setStyle(Blockly.Blocks.Definitions.mathStyle);
+    this.setTooltip(Blockly.Msg.MATH_ROUND_TOOLTIP);
+    this.setOutput(true, 'Number');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_MATH}',
+      '%{BKY_LABEL_MATH_FUNCTION}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.MATH_ROUND_OPERATOR_ROUND,
+      Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDUP,
+      Blockly.Msg.MATH_ROUND_OPERATOR_ROUNDDOWN
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('math_round', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.math_on_list = {
+  /**
+   * Block for evaluating a list of numbers to return sum, average, min, max,
+   * etc.  Some functions also work on text (min, max, mode, median).
+   * @override Blockly.Block.math_on_list JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    var onListOperators = [
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_SUM, 'SUM'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_MIN, 'MIN'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_MAX, 'MAX'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_AVERAGE, 'AVERAGE'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_MEDIAN, 'MEDIAN'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_MODE, 'MODE'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_STD_DEV, 'STD_DEV'],
+      [Blockly.Msg.MATH_ONLIST_OPERATOR_RANDOM, 'RANDOM']
+    ];
+
+    const _this = this;
+
+    var operatorsDropdown = new Blockly.FieldDropdown(onListOperators, function (option) {
+      _this.updateType_(option);
+    });
+
+    this.appendDummyInput().appendField(operatorsDropdown, 'OP');
+
+    this.appendValueInput('LIST').setCheck('Array');
+
+    this.setStyle(Blockly.Blocks.Definitions.mathStyle);
+
+    this.setTooltip(function () {
+      const operator = _this.getFieldValue('OP');
+
+      var TOOLTIPS = {
+        SUM: Blockly.Msg.MATH_ONLIST_TOOLTIP_SUM,
+        MIN: Blockly.Msg.MATH_ONLIST_TOOLTIP_MIN,
+        MAX: Blockly.Msg.MATH_ONLIST_TOOLTIP_MAX,
+        AVERAGE: Blockly.Msg.MATH_ONLIST_TOOLTIP_AVERAGE,
+        MEDIAN: Blockly.Msg.MATH_ONLIST_TOOLTIP_MEDIAN,
+        MODE: Blockly.Msg.MATH_ONLIST_TOOLTIP_MODE,
+        STD_DEV: Blockly.Msg.MATH_ONLIST_TOOLTIP_STD_DEV,
+        RANDOM: Blockly.Msg.MATH_ONLIST_TOOLTIP_RANDOM
+      };
+
+      try {
+        return TOOLTIPS[operator];
+      } catch (err) {
+        return 'math_on_list';
+      }
+    });
+
+    this.setOutput(true, 'Number');
+    this.setPreviousStatement(false);
+    this.setNextStatement(false);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_MATH}',
+      '%{BKY_LABEL_MATH_FUNCTION}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.MATH_ONLIST_OPERATOR_SUM,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_MIN,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_MAX,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_AVERAGE,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_MEDIAN,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_MODE,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_STD_DEV,
+      Blockly.Msg.MATH_ONLIST_OPERATOR_RANDOM
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('math_on_list', keywords, toolboxKeywords);
+  },
+  updateType_: function (newOp) {
+    if (newOp === 'MODE') {
+      this.outputConnection.setCheck('Array');
+    } else {
+      this.outputConnection.setCheck('Number');
+    }
+  },
+  mutationToDom: function () {
+    var container = Blockly.utils.xml.createElement('mutation');
+    container.setAttribute('op', this.getFieldValue('OP'));
+    return container;
+  },
+  domToMutation: function (xmlElement) {
+    this.updateType_(xmlElement.getAttribute('op'));
+  }
+};
+
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for numeric value.
   {
@@ -284,49 +565,6 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       "%{BKY_MATH_MULTIPLICATION_SYMBOL}",
       "%{BKY_MATH_DIVISION_SYMBOL}",
       "%{BKY_MATH_POWER_SYMBOL}"
-    ]
-  },
-
-  // Block for advanced math operators with single operand.
-  {
-    "type": "math_single",
-    "message0": "%1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "OP",
-        "options": [
-          ["%{BKY_MATH_SINGLE_OP_ROOT}", 'ROOT'],
-          ["%{BKY_MATH_SINGLE_OP_ABSOLUTE}", 'ABS'],
-          ['-', 'NEG'],
-          ['ln', 'LN'],
-          ['log10', 'LOG10'],
-          ['e^', 'EXP'],
-          ['10^', 'POW10']
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "NUM",
-        "check": "Number"
-      }
-    ],
-    "output": "Number",
-    "style": "math_blocks",
-    "helpUrl": "%{BKY_MATH_SINGLE_HELPURL}",
-    "extensions": ["math_op_tooltip"],
-    "search_keywords": [
-      "%{BKY_MATH}",
-      "%{BKY_LABEL_ARITHMETICS}"
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_MATH_SINGLE_OP_ROOT}",
-      "%{BKY_MATH_SINGLE_OP_ABSOLUTE}",
-      "-",
-      "ln",
-      "log10",
-      "e^",
-      "10^"
     ]
   },
 
@@ -407,51 +645,6 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     ]
   },
 
-  // Block for checking if a number is even, odd, prime, whole, positive,
-  // negative or if it is divisible by certain number.
-  {
-    "type": "math_number_property",
-    "message0": "%1 %2",
-    "args0": [
-      {
-        "type": "input_value",
-        "name": "NUMBER_TO_CHECK",
-        "check": "Number"
-      },
-      {
-        "type": "field_dropdown",
-        "name": "PROPERTY",
-        "options": [
-          ["%{BKY_MATH_IS_EVEN}", "EVEN"],
-          ["%{BKY_MATH_IS_ODD}", "ODD"],
-          ["%{BKY_MATH_IS_PRIME}", "PRIME"],
-          ["%{BKY_MATH_IS_WHOLE}", "WHOLE"],
-          ["%{BKY_MATH_IS_POSITIVE}", "POSITIVE"],
-          ["%{BKY_MATH_IS_NEGATIVE}", "NEGATIVE"],
-          ["%{BKY_MATH_IS_DIVISIBLE_BY}", "DIVISIBLE_BY"]
-        ]
-      }
-    ],
-    "inputsInline": true,
-    "output": "Boolean",
-    "style": "math_blocks",
-    "tooltip": "%{BKY_MATH_IS_TOOLTIP}",
-    "mutator": "math_is_divisibleby_mutator",
-    "search_keywords": [
-        "%{BKY_MATH}",
-        "%{BKY_LABEL_MATH_FUNCTION}"
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_MATH_IS_EVEN}",
-      "%{BKY_MATH_IS_ODD}",
-      "%{BKY_MATH_IS_PRIME}",
-      "%{BKY_MATH_IS_WHOLE}",
-      "%{BKY_MATH_IS_POSITIVE}",
-      "%{BKY_MATH_IS_NEGATIVE}",
-      "%{BKY_MATH_IS_DIVISIBLE_BY}"
-    ]
-  },
-
   // Block for adding to a variable in place.
   {
     "type": "math_change",
@@ -480,88 +673,6 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       "%{BKY_FABLE_SEARCH_KEYWORD_VARIABLES_SET}"
     ],
     "search_toolbox_keywords": []
-  },
-
-  // Block for rounding functions.
-  {
-    "type": "math_round",
-    "message0": "%1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "OP",
-        "options": [
-          ["%{BKY_MATH_ROUND_OPERATOR_ROUND}", "ROUND"],
-          ["%{BKY_MATH_ROUND_OPERATOR_ROUNDUP}", "ROUNDUP"],
-          ["%{BKY_MATH_ROUND_OPERATOR_ROUNDDOWN}", "ROUNDDOWN"]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "NUM",
-        "check": "Number"
-      }
-    ],
-    "output": "Number",
-    "style": "math_blocks",
-    "helpUrl": "%{BKY_MATH_ROUND_HELPURL}",
-    "tooltip": "%{BKY_MATH_ROUND_TOOLTIP}",
-    "search_keywords": [
-        "%{BKY_MATH}",
-        "%{BKY_LABEL_MATH_FUNCTION}"
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_MATH_ROUND_OPERATOR_ROUND}",
-      "%{BKY_MATH_ROUND_OPERATOR_ROUNDUP}",
-      "%{BKY_MATH_ROUND_OPERATOR_ROUNDDOWN}"
-    ]
-  },
-
-  // Block for evaluating a list of numbers to return sum, average, min, max,
-  // etc.  Some functions also work on text (min, max, mode, median).
-  {
-    "type": "math_on_list",
-    "message0": "%1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "OP",
-        "options": [
-          ["%{BKY_MATH_ONLIST_OPERATOR_SUM}", "SUM"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_MIN}", "MIN"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_MAX}", "MAX"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_AVERAGE}", "AVERAGE"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_MEDIAN}", "MEDIAN"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_MODE}", "MODE"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_STD_DEV}", "STD_DEV"],
-          ["%{BKY_MATH_ONLIST_OPERATOR_RANDOM}", "RANDOM"]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "LIST",
-        "check": "Array"
-      }
-    ],
-    "output": "Number",
-    "style": "math_blocks",
-    "helpUrl": "%{BKY_MATH_ONLIST_HELPURL}",
-    "mutator": "math_modes_of_list_mutator",
-    "extensions": ["math_op_tooltip"],
-    "search_keywords": [
-        "%{BKY_MATH}",
-        "%{BKY_LABEL_MATH_FUNCTION}"
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_MATH_ONLIST_OPERATOR_SUM}",
-      "%{BKY_MATH_ONLIST_OPERATOR_MIN}",
-      "%{BKY_MATH_ONLIST_OPERATOR_MAX}",
-      "%{BKY_MATH_ONLIST_OPERATOR_AVERAGE}",
-      "%{BKY_MATH_ONLIST_OPERATOR_MEDIAN}",
-      "%{BKY_MATH_ONLIST_OPERATOR_MODE}",
-      "%{BKY_MATH_ONLIST_OPERATOR_STD_DEV}",
-      "%{BKY_MATH_ONLIST_OPERATOR_RANDOM}"
-    ]
   },
 
   // Block for remainder of a division.

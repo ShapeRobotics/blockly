@@ -103,9 +103,7 @@ Blockly.Blocks.controls_stopApp = {
       '%{BKY_LABEL_LOOPS}'
     ];
 
-    var toolboxKeywords = [
-
-    ];
+    var toolboxKeywords = [];
 
     Blockly.Search.preprocessSearchKeywords('controls_stopApp', keywords, toolboxKeywords);
   }
@@ -153,9 +151,9 @@ Blockly.Blocks.fable_wait = {
 
 Blockly.Blocks.fable_wait_until = {
   /**
-     *
-     * @this Blockly.Block
-     */
+   *
+   * @this Blockly.Block
+   */
   init: function () {
     // Inputs:
     var image = new Blockly.FieldImage(
@@ -184,11 +182,170 @@ Blockly.Blocks.fable_wait_until = {
       '%{BKY_LABEL_TIME_CONTROL}'
     ];
 
-    var toolboxKeywords = [
-
-    ];
+    var toolboxKeywords = [];
 
     Blockly.Search.preprocessSearchKeywords('fable_wait_until', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.controls_whileUntil = {
+  /**
+   * Block for 'do while/until' loop.
+   * @override Blockly.Block.controls_whileUntil JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    var modeOptions = [
+      [Blockly.Msg.CONTROLS_WHILEUNTIL_OPERATOR_WHILE, 'WHILE'],
+      [Blockly.Msg.CONTROLS_WHILEUNTIL_OPERATOR_UNTIL, 'UNTIL']
+    ];
+
+    var modeDropdown = new Blockly.FieldDropdown(modeOptions);
+
+    this.appendDummyInput().appendField(modeDropdown, 'MODE');
+
+    this.appendValueInput('BOOL').setCheck('Boolean');
+
+    this.appendStatementInput('DO')
+      .appendField(Blockly.Msg.CONTROLS_REPEAT_INPUT_DO);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.loopsStyle);
+
+    const _this = this;
+    this.setTooltip(function () {
+      const operator = _this.getFieldValue('MODE');
+
+      var TOOLTIPS = {
+        WHILE: Blockly.Msg.CONTROLS_WHILEUNTIL_TOOLTIP_WHILE,
+        UNTIL: Blockly.Msg.CONTROLS_WHILEUNTIL_TOOLTIP_UNTIL
+      };
+
+      try {
+        return TOOLTIPS[operator];
+      } catch (err) {
+        return 'controls_whileUntil_tooltip';
+      }
+    });
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_CONTROLS_REPEAT_INPUT_DO}',
+      '%{BKY_LABEL_TIME_CONTROL}',
+      '%{BKY_LOOPS}'
+    ];
+
+    var toolboxKeywords = [
+      '%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_WHILE}',
+      '%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_UNTIL}'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('controls_whileUntil', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.controls_flow_statements = {
+  /**
+   * Block for flow statements: continue, break.
+   * @override Blockly.Block.controls_flow_statements JSON definition
+   * @this Blockly.Block
+   */
+  init: function () {
+    var flowOptions = [
+      [Blockly.Msg.CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK, 'BREAK'],
+      [Blockly.Msg.CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE, 'CONTINUE']
+    ];
+
+    var flowDropdown = new Blockly.FieldDropdown(flowOptions);
+
+    this.appendDummyInput().appendField(flowDropdown, 'FLOW');
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.loopsStyle);
+
+    const _this = this;
+    this.setTooltip(function () {
+      const flowOp = _this.getFieldValue('FLOW');
+
+      var TOOLTIPS = {
+        BREAK: Blockly.Msg.CONTROLS_FLOW_STATEMENTS_TOOLTIP_BREAK,
+        CONTINUE: Blockly.Msg.CONTROLS_FLOW_STATEMENTS_TOOLTIP_CONTINUE
+      };
+
+      try {
+        return TOOLTIPS[flowOp];
+      } catch (err) {
+        return 'controls_whileUntil_tooltip';
+      }
+    });
+
+    this.setNextStatement(null);
+    this.setPreviousStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+
+    this.suppressPrefixSuffix = true;
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      '%{BKY_LABEL_TIME_CONTROL}',
+      '%{BKY_LOOPS}'
+    ];
+
+    var toolboxKeywords = [
+      '%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}',
+      '%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE}'
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('controls_flow_statements', keywords, toolboxKeywords);
+  },
+  /**
+   * Is the given block enclosed (at any level) by a loop?
+   * @param {!Blockly.Block} block Current block.
+   * @return {Blockly.Block} The nearest surrounding loop, or null if none.
+   */
+  getSurroundLoop: function (block) {
+    var LOOP_TYPES = [
+      'controls_repeat',
+      'controls_repeat_ext',
+      'controls_forEach',
+      'controls_for',
+      'controls_whileUntil',
+      'controls_whileForever'
+    ];
+    // Is the block nested in a loop?
+    do {
+      if (LOOP_TYPES.indexOf(block.type) !== -1) {
+        return block;
+      }
+      block = block.getSurroundParent();
+    } while (block);
+    return null;
+  },
+  /**
+   * Called whenever anything on the workspace changes.
+   * Add warning if this flow block is not nested inside a loop.
+   * @param {!Blockly.Events.Abstract} _e Change event.
+   * @this {Blockly.Block}
+   */
+  onchange: function (_e) {
+    if (!this.workspace.isDragging || this.workspace.isDragging()) {
+      return; // Don't change state at the start of a drag.
+    }
+    if (this.getSurroundLoop(this)) {
+      this.setWarningText(null);
+      if (!this.isInFlyout) {
+        this.setEnabled(true);
+      }
+    } else {
+      this.setWarningText(Blockly.Msg.CONTROLS_FLOW_STATEMENTS_WARNING);
+      if (!this.isInFlyout && !this.getInheritedDisabled()) {
+        this.setEnabled(false);
+      }
+    }
   }
 };
 
@@ -249,45 +406,6 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         '%{BKY_LABEL_TIME_CONTROL}'
     ],
     "search_toolbox_keywords": []
-  },
-  // Block for 'do while/until' loop.
-  {
-    "type": "controls_whileUntil",
-    "message0": "%1 %2",
-    "args0": [
-      {
-        "type": "field_dropdown",
-        "name": "MODE",
-        "options": [
-          ["%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_WHILE}", "WHILE"],
-          ["%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_UNTIL}", "UNTIL"]
-        ]
-      },
-      {
-        "type": "input_value",
-        "name": "BOOL",
-        "check": "Boolean"
-      }
-    ],
-    "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
-    "args1": [{
-      "type": "input_statement",
-      "name": "DO"
-    }],
-    "previousStatement": null,
-    "nextStatement": null,
-    "style": "loop_blocks",
-    "helpUrl": "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}",
-    "extensions": ["controls_whileUntil_tooltip"],
-    "search_keywords": [
-        "%{BKY_CONTROLS_REPEAT_INPUT_DO}",
-        '%{BKY_LOOPS}',
-        '%{BKY_LABEL_TIME_CONTROL}'
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_WHILE}",
-      "%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_UNTIL}"
-    ]
   },
   // Block for 'for' loop.
   {
@@ -376,36 +494,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         '%{BKY_LABEL_TIME_CONTROL}'
     ],
     "search_toolbox_keywords": []
-  },
-  // Block for flow statements: continue, break.
-  {
-    "type": "controls_flow_statements",
-    "message0": "%1",
-    "args0": [{
-      "type": "field_dropdown",
-      "name": "FLOW",
-      "options": [
-        ["%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}", "BREAK"],
-        ["%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE}", "CONTINUE"]
-      ]
-    }],
-    "previousStatement": null,
-    "style": "loop_blocks",
-    "helpUrl": "%{BKY_CONTROLS_FLOW_STATEMENTS_HELPURL}",
-    "extensions": [
-      "controls_flow_tooltip",
-      "controls_flow_in_loop_check"
-    ],
-    "search_keywords": [
-      '%{BKY_LOOPS}',
-      '%{BKY_LABEL_TIME_CONTROL}'
-    ],
-    "search_toolbox_keywords": [
-      "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_BREAK}",
-      "%{BKY_CONTROLS_FLOW_STATEMENTS_OPERATOR_CONTINUE}"
-    ]
   }
-]);  // END JSON EXTRACT (Do not delete this comment.)
+]); // END JSON EXTRACT (Do not delete this comment.)
 
 /**
  * Tooltips for the 'controls_whileUntil' block, keyed by MODE value.

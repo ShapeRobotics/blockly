@@ -167,7 +167,6 @@ Blockly.Blocks['lists_create_with'] = {
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_TOOLTIP']);
     this.disconnectedChildBlocks = []; // SHAPE: Flag to control the removal of a shadow block on updateShape.
-    this.addShadowBlocks = false; // SHAPE: Flag to control the addition of a shadow block on updateShape.
   },
   ensureSearchKeywords: function() {
     var keywords = [
@@ -244,8 +243,6 @@ Blockly.Blocks['lists_create_with'] = {
       }
     }
 
-    // SHAPE: Set flag to true if a new item was added to the list (from mutator bubble).
-    this.addShadowBlocks = connections.length > this.itemCount_;
     this.itemCount_ = connections.length;
     this.updateShape_();
 
@@ -304,10 +301,6 @@ Blockly.Blocks['lists_create_with'] = {
         this.removeShadowBlock_(this.disconnectedChildBlocks.pop());
       }
     }
-    // SHAPE: add shadow blocks to empty inputs.
-    // if (this.addShadowBlocks) {
-    //   this.connectShadowBlock_();
-    // }
   },
   /**
    * Deletes a disconnected shadow child block if it
@@ -319,28 +312,6 @@ Blockly.Blocks['lists_create_with'] = {
   removeShadowBlock_: function (disconnectedChild) {
     if (disconnectedChild.isShadow()) {
       disconnectedChild.dispose(true, true);
-    }
-  },
-  /**
-   * Connects a shadow math block with a random integer to a
-   * new input.
-   * @private
-   * @this Blockly.Block
-   * @author ShapeRoboticsApS
-   * @ignore
-   */
-  connectShadowBlock_: function () {
-    // Spawn a shadow math blocks on empty inputs.
-    for (var i = 0; i < this.itemCount_; i++) {
-      if (this.getInput('ADD' + i) && !this.getInput('ADD' + i).connection.targetBlock()) {
-        var shadowChild = this.workspace.newBlock('math_number');
-        shadowChild.setFieldValue(0, 'NUM');
-        shadowChild.setShadow(true);
-        shadowChild.initSvg();
-        shadowChild.render();
-        // Connect ShadowBlock.
-        this.getInput('ADD' + i).connection.connect(shadowChild.outputConnection);
-      }
     }
   }
 };

@@ -385,7 +385,17 @@ Blockly.Python.fable_lists_concat = function (block) {
   var code;
 
   if (withDups === 'False') {
-    code = `list(${listOne}) + list(e for e in ${listTwo} if e not in ${listOne})\n`;
+    var concatenateListsWithoutDups = Blockly.Python.provideFunction_(
+      'concatenate_lists_no_dups', [
+        `def ${Blockly.Python.FUNCTION_NAME_PLACEHOLDER_}(list_one, list_two):`,
+        '  new_list = list(list_one + list(e for e in list_two if e not in list_one))',
+        '  return new_list'
+      ]
+    );
+
+    // code = `list(${listOne}) + list(e for e in ${listTwo} if e not in ${listOne})\n`;
+    code = `${concatenateListsWithoutDups}(${listOne}, ${listTwo})`;
+    order = Blockly.Python.ORDER_FUNCTION_CALL;
   } else {
     code = `${listOne} + ${listTwo}\n`;
   }
