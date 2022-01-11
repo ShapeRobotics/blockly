@@ -140,16 +140,11 @@ Blockly.Python.fable_spin_drive_with_speed_and_wait = function (block) {
   const distance = Blockly.Python.valueToCode(block, 'DISTANCE', Blockly.Python.ORDER_NONE) || 'None';
   const metric = block.getFieldValue('METRIC');
   const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE) || 'None';
-  const doWait = Blockly.Python.valueToCode(block, 'WAIT', Blockly.Python.ORDER_NONE) || 'False';
 
   var additionalCode = '';
-
-  if (doWait === 'True') {
-    const hasReachedTargetAPI = `api.getSpinHasReachedTarget('both', ${id})`;
-    const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
-
-    additionalCode = `while not ${hasReachedTargetAPI}:\n${passCode}`;
-  }
+  const hasReachedTargetAPI = `api.getSpinHasReachedTarget('both', ${id})`;
+  const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
+  additionalCode = `while not ${hasReachedTargetAPI}:\n${passCode}`;
 
   const code = 'api.driveByMetric(' + distance + ', ' + metric + ', ' + id + ', ' + speed + ')\n' + additionalCode;
 
@@ -161,16 +156,11 @@ Blockly.Python.fable_spin_spin_with_speed_and_wait = function (block) {
   const turns = Blockly.Python.valueToCode(block, 'TURNS', Blockly.Python.ORDER_NONE) || 'None';
   const metric = block.getFieldValue('METRIC');
   const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE) || 'None';
-  const doWait = Blockly.Python.valueToCode(block, 'WAIT', Blockly.Python.ORDER_NONE) || 'False';
 
   var additionalCode = '';
-
-  if (doWait === 'True') {
-    const hasReachedTargetAPI = `api.getSpinHasReachedTarget('both', ${id})`;
-    const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
-
-    additionalCode = `while not ${hasReachedTargetAPI}:\n${passCode}`;
-  }
+  const hasReachedTargetAPI = `api.getSpinHasReachedTarget('both', ${id})`;
+  const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
+  additionalCode = `while not ${hasReachedTargetAPI}:\n${passCode}`;
 
   const code = 'api.spinByMetric(' + turns + ', ' + metric + ', ' + id + ', ' + speed + ')\n' + additionalCode;
 

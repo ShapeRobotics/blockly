@@ -611,7 +611,6 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
      */
   init: function () {
     // Inputs:
-    console.log('calling init for the block');
     var image = new Blockly.FieldImage(
       Blockly.Blocks.Definitions.spinIcon,
       Blockly.Blocks.Definitions.iconSize,
@@ -651,15 +650,15 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
 
     // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
     this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_WHEEL_SPIN_TOOLTIP);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
-    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+    // this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
 
-    this.markComplementaryBlockWasAdded = false;
+    // this.markComplementaryBlockWasAdded = false;
   },
   ensureSearchKeywords: function () {
     var keywords = [
@@ -676,7 +675,7 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
 
     Blockly.Search.preprocessSearchKeywords('fable_spin_spin_wheel_by_metric', keywords, toolboxKeywords);
   },
-  onchange: function (event) {
+  /*onchange: function (event) {
     if (this.isInFlyout) {
       return;
     }
@@ -699,74 +698,7 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
         
       }
     }
-  }
-};
-
-Blockly.Blocks.fable_spin_spin_with_speed_and_wait = {
-  /**
-     *
-     * @this Blockly.Block
-     */
-  init: function () {
-    // Inputs:
-    var image = new Blockly.FieldImage(
-      Blockly.Blocks.Definitions.spinIcon,
-      Blockly.Blocks.Definitions.iconSize,
-      Blockly.Blocks.Definitions.iconSize, '*');
-    this.appendDummyInput()
-      .appendField(image);
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_SPIN_SET_SPIN);
-
-    this.appendValueInput('TURNS')
-      .setCheck('Number');
-
-    this.appendDummyInput()
-      .appendField(new Blockly.FieldDropdown([
-        [Blockly.Msg.TIMES, '\'times\''],
-        [Blockly.Msg.DEGREES, '\'degrees\''],
-        [Blockly.Msg.RADIANS, '\'radians\'']]),
-      'METRIC');
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_WITH_SPEED);
-
-    this.appendValueInput('SPEED')
-      .setCheck('Number');
-
-    this.appendValueInput('WAIT').setCheck('Boolean').appendField('and wait');
-
-    this.appendDummyInput()
-      .appendField(Blockly.Msg.FABLE_ON_MODULE);
-
-    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
-
-    // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
-    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_SPIN_TOOLTIP);
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setInputsInline(true);
-    this.setHelpUrl('http://www.example.com/');
-    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
-  },
-  ensureSearchKeywords: function () {
-    var keywords = [
-      Blockly.Msg.FABLE_SPIN_SET_SPIN,
-      Blockly.Msg.FABLE_WITH_SPEED,
-      '%{BKY_OUTPUT}',
-      '%{BKY_LABEL_SPIN}'
-    ];
-
-    var toolboxKeywords = [
-      Blockly.Msg.TIMES,
-      Blockly.Msg.DEGREES,
-      Blockly.Msg.RADIANS
-    ];
-
-    Blockly.Search.preprocessSearchKeywords('fable_spin_spin_with_speed_and_wait', keywords, toolboxKeywords);
-  }
+  }*/
 };
 
 Blockly.Blocks.fable_spin_drive_with_speed_and_wait = {
@@ -803,7 +735,7 @@ Blockly.Blocks.fable_spin_drive_with_speed_and_wait = {
     this.appendValueInput('SPEED')
       .setCheck('Number');
 
-    this.appendValueInput('WAIT').setCheck('Boolean').appendField('and wait');
+    this.appendDummyInput().appendField('and wait');
 
     this.appendDummyInput()
       .appendField(Blockly.Msg.FABLE_ON_MODULE);
@@ -835,5 +767,72 @@ Blockly.Blocks.fable_spin_drive_with_speed_and_wait = {
     ];
 
     Blockly.Search.preprocessSearchKeywords('fable_spin_drive_with_speed_and_wait', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_spin_spin_with_speed_and_wait = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_SPIN_SET_SPIN);
+
+    this.appendValueInput('TURNS')
+      .setCheck('Number');
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([
+        [Blockly.Msg.TIMES, '\'times\''],
+        [Blockly.Msg.DEGREES, '\'degrees\''],
+        [Blockly.Msg.RADIANS, '\'radians\'']]),
+      'METRIC');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_WITH_SPEED);
+
+    this.appendValueInput('SPEED')
+      .setCheck('Number');
+
+    this.appendDummyInput().appendField('and wait');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_ON_MODULE);
+
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_SPIN_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_SPIN,
+      Blockly.Msg.FABLE_WITH_SPEED,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.TIMES,
+      Blockly.Msg.DEGREES,
+      Blockly.Msg.RADIANS
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_spin_with_speed_and_wait', keywords, toolboxKeywords);
   }
 };
