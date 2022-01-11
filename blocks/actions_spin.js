@@ -611,6 +611,7 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
      */
   init: function () {
     // Inputs:
+    console.log('calling init for the block');
     var image = new Blockly.FieldImage(
       Blockly.Blocks.Definitions.spinIcon,
       Blockly.Blocks.Definitions.iconSize,
@@ -650,12 +651,15 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
 
     // Properties:
-    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
     this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_WHEEL_SPIN_TOOLTIP);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+
+    this.markComplementaryBlockWasAdded = false;
   },
   ensureSearchKeywords: function () {
     var keywords = [
@@ -671,5 +675,165 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     var toolboxKeywords = [Blockly.Msg.TIMES, Blockly.Msg.DEGREES, Blockly.Msg.RADIANS];
 
     Blockly.Search.preprocessSearchKeywords('fable_spin_spin_wheel_by_metric', keywords, toolboxKeywords);
+  },
+  onchange: function (event) {
+    if (this.isInFlyout) {
+      return;
+    }
+
+    if (this.markComplementaryBlockWasAdded) {
+      return;
+    }
+
+    console.log(event.type);
+    if (event.type == Blockly.Events.BLOCK_MOVE) {
+      if (this.workspace.getBlockById(event.blockId).type == this.type) {
+        console.log('EVENT BLOCK_MOVE triggered onchange for this specific block');
+        this.markComplementaryBlockWasAdded = true;
+        var childBlock = Blockly.mainWorkspace.newBlock('fable_wait_for_spin');
+        childBlock.initSvg();
+        childBlock.render();
+        childBlock.updateShape_(true);
+
+        this.nextConnection.connect(childBlock.previousConnection);
+        
+      }
+    }
+  }
+};
+
+Blockly.Blocks.fable_spin_spin_with_speed_and_wait = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_SPIN_SET_SPIN);
+
+    this.appendValueInput('TURNS')
+      .setCheck('Number');
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([
+        [Blockly.Msg.TIMES, '\'times\''],
+        [Blockly.Msg.DEGREES, '\'degrees\''],
+        [Blockly.Msg.RADIANS, '\'radians\'']]),
+      'METRIC');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_WITH_SPEED);
+
+    this.appendValueInput('SPEED')
+      .setCheck('Number');
+
+    this.appendValueInput('WAIT').setCheck('Boolean').appendField('and wait');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_ON_MODULE);
+
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_SPIN_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_SPIN,
+      Blockly.Msg.FABLE_WITH_SPEED,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.TIMES,
+      Blockly.Msg.DEGREES,
+      Blockly.Msg.RADIANS
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_spin_with_speed_and_wait', keywords, toolboxKeywords);
+  }
+};
+
+Blockly.Blocks.fable_spin_drive_with_speed_and_wait = {
+  /**
+     *
+     * @this Blockly.Block
+     */
+  init: function () {
+    // Inputs:
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput()
+      .appendField(image);
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_SPIN_SET_DRIVE);
+
+    this.appendValueInput('DISTANCE')
+      .setCheck('Number');
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([
+        [Blockly.Msg.METERS, '\'m\''],
+        [Blockly.Msg.CENTIMETERS, '\'cm\''],
+        [Blockly.Msg.FEET, '\'ft\''],
+        [Blockly.Msg.INCHES, '\'in\'']]),
+      'METRIC');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_WITH_SPEED);
+
+    this.appendValueInput('SPEED')
+      .setCheck('Number');
+
+    this.appendValueInput('WAIT').setCheck('Boolean').appendField('and wait');
+
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.FABLE_ON_MODULE);
+
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    this.setStyle(Blockly.Blocks.Definitions.prototypeStyle);
+    this.setTooltip(Blockly.Msg.FABLE_SPIN_SET_DRIVE_TOOLTIP);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+    this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_DRIVE,
+      Blockly.Msg.FABLE_WITH_SPEED,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.METERS,
+      Blockly.Msg.CENTIMETERS,
+      Blockly.Msg.FEET,
+      Blockly.Msg.INCHES
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_drive_with_speed_and_wait', keywords, toolboxKeywords);
   }
 };
