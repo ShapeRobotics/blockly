@@ -656,9 +656,6 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     this.setNextStatement(true);
     this.setInputsInline(true);
     this.setHelpUrl('http://www.example.com/');
-    // this.setWarningText('PROTOTYPE BLOCK - MIGHT NOT WORK IN LATER OFFICIAL RELEASES');
-
-    // this.markComplementaryBlockWasAdded = false;
   },
   ensureSearchKeywords: function () {
     var keywords = [
@@ -674,31 +671,7 @@ Blockly.Blocks.fable_spin_spin_wheel_by_metric = {
     var toolboxKeywords = [Blockly.Msg.TIMES, Blockly.Msg.DEGREES, Blockly.Msg.RADIANS];
 
     Blockly.Search.preprocessSearchKeywords('fable_spin_spin_wheel_by_metric', keywords, toolboxKeywords);
-  },
-  /*onchange: function (event) {
-    if (this.isInFlyout) {
-      return;
-    }
-
-    if (this.markComplementaryBlockWasAdded) {
-      return;
-    }
-
-    console.log(event.type);
-    if (event.type == Blockly.Events.BLOCK_MOVE) {
-      if (this.workspace.getBlockById(event.blockId).type == this.type) {
-        console.log('EVENT BLOCK_MOVE triggered onchange for this specific block');
-        this.markComplementaryBlockWasAdded = true;
-        var childBlock = Blockly.mainWorkspace.newBlock('fable_wait_for_spin');
-        childBlock.initSvg();
-        childBlock.render();
-        childBlock.updateShape_(true);
-
-        this.nextConnection.connect(childBlock.previousConnection);
-        
-      }
-    }
-  }*/
+  }
 };
 
 Blockly.Blocks.fable_spin_drive_with_speed_and_wait = {
