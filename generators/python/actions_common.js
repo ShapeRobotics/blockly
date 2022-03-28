@@ -99,3 +99,10 @@ Blockly.Python.fable_play_note = function (block) {
 
   return code;
 };
+
+Blockly.Python.fable_code = function (block) {
+  var value = block.getFieldValue('CODE');
+  var code = value + '\n';
+
+  return code;
+};

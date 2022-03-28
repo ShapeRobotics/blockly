@@ -386,3 +386,24 @@ Blockly.Blocks.fable_play_note = {
     Blockly.Search.preprocessSearchKeywords('fable_play_note', keywords, toolboxKeywords);
   }
 };
+
+Blockly.Blocks.fable_code = {
+  init: function () {
+    this.appendDummyInput().appendField('evaluate');
+
+    this.appendDummyInput().appendField(new Blockly.FieldTextInput('x = math.sin(0)'), 'CODE');
+
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setTooltip('A tooltip');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = ['evaluate'];
+    var toolboxKeywords = ['evaluate'];
+
+    Blockly.Search.preprocessSearchKeywords('fable_code', keywords, toolboxKeywords);
+  }
+};
