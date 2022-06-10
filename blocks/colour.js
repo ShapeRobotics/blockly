@@ -213,6 +213,15 @@ Blockly.Blocks.custom_color = {
       .appendField(Blockly.Msg.BLUE + ':')
       .setCheck('Number');
 
+  /*  this.appendDummyInput()
+      .appendField(new Blockly.FieldNumber('50', 0, 100), 'RED');
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldNumber('50', 0, 100), 'GREEN');
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldNumber('50', 0, 100), 'BLUE');*/
+
     // Properties:
     this.setStyle(Blockly.Blocks.Definitions.colorsStyle);
     this.setTooltip(Blockly.Msg.FABLE_CUSTOM_COLOR_TOOLTIP);

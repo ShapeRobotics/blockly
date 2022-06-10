@@ -27,7 +27,7 @@ Blockly.Python.fable_spin_obstacle_detected = function (block) {
 
 Blockly.Python.fable_spin_color_found = function (block) {
   const id = block.getDynamicIDFieldString();
-  const color = block.getFieldValue('COLOUR') || '[0, 0, 0]';
+  const color = block.getFieldValue('COLOUR') || 'red';
   const code = 'api.getSpinIsColorFound(' + color + ', ' + id + ')';
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
