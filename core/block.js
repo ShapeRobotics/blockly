@@ -2193,6 +2193,10 @@ Blockly.Block.prototype.appendDrowdownWithMutation = function (fixedOptions,
             addedBlock.setShadow(true);
             addedBlock.initSvg();
             // Customizes fields of the block.
+            console.log(addedBlock.toString());
+            console.log(addedBlock.toDevString());
+            console.log(addedBlock.inputList);
+
             if (inputOptions.blockFields) {
               for (const fieldName of Object.keys(inputOptions.blockFields)) {
                 addedBlock.setFieldValue(inputOptions.blockFields[fieldName], fieldName);
