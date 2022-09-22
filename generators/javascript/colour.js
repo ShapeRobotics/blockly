@@ -98,3 +98,22 @@ Blockly.JavaScript['colour_blend'] = function(block) {
   var code = functionName + '(' + c1 + ', ' + c2 + ', ' + ratio + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+/**
+ * ShapeRobotics: overrides colour picker.
+ */ 
+Blockly.JavaScript["colour_picker"] = function (block) {
+  const order = Blockly.Python.ORDER_ATOMIC;
+  const hexcolor = block.getFieldValue("COLOUR");
+  // /5 is a hack to get better colors, fix in firmware
+  let r = parseInt(hexcolor.substring(1, 3), 16);
+  let g = parseInt(hexcolor.substring(3, 5), 16);
+  let b = parseInt(hexcolor.substring(5, 7), 16);
+  // Map the color between 0 and 100
+  r = Math.round(r * 100 / 255);
+  g = Math.round(g * 100 / 255);
+  b = Math.round(b * 100 / 255);
+
+  const code = `[${r}, ${g}, ${b}]`;
+  return [code, order];
+};
