@@ -418,3 +418,18 @@ Blockly.JavaScript['math_atan2'] = function(block) {
   return ['Math.atan2(' + argument1 + ', ' + argument0 + ') / Math.PI * 180',
       Blockly.JavaScript.ORDER_DIVISION];
 };
+
+/**
+ * ShapeRobotics: extended and new math blocks
+ */
+ Blockly.JavaScript["fable_angle"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+  const angle = block.getFieldValue("ANGLE");
+  return [angle, order];
+};
+
+Blockly.JavaScript["fable_joint_angle"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+  const angle = block.getFieldValue("ANGLE");
+  return [angle, order];
+};
