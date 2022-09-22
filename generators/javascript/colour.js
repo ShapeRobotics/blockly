@@ -103,7 +103,7 @@ Blockly.JavaScript['colour_blend'] = function(block) {
  * ShapeRobotics: overrides colour picker.
  */ 
 Blockly.JavaScript["colour_picker"] = function (block) {
-  const order = Blockly.Python.ORDER_ATOMIC;
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
   const hexcolor = block.getFieldValue("COLOUR");
   // /5 is a hack to get better colors, fix in firmware
   let r = parseInt(hexcolor.substring(1, 3), 16);
