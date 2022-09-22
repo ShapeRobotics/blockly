@@ -2266,7 +2266,7 @@ Blockly.Block.prototype.getDynamicIDFieldString = function () {
   var id = this.getFieldValue('ID');
   if (id === '#') {
     // TODO: This will crash for any other prog language
-    id = Blockly.Python.valueToCode(this, '#', Blockly.Python.ORDER_NONE) || '\'None\'';
+    id = Blockly.JavaScript.valueToCode(this, '#', Blockly.JavaScript.ORDER_NONE) || '\'None\'';
   } else if (id === '') {
     id = '\'None\'';
   } else {
@@ -2274,7 +2274,7 @@ Blockly.Block.prototype.getDynamicIDFieldString = function () {
   }
 
   if (id !== '\'None\'') {
-    Blockly.Python.fableModulesUsed_.add(id);
+    Blockly.JavaScript.fableModulesUsed_.add(id);
   }
 
   return id;
@@ -2293,7 +2293,7 @@ Blockly.Block.prototype.getMutatedDropdownValue = function (mutatedOption, mutat
 
   // Read the option.
   if (fromMutation) {
-    mutatedValue = Blockly.Python.valueToCode(this, mutationID, Blockly.Python.ORDER_NONE) || '\'None\'';
+    mutatedValue = Blockly.JavaScript.valueToCode(this, mutationID, Blockly.JavaScript.ORDER_NONE) || '\'None\'';
   } else if (selection === '') {
     selection = '\'None\'';
   }
@@ -2309,7 +2309,7 @@ Blockly.Block.prototype.getDynamicMediaFieldInput = function (mediaType) {
 
   var fileName = this.getFieldValue(fieldName);
   if (fileName === '#') {
-    fileName = Blockly.Python.valueToCode(this, '#', Blockly.Python.ORDER_NONE) || '\'None\'';
+    fileName = Blockly.JavaScript.valueToCode(this, '#', Blockly.JavaScript.ORDER_NONE) || '\'None\'';
   } else if (fileName === '') {
     fileName = '\'None\'';
   } else {
