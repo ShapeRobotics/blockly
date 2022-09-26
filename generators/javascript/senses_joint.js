@@ -5,7 +5,6 @@
  "use strict";
 
 goog.provide("Blockly.JavaScript.sensesJoint");
-
 goog.require("Blockly.JavaScript");
 
 Blockly.JavaScript.fable_read_joint_sensor = function (block) {

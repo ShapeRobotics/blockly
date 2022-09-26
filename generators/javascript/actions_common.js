@@ -11,6 +11,6 @@
     const _colorRGBDefault = "[None, None, None]";
 	const moduleID = block.getDynamicIDFieldString();
 	const colorRGB = Blockly.JavaScript.valueToCode(block, "COLOUR", Blockly.JavaScript.ORDER_NONE) || _colorRGBDefault;
-    const code = `api.SetColor(${colorRGB}, ${moduleID});\n`;
+    const code = `api.setColor(${colorRGB}, ${moduleID});\n`;
 	return code;
 }

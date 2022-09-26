@@ -12,7 +12,7 @@
 	const targetX = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_X", Blockly.JavaScript.ORDER_NONE) || "None";
 	const targetY = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_Y", Blockly.JavaScript.ORDER_NONE) || "None";
 	const code = `api.SetPos(${targetX}, ${targetY}, ${moduleID});\n`;
-    const _codeAppendage = `api.SetSpeed(50, 50, ${moduleID});\n`;
+    const _codeAppendage = `api.setSpeed(50, 50, ${moduleID});\n`;
 	return "".concat(code, _codeAppendage);
 }
 
