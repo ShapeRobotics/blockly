@@ -54,8 +54,7 @@ Blockly.JavaScript['controls_repeat_ext'] = function(block) {
   return code;
 };
 
-Blockly.JavaScript['controls_repeat'] =
-    Blockly.JavaScript['controls_repeat_ext'];
+Blockly.JavaScript['controls_repeat'] = Blockly.JavaScript['controls_repeat_ext'];
 
 Blockly.JavaScript['controls_whileUntil'] = function(block) {
   // Do while/until loop.
@@ -192,4 +191,10 @@ Blockly.JavaScript['controls_flow_statements'] = function(block) {
       return xfix + 'continue;\n';
   }
   throw Error('Unknown flow statement.');
+};
+
+Blockly.JavaScript["fable_wait"] = function (block) {
+  const waitValue = Blockly.JavaScript.valueToCode(block, "WAIT", Blockly.JavaScript.ORDER_NONE) || "0";
+  const code = `api.wait(${waitValue})\n`;
+  return code;
 };
