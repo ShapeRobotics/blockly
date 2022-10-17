@@ -198,3 +198,10 @@ Blockly.JavaScript["fable_wait"] = function (block) {
   const code = `api.wait(${waitValue})\n`;
   return code;
 };
+
+Blockly.JavaScript["controls_whileForever"] = function (block) {
+  var branch = Blockly.JavaScript.statementToCode(block, "DO");
+  branch = Blockly.JavaScript.addLoopTrap(branch, block.id) || Blockly.JavaScript.PASS;
+  const code = `while (true) {\n${branch}}\n`;
+  return code;
+};
