@@ -201,7 +201,7 @@ Blockly.JavaScript["fable_wait"] = function (block) {
 
 Blockly.JavaScript["controls_whileForever"] = function (block) {
   var branch = Blockly.JavaScript.statementToCode(block, "DO");
-  branch = Blockly.JavaScript.addLoopTrap(branch, block.id) || Blockly.JavaScript.PASS;
+  branch = Blockly.JavaScript.addLoopTrap(branch, block);
   const code = `while (true) {\n${branch}}\n`;
   return code;
 };
