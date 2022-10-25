@@ -376,3 +376,11 @@ Blockly.JavaScript['text_reverse'] = function(block) {
   var code = text + '.split(\'\').reverse().join(\'\')';
   return [code, Blockly.JavaScript.ORDER_MEMBER];
 };
+
+Blockly.JavaScript['fable_text_join'] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+	const firstText = Blockly.JavaScript.valueToCode(block, "FIRSTTEXT", Blockly.JavaScript.ORDER_ATOMIC) || "\"\"";
+	const secondText = Blockly.JavaScript.valueToCode(block, "SECONDTEXT", Blockly.JavaScript.ORDER_ATOMIC) || "\"\"";
+  const code = `String(${firstText}) + \" \" + String(${secondText})`;
+	return [code, order];
+};

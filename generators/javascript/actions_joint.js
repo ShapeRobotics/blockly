@@ -2,17 +2,17 @@
  * @fileoverview Generating JavaScript for actions/common blocks.
  * @author nicolas@shaperobotics.com (Nicolas Laverde)
  */
- "use strict";
+"use strict";
 
- goog.provide("Blockly.JavaScript.actionsJoint");
- goog.require("Blockly.JavaScript");
+goog.provide("Blockly.JavaScript.actionsJoint");
+goog.require("Blockly.JavaScript");
 
- Blockly.JavaScript["fable_set_module_motor_positions"] = function (block) {
+Blockly.JavaScript["fable_set_module_motor_positions"] = function (block) {
 	const moduleID = block.getDynamicIDFieldString();
 	const targetX = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_X", Blockly.JavaScript.ORDER_NONE) || "None";
 	const targetY = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_Y", Blockly.JavaScript.ORDER_NONE) || "None";
 	const code = `api.SetPos(${targetX}, ${targetY}, ${moduleID});\n`;
-    const _codeAppendage = `api.setSpeed(50, 50, ${moduleID});\n`;
+	const _codeAppendage = `api.setSpeed(50, 50, ${moduleID});\n`;
 	return "".concat(code, _codeAppendage);
 }
 

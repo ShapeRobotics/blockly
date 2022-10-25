@@ -397,3 +397,84 @@ Blockly.JavaScript['lists_reverse'] = function(block) {
   var code = list + '.slice().reverse()';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+Blockly.JavaScript["fable_lists_copy"] = function (block) {
+	const order = Blockly.JavaScript.ORDER_ATOMIC;
+	const targetList = Blockly.JavaScript.valueToCode(block, "LIST", Blockly.JavaScript.ORDER_NONE);
+	const code = `[...${targetList}]`;
+	return [code, order];
+};
+
+Blockly.JavaScript["fable_lists_count"] = function (block) {
+	const order = Blockly.JavaScript.ORDER_FUNCTION_CALL;
+	const list = Blockly.JavaScript.valueToCode(block, "LIST", order) || "[]";
+	const action = block.getFieldValue("ACTION") || "MOST_FREQUENT";
+	var code;
+
+	if (action == "COUNT_ELEMENT") {
+		const element = block.getFieldValue("ELEMENT") || "0";
+		const countElementFunctionName = Blockly.JavaScript.provideFunction_(
+			'countElement',
+			['function ' + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + '(arr, el) {',
+				'  const m = arr.reduce((acc, val) => {',
+				'    acc[val] = (acc[val] || 0) + 1;',
+				'    return acc;',
+				'  }, {})',
+				'  return m[el] || 0;',
+				'}']
+		);
+
+		code = `${countElementFunctionName}(${list}, ${element})`;
+	}
+  else {
+		const getMostFrequentFunctionName = Blockly.JavaScript.provideFunction_(
+			'getMostFrequent',
+			['function ' + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ +
+				'(arr) {',
+				'  const m = arr.reduce((acc, val) => {',
+				'    acc[val] = (acc[val] || 0) + 1;',
+				'    return acc;',
+				'    }, {});',
+				'  return Object.keys(m).reduce((a, b) => m[a] > m[b]',
+				'  ? a : b);',
+				'}']
+		);
+
+		code = `${getMostFrequentFunctionName}(${list})`;
+	}
+
+	return [code, order];
+};
+
+Blockly.JavaScript["fable_lists_concat"] = function (block) {
+	const order = Blockly.JavaScript.ORDER_ATOMIC;
+	const listOne = Blockly.JavaScript.valueToCode(block, "LIST_1", Blockly.JavaScript.ORDER_NONE);
+	const listTwo = Blockly.JavaScript.valueToCode(block, "LIST_2", Blockly.JavaScript.ORDER_NONE);
+	const withDups = Blockly.JavaScript.valueToCode(block, "WITH_DUPS", Blockly.JavaScript.ORDER_NONE) || "true";
+	var code;
+
+	if (withDups === "true") {
+		code = `${listOne}.concat(${listTwo})`;
+	} else {
+		code = `[...new Set([...${listOne}, ...${listTwo}])]`;
+	}
+
+	return [code, order];
+};
+
+Blockly.JavaScript["fable_lists_sort"] = function (block) {
+	const order = Blockly.JavaScript.ORDER_ATOMIC;
+	const targetList = Blockly.JavaScript.valueToCode(block, "LIST", Blockly.JavaScript.ORDER_NONE);
+	const reversed = block.getFieldValue("ORDER") || "False";
+	var code;
+
+	if (reversed == "False") {
+		code = `${targetList}.sort()`;
+	} else {
+		code = `${targetList}.sort().reverse()`;
+	}
+
+	return [code, order];
+};
+
+Blockly.JavaScript["fable_lists_sublist"] = Blockly.JavaScript["lists_getSublist"];

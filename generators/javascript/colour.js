@@ -117,3 +117,42 @@ Blockly.JavaScript["colour_picker"] = function (block) {
   const code = `[${r}, ${g}, ${b}]`;
   return [code, order];
 };
+
+Blockly.JavaScript["random_color"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_FUNCTION_CALL;
+	const randomColor = Blockly.JavaScript.provideFunction_('randomColor', [
+		'function ' + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + '(min, max) {',
+		'  var num = Math.floor(Math.random() * (max - min + 1)) + min;',
+		'  return num;',
+		'}'
+	]);
+
+	const code = `[${randomColor}(0, 100), ${randomColor}(0, 100), ${randomColor}(0, 100)]`;
+	return [code, order];
+};
+
+Blockly.JavaScript["custom_color"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+  const red = Blockly.JavaScript.valueToCode(block, "RED", Blockly.JavaScript.ORDER_NONE) || "0";
+  const green = Blockly.JavaScript.valueToCode(block, "GREEN", Blockly.JavaScript.ORDER_NONE) || "0";
+  const blue = Blockly.JavaScript.valueToCode(block, "BLUE", Blockly.JavaScript.ORDER_NONE) || "0";
+  const code = `api.customColor(${red}, ${green}, ${blue})`;
+  return [code, order];
+};
+
+Blockly.JavaScript["custom_color_blend"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+  const colorA = Blockly.JavaScript.valueToCode(block, "FIRST", Blockly.JavaScript.ORDER_NONE) || "[0, 0, 0]";
+  const colorB = Blockly.JavaScript.valueToCode(block, "SECOND", Blockly.JavaScript.ORDER_NONE) || "[0, 0, 0]";
+  const ratio = Blockly.JavaScript.valueToCode(block, "RATIO", Blockly.JavaScript.ORDER_NONE) || 0;
+  const code = `api.blendColors(${colorA}, ${colorB}, ${ratio})`;
+  return [code, order];
+};
+
+Blockly.JavaScript["color_channel"] = function (block) {
+  const order = Blockly.JavaScript.ORDER_ATOMIC;
+  const channel = block.getFieldValue("COLOR_CHANNEL");
+  const color = Blockly.JavaScript.valueToCode(block, "COLOR", Blockly.JavaScript.ORDER_NONE) || "[0, 0, 0]";
+  const code = `api.getColorChannel("${channel}", ${color})`;
+  return [code, order];
+};
