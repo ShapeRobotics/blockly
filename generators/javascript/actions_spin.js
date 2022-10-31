@@ -135,13 +135,13 @@ Blockly.JavaScript["fable_spin_set_constant"] = function (block) {
 }
 
 Blockly.JavaScript["fable_spin_spin_wheel_by_metric"] = function (block) {
-  const moduleID = block.getDynamicIDFieldString();
-  const motor = block.getFieldValue("MOTOR");
-  const reference = block.getFieldValue("REFERENCE");
-  const turns = Blockly.JavaScript.valueToCode(block, "TURNS", Blockly.JavaScript.ORDER_NONE) || "None";
-  const metric = block.getFieldValue("METRIC");
-  const speed = Blockly.JavaScript.valueToCode(block, "SPEED", Blockly.JavaScript.ORDER_NONE) || "None";
-  const isAbsoluteReference = (reference === "absolute") ? "True" : "False";
-  const code = `api.spinWheelByMetric("${motor}", ${turns}, ${metric}, ${moduleID}, ${speed}, abs=${isAbsoluteReference});\n`;
-  return code;
+    const moduleID = block.getDynamicIDFieldString();
+    const motor = block.getFieldValue("MOTOR");
+    const reference = block.getFieldValue("REFERENCE");
+    const turns = Blockly.JavaScript.valueToCode(block, "TURNS", Blockly.JavaScript.ORDER_NONE) || "None";
+    const metric = block.getFieldValue("METRIC");
+    const speed = Blockly.JavaScript.valueToCode(block, "SPEED", Blockly.JavaScript.ORDER_NONE) || "None";
+    const isAbsoluteReference = (reference === "absolute") ? "True" : "False";
+    const code = `api.spinWheelByMetric("${motor}", ${turns}, ${metric}, ${moduleID}, ${speed}, abs=${isAbsoluteReference});\n`;
+    return code;
 }

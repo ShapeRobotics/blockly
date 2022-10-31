@@ -8,6 +8,6 @@ goog.provide("Blockly.JavaScript.cameraCompVision");
 goog.require("Blockly.JavaScript");
 
 Blockly.JavaScript["camera_take_picture"] = function (block) {
-  const code = "api.takePicture()\n";
-  return code;
+    const code = "api.takePicture();\n";
+    return code;
 };
