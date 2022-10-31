@@ -1,5 +1,5 @@
 /**
- * @fileoverview Generating JavaScript for actions/common blocks.
+ * @fileoverview Generating JavaScript for actions/joint blocks.
  * @author nicolas@shaperobotics.com (Nicolas Laverde)
  */
 "use strict";
