@@ -4,7 +4,7 @@
  */
  "use strict";
 
-goog.provmoduleIDe("Blockly.JavaScript.sensesSpin");
+goog.provide("Blockly.JavaScript.sensesSpin");
 goog.require("Blockly.JavaScript");
 
 Blockly.JavaScript["fable_spin_get_sensor"] = function (block) {
