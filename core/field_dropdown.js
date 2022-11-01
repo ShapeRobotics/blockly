@@ -680,6 +680,7 @@ Blockly.FieldDropdown.prototype.getText_ = function() {
  * @param recentIDsDict The list of 'seen' modules.
  * @author Shape Robotics
  */
+/*
 Blockly.FieldDropdown.changeRecentModuleColors = function (activeIDsDict, recentIDsDict) {
   // Find the dropdown HTML element
   var dropdownDiv = document.getElementsByClassName('blocklyDropDownDiv');
@@ -763,6 +764,46 @@ Blockly.FieldDropdown.changeRecentModuleColors = function (activeIDsDict, recent
         }
       }
     }
+  }
+};
+*/
+
+/**
+ * Implements new ChangeRecentModuleColors logic for the Tizen Project.
+ * @param {*} activeIDsDict 
+ * @param {*} recentIDsDict 
+ * @author Nicolas Laverde [Shape Robotics AS]
+ */
+Blockly.FieldDropdown.changeRecentModuleColors = function (activeIDsDict, recentIDsDict) {
+  const recentModuleClassName = "goog-menuitem-content recent-module";
+  const activeModuleClassName = "goog-menuitem-content";
+  
+  // Find the dropdown HTML element
+  const blocklyDropdownMenuElements = document.getElementsByClassName("blocklyDropdownMenu");
+  if (blocklyDropdownMenuElements.length === 0) return;
+
+  const moduleIDsBlocklyDropdownMenu = blocklyDropdownMenuElements[0];
+  
+  // Unfold the module dictionaries into ID lists of active modules.
+  var activeModuleIDsList = [];
+  var moduleTypeNamesList = ["Hub", "Dongle", "Joint", "Spin", "Face"];
+
+  moduleTypeNamesList.forEach(_typeName => {
+      if (activeIDsDict && _typeName in activeIDsDict) {
+          const allActiveModulesOfTargetType = activeIDsDict[_typeName];
+          allActiveModulesOfTargetType.forEach(_module => {
+              activeModuleIDsList.push(_module[0].trim());
+          })
+      }
+  });
+
+  for (var moduleIDOption of moduleIDsBlocklyDropdownMenu.children) {
+      const optionInnerText = moduleIDOption.innerText.trim();
+      if (moduleIDOption.children.length > 0) {
+          if (optionInnerText === "#") break;
+          const isActiveModule = activeModuleIDsList.includes(optionInnerText) || optionInnerText === "Hub";
+          moduleIDOption.children[0].className = isActiveModule ? activeModuleClassName : recentModuleClassName;
+      }
   }
 };
 
