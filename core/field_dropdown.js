@@ -797,12 +797,23 @@ Blockly.FieldDropdown.changeRecentModuleColors = function (activeIDsDict, recent
       }
   });
 
+  const isHubConnected = ("Hub" in activeIDsDict)
+    ? activeIDsDict["Hub"].length > 0
+    : false
+
   for (var moduleIDOption of moduleIDsBlocklyDropdownMenu.children) {
       const optionInnerText = moduleIDOption.innerText.trim();
       if (moduleIDOption.children.length > 0) {
-          if (optionInnerText === "#") break;
-          const isActiveModule = activeModuleIDsList.includes(optionInnerText) || optionInnerText === "Hub";
-          moduleIDOption.children[0].className = isActiveModule ? activeModuleClassName : recentModuleClassName;
+        var isActiveModule = false;
+        if (optionInnerText === "#") continue;
+        
+        if (optionInnerText === "Hub") {
+          isActiveModule = isHubConnected
+        } else {
+          isActiveModule = activeModuleIDsList.includes(optionInnerText);
+        }
+
+        moduleIDOption.children[0].className = isActiveModule ? activeModuleClassName : recentModuleClassName;
       }
   }
 };
