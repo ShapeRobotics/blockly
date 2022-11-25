@@ -21,6 +21,7 @@ Blockly.JavaScript["fable_set_module_motor_pos_speed"] = function (block) {
 	const targetX = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_X", Blockly.JavaScript.ORDER_NONE) || "None";
 	const targetY = Blockly.JavaScript.valueToCode(block, "MOTOR_POSITION_Y", Blockly.JavaScript.ORDER_NONE) || "None";
 	const targetSpeed = Blockly.JavaScript.valueToCode(block, "MOTORS_SPEEDS", Blockly.JavaScript.ORDER_NONE) || "None";
-	const code = `api.setPosAndSpeed(${targetX}, ${targetY}, ${targetSpeed}, ${targetSpeed}, ${moduleID});\n`;
-	return code;
+	const code = `api.setPos(${targetX}, ${targetY}, ${moduleID});\n`;
+	const _codeAppendage = `api.setSpeed(${targetSpeed}, ${targetSpeed}, ${moduleID});\n`;
+	return "".concat(_codeAppendage, code);
 }

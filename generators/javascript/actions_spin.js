@@ -61,7 +61,7 @@ Blockly.JavaScript["fable_spin_drive"] = function (block) {
     const moduleID = block.getDynamicIDFieldString();
     const distance = Blockly.JavaScript.valueToCode(block, "DISTANCE", Blockly.JavaScript.ORDER_NONE) || "None";
     const metric = block.getFieldValue("METRIC");
-    const code = `api.driveByMetric(${distance}, ${metric}, ${moduleID});\n`;
+    const code = `api.driveByMetric(${distance}, ${metric}, 50, ${moduleID});\n`;
     return code;
 }
 
@@ -70,7 +70,7 @@ Blockly.JavaScript["fable_spin_drive_with_speed"] = function (block) {
     const distance = Blockly.JavaScript.valueToCode(block, "DISTANCE", Blockly.JavaScript.ORDER_NONE) || "None";
     const metric = block.getFieldValue("METRIC");
     const speed = Blockly.JavaScript.valueToCode(block, "SPEED", Blockly.JavaScript.ORDER_NONE) || "None";
-    const code = `api.driveByMetric(${distance}, ${metric}, ${moduleID}, ${speed});\n`;
+    const code = `api.driveByMetric(${distance}, ${metric}, ${speed}, ${moduleID});\n`;
     return code;
 }
 
@@ -78,7 +78,7 @@ Blockly.JavaScript["fable_spin_spin"] = function (block) {
     const moduleID = block.getDynamicIDFieldString();
     const turns = Blockly.JavaScript.valueToCode(block, "TURNS", Blockly.JavaScript.ORDER_NONE) || "None";
     const metric = block.getFieldValue("METRIC");
-    const code = `api.spinByMetric(${turns}, ${metric}, ${moduleID});\n`;
+    const code = `api.spinByMetric(${turns}, ${metric}, 50, ${moduleID});\n`;
     return code;
 }
 
@@ -87,7 +87,7 @@ Blockly.JavaScript["fable_spin_spin_with_speed"] = function (block) {
     const turns = Blockly.JavaScript.valueToCode(block, "TURNS", Blockly.JavaScript.ORDER_NONE) || "None";
     const metric = block.getFieldValue("METRIC");
     const speed = Blockly.JavaScript.valueToCode(block, "SPEED", Blockly.JavaScript.ORDER_NONE) || "None";
-    const code = `api.spinByMetric(${turns}, ${metric}, ${moduleID}, ${speed});\n`;
+    const code = `api.spinByMetric(${turns}, ${metric}, ${speed}, ${moduleID});\n`;
     return code;
 }
 
