@@ -25,3 +25,10 @@ Blockly.JavaScript["fable_set_module_motor_pos_speed"] = function (block) {
 	const _codeAppendage = `api.setSpeed(${targetSpeed}, ${targetSpeed}, ${moduleID});\n`;
 	return "".concat(_codeAppendage, code);
 }
+
+Blockly.JavaScript["fable_set_module_accuracy"] = function (block) {
+	const moduleID = block.getDynamicIDFieldString();
+	const accuracy = block.getFieldValue("MOTOR_ACCURACY_VALUE");
+	const code = `api.setAccurate("${accuracy}", "${accuracy}", ${moduleID});\n`;
+	return code;
+}

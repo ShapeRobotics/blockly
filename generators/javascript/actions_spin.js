@@ -2,7 +2,7 @@
  * @fileoverview Generating JavaScript for actions/spin blocks.
  * @author nicolas@shaperobotics.com (Nicolas Laverde)
  */
- "use strict";
+"use strict";
 
 goog.provide("Blockly.JavaScript.actionsSpin");
 goog.require("Blockly.JavaScript");
