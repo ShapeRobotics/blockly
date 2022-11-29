@@ -2,7 +2,7 @@
  * @fileoverview Generating JavaScript for senses/spin blocks.
  * @author nicolas@shaperobotics.com (Nicolas Laverde)
  */
- "use strict";
+"use strict";
 
 goog.provide("Blockly.JavaScript.sensesSpin");
 goog.require("Blockly.JavaScript");
