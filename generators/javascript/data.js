@@ -10,16 +10,16 @@ goog.require("Blockly.JavaScript");
 Blockly.JavaScript["fable_save_as_csv"] = function (block) {
   const value = Blockly.JavaScript.valueToCode(block, "VALUE", Blockly.JavaScript.ORDER_ATOMIC) || "None";
   const fileName = Blockly.JavaScript.valueToCode(block, "FILENAME", Blockly.JavaScript.ORDER_NONE) || "MyFableCSV";
-  const code = `api.log(${value}, ${fileName})\n`;
+  const code = `api.log(${value}, ${fileName});\n`;
   return code;
-  };
+}
 
 Blockly.JavaScript["fable_load_from_csv"] = function (block) {
   const order = Blockly.JavaScript.ORDER_ATOMIC;
   const fileName = Blockly.JavaScript.valueToCode(block, "FILENAME", Blockly.JavaScript.ORDER_NONE) || "MyFableCSV";
   const code = `api.loadCSV(${fileName}, delimiter=";", skipheader=True)`;
   return [code, order];
-};
+}
 
 Blockly.JavaScript["fable_load_from_csv_advance"] = function (block) {
   const order = Blockly.JavaScript.ORDER_ATOMIC;
@@ -28,30 +28,30 @@ Blockly.JavaScript["fable_load_from_csv_advance"] = function (block) {
   const skipHeader = Blockly.JavaScript.valueToCode(block, "SKIPHEADER", Blockly.JavaScript.ORDER_NONE);
   const code = `api.loadCSV(${fileName}, delimiter=${delimiter}, skipheader=${skipHeader})`;
   return [code, order];
-};
+}
 
 Blockly.JavaScript["fable_make_plot"] = function (block) {
   const value = Blockly.JavaScript.valueToCode(block, "VALUE", Blockly.JavaScript.ORDER_NONE) || "None";
   const sid = block.getFieldValue("SERIES_ID");
-  const code = `api.plot(${value}, "${sid}")\n`;
+  const code = `api.plot(${value}, "${sid}");\n`;
   return code;
-};
+}
 
 Blockly.JavaScript["fable_make_plot_xy"] = function (block) {
   const valueX = Blockly.JavaScript.valueToCode(block, "VALUE_X", Blockly.JavaScript.ORDER_NONE) || "None";
   const valueY = Blockly.JavaScript.valueToCode(block, "VALUE_Y", Blockly.JavaScript.ORDER_NONE) || "None";
   const sid = block.getFieldValue("SERIES_ID");
-  const code = `api.plotXY(${valueX}, ${valueY}, "${sid}")\n`;
+  const code = `api.plotXY(${valueX}, ${valueY}, "${sid}");\n`;
   return code;
-};
+}
 
 Blockly.JavaScript["fable_make_scatter_plot"] = function (block) {
   const valueX = Blockly.JavaScript.valueToCode(block, "VALUE_X", Blockly.JavaScript.ORDER_NONE) || "None";
   const valueY = Blockly.JavaScript.valueToCode(block, "VALUE_Y", Blockly.JavaScript.ORDER_NONE) || "None";
   const sid = block.getFieldValue("SERIES_ID");
-  const code = `api.plotScatter(${valueX}, ${valueY}, "${sid}")\n`;
+  const code = `api.plotScatter(${valueX}, ${valueY}, "${sid}");\n`;
   return code;
-};
+}
 
 Blockly.JavaScript["fable_cast_to_type"] = function (block) {
   const order = Blockly.JavaScript.ORDER_ATOMIC;
@@ -74,7 +74,7 @@ Blockly.JavaScript["fable_cast_to_type"] = function (block) {
 	}
 
 	return [methodSignature, order];
-};
+}
 
 Blockly.JavaScript["fable_cast_list_values_to_type"] = function (block) {
   const order = Blockly.JavaScript.ORDER_FUNCTION_CALL;
@@ -94,10 +94,10 @@ Blockly.JavaScript["fable_cast_list_values_to_type"] = function (block) {
 	}
 
 	return [methodSignature, order];
-};
+}
 
 Blockly.JavaScript["fable_print"] = function (block) {
   const data = Blockly.JavaScript.valueToCode(block, "DATA", Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `console.log(${data})\n`;
+  const code = `console.log(${data});\n`;
   return code;
-};
+}
