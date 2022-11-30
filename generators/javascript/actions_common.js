@@ -8,7 +8,7 @@ goog.provide("Blockly.JavaScript.actionsCommon");
 goog.require("Blockly.JavaScript");
  
 Blockly.JavaScript["fable_set_module_rgb"] = function (block) {
-    const _colorRGBDefault = "[None, None, None]";
+    const _colorRGBDefault = "[0, 0, 0]";
 	const moduleID = block.getDynamicIDFieldString();
 	const colorRGB = Blockly.JavaScript.valueToCode(block, "COLOUR", Blockly.JavaScript.ORDER_NONE) || _colorRGBDefault;
     const code = `api.setColor(${colorRGB}, ${moduleID});\n`;
