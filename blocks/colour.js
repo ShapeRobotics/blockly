@@ -40,18 +40,26 @@ goog.require('Blockly.FieldLabel');
  * @deprecated Use Blockly.Msg['COLOUR_HUE']. (2018 April 5)
  */
 Blockly.Constants.Colour.HUE = 20;
+Blockly.FieldColour.FABLE_COLORS = [
+  "#ffffff", "#808080", "#000000",
+  "#ff0000", "#800000", "#400000",
+  "#00ff00", "#008000", "#004000",
+  "#0000ff", "#000080", "#000040",
+  "#ffff00", "#ff8000", "#80ff00",
+  "#ff00ff", "#ff0080", "#8000ff",
+  "#00ffff", "#00ff80", "#0080ff"
+];
 
 Blockly.Blocks.colour_picker = {
   /**
      * Block to display and pick colors from a table.
      */
-  init: function () {
-    // Inputs:
+  init: function () { 
     var colour = new Blockly.FieldColour('#ffff00');
-
-    colour.setColours(Blockly.FieldColour.COLOURS);
-
-    colour.setColumns(7);
+    //colour.setColours(Blockly.FieldColour.COLOURS);
+    //colour.setColumns(7);
+    colour.setColours(Blockly.FieldColour.FABLE_COLORS);
+    colour.setColumns(3);
 
     this.appendDummyInput()
       .appendField(colour, 'COLOUR');
