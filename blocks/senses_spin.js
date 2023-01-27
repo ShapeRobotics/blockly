@@ -178,14 +178,14 @@ Blockly.Blocks.fable_spin_color_found = {
     this.appendDummyInput().appendField(Blockly.Msg.FABLE_SPIN_COLOR_FOUND);
 
     const colorOptions = [
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'red@1x.png', width: 25, height: 25, alt: 'red' }, '[100, 0, 0]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'green@1x.png', width: 25, height: 25, alt: 'green' }, '[0, 100, 0]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'blue@1x.png', width: 25, height: 25, alt: 'blue' }, '[0, 0, 100]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'yellow@1x.png', width: 25, height: 25, alt: 'yellow' }, '[100, 100, 0]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'magenta@1x.png', width: 25, height: 25, alt: 'magenta' }, '[100, 0, 100]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'cyan@1x.png', width: 25, height: 25, alt: 'cyan' }, '[0, 100, 100]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'white@1x.png', width: 25, height: 25, alt: 'cyan' }, '[100, 100, 100]'],
-      [{ src: Blockly.Blocks.Definitions.imageDir + 'black@1x.png', width: 25, height: 25, alt: 'cyan' }, '[0, 0, 0]']
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'red@1x.png', width: 25, height: 25, alt: 'red' }, '\'red\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'green@1x.png', width: 25, height: 25, alt: 'green' }, '\'green\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'blue@1x.png', width: 25, height: 25, alt: 'blue' }, '\'blue\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'yellow@1x.png', width: 25, height: 25, alt: 'yellow' }, '\'yellow\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'magenta@1x.png', width: 25, height: 25, alt: 'magenta' }, '\'magenta\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'cyan@1x.png', width: 25, height: 25, alt: 'cyan' }, '\'cyan\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'white@1x.png', width: 25, height: 25, alt: 'white' }, '\'white\''],
+      [{ src: Blockly.Blocks.Definitions.imageDir + 'black@1x.png', width: 25, height: 25, alt: 'black' }, '\'black\'']
     ];
 
     this.appendDummyInput()

@@ -523,6 +523,80 @@ Blockly.Blocks.fable_spin_reset_encoder = {
   }
 };
 
+Blockly.Blocks.fable_spin_color_calibration = {
+  /**
+   * Color calibration block
+   * @this Blockly.Block
+   */
+  init: function () {
+    var image = new Blockly.FieldImage(
+      Blockly.Blocks.Definitions.spinIcon,
+      Blockly.Blocks.Definitions.iconSize,
+      Blockly.Blocks.Definitions.iconSize, '*');
+    this.appendDummyInput().appendField(image);
+
+    var sensorsArray = [
+      ['1', '[1]'],
+      ['2', '[2]'],
+      ['3', '[3]'],
+      ['1,3', '[1,3]'],
+      ['1,2,3', '[1,2,3]']
+      ];
+    this.appendDummyInput().appendField("calibrate");
+
+    var options = [
+      ['to default', '"default"'],
+      ['to raw', '"raw"'],
+      ['white', '"whiteBalance"'],
+      ['black', '"blackBalance"']
+      ];
+
+    var inputOptions = {};
+    inputOptions.insertBefore = 'SENSOR';
+   // inputOptions.addBlock = 'custom_color';
+   // inputOptions.blockFields = { 'RED': 50, 'GREEN': 50, 'BLUE': 50 };
+
+   /* inputOptions.addBlock = 'math_number';
+    inputOptions.blockFields = { NUM: 50 };*/
+
+    this.appendDrowdownWithMutation(options, ['"whiteBalance"', '"blackBalance"'], 'SENSITIVITY', 'Colour', 'with', inputOptions);
+
+    this.appendDummyInput('SENSOR')
+      .appendField("on sensor")
+      .appendField(new Blockly.FieldDropdown(sensorsArray), 'SPIN_SENSOR');
+    this.appendDummyInput().appendField(Blockly.Msg.FABLE_ON_MODULE);
+    this.appendDynamicIDInput(Blockly.Blocks.Definitions.requestedModules_Spin, [], [['#']]);
+
+    // Properties:
+    var thisBlock_ = this;
+    this.setTooltip(function () {
+        return 'Calibrate the color sensor of your spin by using real measurements of the color values for different colors';
+    });
+
+    this.setStyle(Blockly.Blocks.Definitions.actionStyle);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setInputsInline(true);
+    this.setHelpUrl('http://www.example.com/');
+  },
+  ensureSearchKeywords: function () {
+    var keywords = [
+      Blockly.Msg.FABLE_SPIN_SET_CONSTANT,
+      Blockly.Msg.FABLE_SPIN_SET_AXLE,
+      Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER,
+      '%{BKY_OUTPUT}',
+      '%{BKY_LABEL_SPIN}'
+    ];
+
+    var toolboxKeywords = [
+      Blockly.Msg.FABLE_SPIN_SET_AXLE,
+      Blockly.Msg.FABLE_SPIN_SET_WHEEL_DIAMETER
+    ];
+
+    Blockly.Search.preprocessSearchKeywords('fable_spin_color_calibration', keywords, toolboxKeywords);
+  }
+};
+
 Blockly.Blocks.fable_spin_set_constant = {
   /**
    * Changes the spin axle and wheel diameter constants.

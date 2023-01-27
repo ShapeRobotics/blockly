@@ -99,6 +99,23 @@ Blockly.Python.fable_spin_reset_encoder = function (block) {
   return code;
 };
 
+Blockly.Python.fable_spin_color_calibration = function (block) {
+  var id = block.getDynamicIDFieldString();
+  var filter = block.getMutatedDropdownValue(['"whiteBalance"', '"blackBalance"'], 'SENSITIVITY');
+  var type = filter[0];
+  var value = filter[1];
+  var sensor = block.getFieldValue('SPIN_SENSOR');
+  var codeSignature;
+  console.log('value: '+value);
+  if(value == null || value == "'None'") {
+    codeSignature = `api.calibrateSpinSensor(${type}, None, ${sensor}, ${id})\n`;
+  }
+  else {
+    codeSignature = `api.calibrateSpinSensor(${type}, ${value}, ${sensor}, ${id})\n`;
+  }
+  return codeSignature;
+};
+
 Blockly.Python.fable_spin_set_constant = function (block) {
   var id = block.getDynamicIDFieldString();
   var metric = block.getFieldValue('METRIC');
