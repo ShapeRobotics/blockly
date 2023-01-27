@@ -140,7 +140,7 @@ Blockly.Blocks.fable_spin_drive = {
       .appendField(image);
 
     this.appendDummyInput()
-      .appendField("Bla ");
+      .appendField(Blockly.Msg.FABLE_SPIN_SET_DRIVE);
 
     this.appendValueInput('DISTANCE')
       .setCheck('Number');
