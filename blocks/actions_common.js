@@ -182,7 +182,8 @@ Blockly.Blocks.fable_speak_lang = {
         [Blockly.Msg.LANG_IT, 'it'],
         [Blockly.Msg.LANG_DE, 'de'],
         [Blockly.Msg.LANG_RU, 'ru'],
-        [Blockly.Msg.LANG_RO, 'ro']
+        [Blockly.Msg.LANG_RO, 'ro'],
+        [Blockly.Msg.LANG_PL, 'pl']
       ]), 'LANGUAGE');
 
     // Properties:
