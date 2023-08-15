@@ -168,11 +168,12 @@ class Gen_compressed(threading.Thread):
       self.gen_blocks()
 
     if (self.bundles.generators):
-      self.gen_generator("javascript")
+      print("[INFO] Only enabled for Python Generator")
+      #self.gen_generator("javascript")
       self.gen_generator("python")
-      self.gen_generator("php")
-      self.gen_generator("lua")
-      self.gen_generator("dart")
+      #self.gen_generator("php")
+      #self.gen_generator("lua")
+      #self.gen_generator("dart")
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"
@@ -305,8 +306,8 @@ goog.provide('Blockly.utils.string');
     try:
       json_data = json.loads(json_str)
     except ValueError:
-      print("ERROR: Could not parse JSON for %s.  Raw data:" % target_filename)
-      print(json_str)
+      print("|-- ERROR: Could not parse JSON for %s.  Raw data:" % target_filename)
+      print("|---- " + json_str)
       return
 
     def file_lookup(name):
@@ -318,23 +319,38 @@ goog.provide('Blockly.utils.string');
     if "serverErrors" in json_data:
       errors = json_data["serverErrors"]
       for error in errors:
-        print("SERVER ERROR: %s" % target_filename)
-        print(error["error"])
+        print("|-- SERVER ERROR: %s" % target_filename)
+        print("|---- " + error["error"])
     elif "errors" in json_data:
       errors = json_data["errors"]
       for error in errors:
-        print("FATAL ERROR")
-        print(error["error"])
+        if error["file"]:
+          file_name = file_lookup(error["file"])
+          line_no = error["lineno"]
+          print("|-- FATAL ERROR: %s at line %d" % (file_name, line_no))
+        else:
+          print("|-- FATAL ERROR")
+        print("|---- %s" % error["error"])
+        '''
         if error["file"]:
           print("%s at line %d:" % (
               file_lookup(error["file"]), error["lineno"]))
           print(error["line"])
           print((" " * error["charno"]) + "^")
+        '''
         sys.exit(1)
     else:
       if "warnings" in json_data:
         warnings = json_data["warnings"]
         for warning in warnings:
+          if warning["file"]:
+            file_name = file_lookup(warning["file"])
+            line_no = warning["lineno"]
+            print("|-- WARNING: %s at line %d" % (file_name, line_no))
+          else:
+            print("|-- WARNING")
+          print("|---- %s" % warning["warning"])
+          '''
           print("WARNING")
           print(warning["warning"])
           if warning["file"]:
@@ -342,7 +358,8 @@ goog.provide('Blockly.utils.string');
                 file_lookup(warning["file"]), warning["lineno"]))
             print(warning["line"])
             print((" " * warning["charno"]) + "^")
-        print()
+          '''
+        #print("")
 
       if not "compiledCode" in json_data:
         print("FATAL ERROR: Compiler did not return compiledCode.")
@@ -368,17 +385,17 @@ goog.provide('Blockly.utils.string');
           f_new = open(beautified_filename, "w")
           f_new.write(beautified_code)
           f_new.close()
-          print("SUCCESS:", beautified_filename)
+          print("SUCCESS: " + beautified_filename)
 
 
         original_kb = int(original_b / 1024 + 0.5)
         compressed_kb = int(compressed_b / 1024 + 0.5)
         ratio = int(float(compressed_b) / float(original_b) * 100 + 0.5)
         print("SUCCESS: " + target_filename)
-        print("Size changed from %d KB to %d KB (%d%%)." % (
+        print("|-- INFO: Size changed from %d KB to %d KB (%d%%)." % (
             original_kb, compressed_kb, ratio))
       else:
-        print("UNKNOWN ERROR")
+        print("|-- UNKNOWN ERROR")
 
   def trim_licence(self, code):
     """Strip out Google's and MIT's Apache licences.
@@ -452,8 +469,7 @@ class Gen_langfiles(threading.Thread):
           "--output_dir", os.path.join("msg", "js"),
           "--quiet"]
       json_files = glob.glob(os.path.join("msg", "json", "*.json"))
-      json_files = [file for file in json_files if not
-                    (file.endswith(("keys.json", "synonyms.json", "qqq.json", "constants.json")))]
+      json_files = [file for file in json_files if not (file.endswith(("keys.json", "synonyms.json", "qqq.json", "constants.json")))]
       cmd.extend(json_files)
       subprocess.check_call(cmd)
     except (subprocess.CalledProcessError, OSError) as e:
@@ -461,13 +477,25 @@ class Gen_langfiles(threading.Thread):
       sys.exit(1)
 
     # Output list of .js files created.
+    successful_files_no = 0
+    failed_files_no = 0
+    failed_lang_iso_id = []
     for f in json_files:
       # This assumes the path to the current directory does not contain "json".
       f = f.replace("json", "js")
       if os.path.isfile(f):
-        print("SUCCESS: " + f)
+        #print("SUCCESS: " + f)
+        successful_files_no += 1
       else:
-        print("FAILED to create " + f)
+        #print("FAILED to create " + f)
+        failed_files_no += 1
+        lang_id = os.path.basename(f).strip(".js")
+        failed_lang_iso_id.append(lang_id)
+
+    print("SUCCESS: files created for %d of %d languages" % (successful_files_no, len(json_files)))
+    if (failed_files_no > 0):
+      print("FAILED: could not create files for %d of %d languages" % (failed_files_no, len(json_files)))
+      print("|-- missing: " + failed_lang_iso_id)
 
 # Class to hold arguments if user passes in old argument style.
 class Arguments:
