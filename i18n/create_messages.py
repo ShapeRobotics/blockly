@@ -115,6 +115,11 @@ def main():
                 format(key, arg_file))
           target_defs[key] = _NEWLINE_PATTERN.sub(' ', value)
 
+      # Check output directory exists
+      outdir = os.path.join(os.curdir, args.output_dir)
+      if not os.path.isdir(outdir):
+        os.makedirs(outdir)
+      
       # Output file.
       outname = os.path.join(os.curdir, args.output_dir, target_lang + '.js')
       with codecs.open(outname, 'w', 'utf-8') as outfile:
