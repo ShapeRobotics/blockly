@@ -187,6 +187,7 @@ class Gen_compressed(threading.Thread):
         ("output_info", "warnings"),
         ("output_info", "errors"),
         ("output_info", "statistics"),
+        ("language_out", "ECMASCRIPT_2015"),
         ("warning_level", "DEFAULT"),
       ]
 
@@ -220,6 +221,7 @@ class Gen_compressed(threading.Thread):
         ("output_info", "warnings"),
         ("output_info", "errors"),
         ("output_info", "statistics"),
+        ("language_out", "ECMASCRIPT_2015"),
         ("warning_level", "DEFAULT"),
       ]
 
@@ -264,6 +266,7 @@ goog.provide('Blockly.Mutator');
         ("output_format", "json"),
         ("output_info", "compiled_code"),
         ("output_info", "warnings"),
+        ("language_out", "ECMASCRIPT_2015"),
         ("output_info", "errors"),
         ("output_info", "statistics"),
         ("warning_level", "DEFAULT"),
