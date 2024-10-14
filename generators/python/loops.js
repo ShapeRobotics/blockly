@@ -243,7 +243,7 @@ Blockly.Python.controls_stopApp = function (block) {
 Blockly.Python.fable_wait_until = function (block) {
   const conditionCode = Blockly.Python.valueToCode(block, 'WAIT', Blockly.Python.ORDER_NONE) || 'False';
   const passCode = Blockly.Python.addLoopTrap(Blockly.Python.PASS, block.id) || Blockly.Python.PASS;
-  const code = 'while not ' + conditionCode + ':\n' + passCode;
+  const code = 'while not (' + conditionCode + '):\n' + passCode;
 
   return code;
 };
